@@ -1,0 +1,21 @@
+/**
+ * Единый формат цены на всём сайте: 15 900 ₽.
+ * Неразрывный пробел перед знаком рубля, чтобы он не отрывался при переносе.
+ */
+export function formatPrice(value: number): string {
+  return `${value.toLocaleString("ru-RU")} ₽`;
+}
+
+/** Склонение существительного: plural(3, "товар", "товара", "товаров") */
+export function plural(
+  count: number,
+  one: string,
+  few: string,
+  many: string,
+): string {
+  const mod10 = count % 10;
+  const mod100 = count % 100;
+  if (mod10 === 1 && mod100 !== 11) return one;
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return few;
+  return many;
+}

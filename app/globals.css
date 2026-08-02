@@ -1,0 +1,303 @@
+@import "tailwindcss";
+
+/* ============================================================
+   JOIM STORE — дизайн-система
+   Тёмный премиум: почти монохром + один тёплый акцент
+   (подсветка приборной панели).
+   ============================================================ */
+
+@theme {
+  /* Поверхности */
+  --color-void: #08090b;
+  --color-surface: #0d0f13;
+  --color-surface-2: #131720;
+  --color-surface-3: #1a1f2a;
+
+  /* Текст. Три ступени, и самая тихая всё равно читается: на всех
+     четырёх поверхностях контраст faint ≥ 4,5:1 — это WCAG AA для
+     обычного кегля, а faint как раз набирается 11–13 px.
+     Ступень ниже (#626b7a) давала 3,1–3,7:1 и AA не проходила. */
+  --color-ink: #f2f4f7;
+  --color-muted: #98a1af;
+  --color-faint: #7b879a;
+
+  /* Линии */
+  --color-line: #ffffff14;
+  --color-line-strong: #ffffff26;
+
+  /* Акцент — фирменный зелёный JOIM, снят с логотипа бренда.
+     Он один: ни второго оттенка, ни «приглушённой» версии.
+     Нужна слабее — берётся прозрачностью от этого же цвета. */
+  --color-accent: #8cc53f;
+
+  /* Единственный служебный цвет — ошибка. Второго зелёного «успеха» нет:
+     он спорил бы с фирменным акцентом, а палитра должна оставаться
+     почти монохромной. */
+  --color-danger: #d9736c;
+
+  /* Одна гарнитура на весь сайт: разница держится на кегле и трекинге,
+     а не на второй «красивой» шрифтовой паре. Моноширинная — только
+     для технической мелочи. Geist вместо Inter/Manrope: те слишком
+     заезжены и читаются как шаблон. */
+  --font-display: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  /* Кривые движения — единый «почерк» анимаций */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --animate-marquee: marquee 45s linear infinite;
+  --animate-drift: drift 24s var(--ease-in-out-soft) infinite alternate;
+  --animate-rise: rise 0.9s var(--ease-out-expo) both;
+  --animate-fade: fade 0.6s var(--ease-out-soft) both;
+  --animate-sheen: sheen 6s var(--ease-in-out-soft) infinite;
+  --animate-spin-slow: spin-slow 18s linear infinite;
+}
+
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes drift {
+  from {
+    transform: translate3d(-3%, -2%, 0) scale(1);
+  }
+  to {
+    transform: translate3d(3%, 2%, 0) scale(1.12);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 22px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes sheen {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.75;
+  }
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ------------------------------------------------------------
+   База
+   ------------------------------------------------------------ */
+
+:root {
+  color-scheme: dark;
+  --header-h: 64px;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --header-h: 80px;
+  }
+}
+
+html {
+  background-color: var(--color-void);
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-h) + 16px);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-void);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: #0b0c0f;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Тонкий скроллбар — деталь, которую замечают */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #ffffff1f transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #ffffff1f;
+  border: 3px solid transparent;
+  background-clip: content-box;
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #ffffff33;
+  background-clip: content-box;
+}
+
+/* ------------------------------------------------------------
+   Появление при скролле.
+   Скрываем только когда JS точно есть (атрибут data-js ставится
+   инлайн-скриптом до первой отрисовки) — без JS контент виден.
+   Именно атрибут, а не класс: className на <html> рисует React,
+   и правка класса до гидратации ломала бы её.
+
+   will-change здесь нет намеренно: на длинной странице таких блоков
+   под три десятка, и браузер поднял бы в отдельные слои все сразу,
+   ещё до того как хоть один начал двигаться. translate3d и так
+   уводит анимацию на композитор в момент показа.
+   ------------------------------------------------------------ */
+
+[data-js] [data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, var(--reveal-y, 24px), 0);
+  transition:
+    opacity 0.7s var(--ease-out-expo),
+    transform 0.7s var(--ease-out-expo);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+[data-js] [data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* Свёрнутая панель фильтров на мобильном.
+   Прячем только при работающем JS — иначе кнопка «Фильтры» не сработает
+   и пользователь останется без фильтров вообще. */
+@media (max-width: 1023px) {
+  [data-js] .is-collapsed {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------
+   Утилиты
+   ------------------------------------------------------------ */
+
+/* 12 px, а не 11: на телефоне моноширинный надзаголовок в разрядку
+   на 11 px уже читается с трудом, а на десктопе разница незаметна. */
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+@utility num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Приборный шрифт: характеристики, артикулы, цифровые подписи.
+   Отделяет «показания» от обычного текста без смены цвета и кегля. */
+@utility readout {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+@utility hairline {
+  background-image: linear-gradient(
+    to right,
+    transparent,
+    var(--color-line-strong),
+    transparent
+  );
+  height: 1px;
+}
+
+/* Сетка тонких линий — «техническая» подложка */
+@utility grid-lines {
+  background-image:
+    linear-gradient(to right, #ffffff08 1px, transparent 1px),
+    linear-gradient(to bottom, #ffffff08 1px, transparent 1px);
+  background-size: 88px 88px;
+}
+
+@utility mask-fade-y {
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black 12%,
+    black 88%,
+    transparent
+  );
+}
+
+@utility mask-fade-x {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 8%,
+    black 92%,
+    transparent
+  );
+}
+
+/* ------------------------------------------------------------
+   Уважение к настройкам доступности.
+   Всё движение выключается одним блоком.
+   ------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  [data-js] [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}
