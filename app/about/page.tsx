@@ -48,26 +48,42 @@ export default function AboutPage() {
         </dl>
       </Container>
 
+      {/* Пунктов четыре, а колонок было три: три вставали в ряд,
+          четвёртый оставался один и справа от него зияли две пустые
+          колонки. Колоночная сетка тут вообще не годится — тексты
+          разной длины, низ у колонок рваный, а заголовки на узких
+          экранах переносятся вразнобой, и абзацы стартуют с разной
+          высоты.
+
+          Строками этой беды нет: каждая строка выравнивает свои две
+          половины сама, а линейки держат последовательность. Нумерация
+          читается как порядок, чем она и является. */}
       <Container size="wide" className="mt-16 lg:mt-32">
-        <div className="grid gap-14 lg:grid-cols-3">
+        <ol className="border-t border-line">
           {about.blocks.map((block, index) => (
-            <Reveal key={block.title} delay={index * 90}>
-              <span className="num font-display text-sm font-medium text-accent">
+            <Reveal
+              as="li"
+              key={block.title}
+              delay={index * 70}
+              y={14}
+              className="grid gap-x-10 gap-y-4 border-b border-line py-8 lg:grid-cols-[3.5rem_1fr_1.4fr] lg:gap-y-0 lg:py-10"
+            >
+              <span className="num text-[12px] font-medium tracking-[0.08em] text-accent lg:pt-2">
                 {String(index + 1).padStart(2, "0")}
               </span>
-              <h2 className="font-display mt-5 text-xl leading-snug font-semibold tracking-[-0.02em]">
+              <h2 className="font-display text-xl leading-snug font-semibold tracking-[-0.02em]">
                 {block.title}
               </h2>
-              <p className="mt-4 text-[14px] leading-relaxed text-muted">
+              <p className="max-w-[36rem] text-[14px] leading-relaxed text-muted lg:text-[15px]">
                 {block.text}
               </p>
             </Reveal>
           ))}
-        </div>
+        </ol>
       </Container>
 
       <Container size="wide" className="mt-16 lg:mt-32">
-        <h2 className="eyebrow mb-8">Команда</h2>
+        <h2 className="eyebrow mb-6">Команда</h2>
         <ul className="divide-y divide-line border-y border-line">
           {about.team.map((member, index) => (
             <Reveal
