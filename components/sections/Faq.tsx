@@ -12,7 +12,6 @@ export function Faq() {
     <section className="py-16 lg:py-32">
       <Container size="wide" className="grid gap-14 lg:grid-cols-[0.85fr_1.15fr]">
         <SectionHeading
-          eyebrow={home.sections.faq.eyebrow}
           title={home.sections.faq.title}
           text={home.sections.faq.text}
           className="lg:block"

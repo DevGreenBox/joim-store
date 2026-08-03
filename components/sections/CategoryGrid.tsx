@@ -17,7 +17,6 @@ export function CategoryGrid() {
     <section className="py-16 lg:py-32">
       <Container size="wide">
         <SectionHeading
-          eyebrow={home.sections.categories.eyebrow}
           title={home.sections.categories.title}
           text={home.sections.categories.text || undefined}
           action={
@@ -37,7 +36,7 @@ export function CategoryGrid() {
                 className="group relative bg-surface"
               >
                 <Link
-                  href={`/catalog?category=${category.slug}`}
+                  href={`/catalog/${category.slug}`}
                   className="flex h-full flex-col gap-5 p-6 transition-colors duration-500 ease-out-soft hover:bg-surface-2 active:bg-surface-2 active:duration-200 lg:p-9"
                 >
                   <div className="flex items-start justify-between gap-4">

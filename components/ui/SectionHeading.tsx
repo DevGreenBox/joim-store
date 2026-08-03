@@ -3,7 +3,6 @@ import type { ReactNode } from "react";
 import { Reveal } from "@/components/ui/Reveal";
 
 type Props = {
-  eyebrow?: string;
   title: ReactNode;
   text?: ReactNode;
   /** Действие справа — ссылка «весь каталог» и подобные. */
@@ -12,7 +11,6 @@ type Props = {
 };
 
 export function SectionHeading({
-  eyebrow,
   title,
   text,
   action,
@@ -23,7 +21,6 @@ export function SectionHeading({
       className={`flex flex-col gap-8 md:flex-row md:items-end md:justify-between ${className}`}
     >
       <Reveal className="max-w-2xl">
-        {eyebrow ? <p className="eyebrow mb-5">{eyebrow}</p> : null}
         <h2 className="font-display text-[clamp(1.75rem,4vw,2.75rem)] leading-[1.1] font-semibold tracking-[-0.02em] text-balance">
           {title}
         </h2>

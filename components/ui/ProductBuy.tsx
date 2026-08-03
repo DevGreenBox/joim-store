@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/Button";
+import { GOALS, track } from "@/lib/analytics";
 import { useCart } from "@/lib/cart";
 
 export function ProductBuy({
@@ -27,6 +28,7 @@ export function ProductBuy({
 
   function handleAdd() {
     add(slug, qty);
+    track(GOALS.addToCart, { slug, qty });
     setAdded(true);
     if (timer.current) clearTimeout(timer.current);
     timer.current = setTimeout(() => setAdded(false), 3000);

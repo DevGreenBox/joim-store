@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/Button";
+import { GOALS, track } from "@/lib/analytics";
 import { useCart } from "@/lib/cart";
 
 type Props = {
@@ -32,6 +33,7 @@ export function AddToCart({
 
   function handleAdd() {
     add(slug);
+    track(GOALS.addToCart, { slug });
     setAdded(true);
     if (timer.current) clearTimeout(timer.current);
     timer.current = setTimeout(() => setAdded(false), 1800);

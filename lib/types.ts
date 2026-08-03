@@ -29,6 +29,24 @@ export type Category = {
   art: ArtKey;
 };
 
+/** Крупное показание в начале карточки: «3300 А», «более 20». */
+export type Highlight = {
+  value: string;
+  /** Единица, если её надо набрать мельче: «А», «мВт·ч». Пусто — не набираем. */
+  unit?: string;
+  label: string;
+};
+
+/** Сценарий применения: одна ситуация — один блок. */
+export type Scenario = {
+  title: string;
+  text: string;
+  /** Кадр из материалов заказчика. Нет — рисуем показание крупно. */
+  image?: string;
+  /** Что вынести цифрой поверх блока: «−30 °C», «40 минут». */
+  readout?: string;
+};
+
 export type Product = {
   slug: string;
   name: string;
@@ -46,6 +64,21 @@ export type Product = {
   description: string;
   specs: Spec[];
   features: string[];
+  /** Четыре показания под ценой — то, ради чего модель покупают. */
+  highlights: Highlight[];
+  /** Кому эта модель и кому не нужна. Отсечка пишется прямо. */
+  fits: {
+    /** Одна строка: кому берут. */
+    who: string;
+    /** Одна строка: когда переплачивать не за что. */
+    skip?: string;
+  };
+  /** Сценарии применения — мини-лендинг модели. */
+  scenarios: Scenario[];
+  /** Техника, на которой работает. Пусто — не показываем блок. */
+  compatibility?: string[];
+  /** От чего защищает электроника. Пусто — не показываем блок. */
+  protections?: string[];
   /** Что лежит в коробке — первым пунктом само устройство. */
   included: string[];
   /** 360°-облёт, если он есть в библиотеке заказчика. */
@@ -55,8 +88,27 @@ export type Product = {
     title: string;
     text: string;
   };
+  /** Промо-ролик бренда. Пропорции — как у исходного файла. */
+  video?: {
+    src: string;
+    poster: string;
+    ratio: string;
+    title: string;
+    text?: string;
+  };
   /** Ракурсы товара. Пусто — рисуем векторную заглушку по категории. */
   images: ProductImage[];
+  /**
+   * Габариты посылки для расчёта доставки: вес в граммах, стороны в см.
+   * Значения оценочные и требуют подтверждения у заказчика — так же,
+   * как состав коробки.
+   */
+  shipping: {
+    weight: number;
+    length: number;
+    width: number;
+    height: number;
+  };
 };
 
 export type CartLine = {

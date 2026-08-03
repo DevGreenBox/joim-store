@@ -11,6 +11,7 @@ import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { ProductCard } from "@/components/ui/ProductCard";
 import { Reveal } from "@/components/ui/Reveal";
+import catalogContent from "@/content/pages/catalog.json";
 import {
   SORT_OPTIONS,
   getCategory,
@@ -52,7 +53,7 @@ export async function generateMetadata({
     description: category
       ? category.description
       : "Пусковые устройства JOIM Easy Start ES-19 и ES-29 и автомобильный пылесос PVC-1. Собственное производство, гарантия 12 месяцев.",
-    alternates: { canonical: category ? `/catalog?category=${category.slug}` : "/catalog" },
+    alternates: { canonical: category ? `/catalog/${category.slug}` : "/catalog" },
   };
 }
 
@@ -79,12 +80,10 @@ export default async function CatalogPage({
 
         <div className="mt-7 max-w-3xl">
           <h1 className="font-display text-[clamp(2rem,5vw,3.25rem)] leading-[1.05] font-semibold tracking-[-0.03em] text-balance">
-            {category ? category.name : "Каталог"}
+            {category ? category.name : catalogContent.all.title}
           </h1>
           <p className="mt-5 text-[15px] leading-relaxed text-muted">
-            {category
-              ? category.description
-              : "Два пусковых устройства и пылесос. Не знаете, какая модель подойдёт вашему мотору, — напишите объём двигателя в комментарии к заказу."}
+            {category ? category.description : catalogContent.all.text}
           </p>
         </div>
       </Container>

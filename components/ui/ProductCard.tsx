@@ -61,7 +61,7 @@ export function ProductCard({
 
         <h3 className="font-display text-lg leading-snug font-semibold tracking-[-0.01em]">
           <Link
-            href={`/catalog/${product.slug}`}
+            href={`/product/${product.slug}`}
             className="after:absolute after:inset-0 after:content-['']"
           >
             {product.name}

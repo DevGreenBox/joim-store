@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import { Footer } from "@/components/sections/Footer";
 import { Header } from "@/components/sections/Header";
+import { Analytics } from "@/components/ui/Analytics";
+import { CookieNotice } from "@/components/ui/CookieNotice";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -96,6 +98,8 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <CookieNotice />
+        <Analytics />
       </body>
     </html>
   );

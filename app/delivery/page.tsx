@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { CtaBand } from "@/components/sections/CtaBand";
+import { LeadForm } from "@/components/sections/LeadForm";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
@@ -89,7 +89,7 @@ export default function DeliveryPage() {
       </Container>
 
       <div className="mt-16 lg:mt-32">
-        <CtaBand />
+        <LeadForm />
       </div>
     </div>
   );

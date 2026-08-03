@@ -2,10 +2,10 @@ import Form from "next/form";
 import Link from "next/link";
 
 import {
-  PRICE_BUCKETS,
   countByCategory,
   getBrands,
   getCategories,
+  priceBucketsInUse,
   type CatalogQuery,
 } from "@/lib/catalog";
 
@@ -58,6 +58,11 @@ function Group({
 export function CatalogFilters({ query }: Props) {
   const categories = getCategories();
   const brands = getBrands();
+  const buckets = priceBucketsInUse();
+  // Группу показываем, только если ей есть что отбирать: один бренд
+  // и одна ценовая корзина ничего не фильтруют.
+  const showBrands = brands.length > 1;
+  const showPrice = buckets.length > 1;
   const isFiltered = Boolean(
     query.category || query.brand || query.price || query.q,
   );
@@ -143,6 +148,7 @@ export function CatalogFilters({ query }: Props) {
         </ul>
       </Group>
 
+      {showBrands ? (
       <Group title="Бренд">
         <ul className="flex flex-wrap gap-2">
           <li>
@@ -166,6 +172,9 @@ export function CatalogFilters({ query }: Props) {
         </ul>
       </Group>
 
+      ) : null}
+
+      {showPrice ? (
       <Group title="Цена">
         <ul className="flex flex-wrap gap-2 lg:flex-col lg:gap-1">
           <li>
@@ -176,7 +185,7 @@ export function CatalogFilters({ query }: Props) {
               Любая
             </Link>
           </li>
-          {PRICE_BUCKETS.map((bucket) => (
+          {buckets.map((bucket) => (
             <li key={bucket.id}>
               <Link
                 href={href(query, { price: bucket.id })}
@@ -188,6 +197,7 @@ export function CatalogFilters({ query }: Props) {
           ))}
         </ul>
       </Group>
+      ) : null}
 
       {isFiltered ? (
         <Link

@@ -2,9 +2,14 @@ import siteJson from "@/content/pages/site.json";
 
 export const site = siteJson;
 
-/** Главное меню. Отзывы живут в подвале и на главной — в шапке им тесно. */
+/**
+ * Главное меню. Отзывы живут в подвале и на главной — в шапке им тесно.
+ *
+ * `also` — ветки, при которых пункт остаётся подсвеченным: карточка товара
+ * лежит на `/product/`, но покупатель по-прежнему в каталоге.
+ */
 export const nav = [
-  { href: "/catalog", label: "Каталог" },
+  { href: "/catalog", label: "Каталог", also: ["/product"] },
   { href: "/delivery", label: "Доставка" },
   { href: "/warranty", label: "Гарантия" },
   { href: "/corporate", label: "Компаниям" },
@@ -18,8 +23,12 @@ export const allPages = [
   { href: "/reviews", label: "Отзывы" },
 ] as const;
 
-/** Порог бесплатной доставки, ₽ */
-export const FREE_SHIPPING_FROM = 15000;
+/**
+ * Правовые документы. Отдельным списком, а не в общей навигации:
+ * их место — нижняя строка подвала, где их и ищут.
+ */
+export const legalPages = [
+  { href: "/privacy", label: "Обработка персональных данных" },
+  { href: "/offer", label: "Условия продажи" },
+] as const;
 
-/** Стоимость курьера по Москве, ₽ */
-export const COURIER_PRICE = 490;

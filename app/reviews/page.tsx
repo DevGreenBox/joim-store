@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { CtaBand } from "@/components/sections/CtaBand";
+import { LeadForm } from "@/components/sections/LeadForm";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Container } from "@/components/ui/Container";
 import { ProductImage } from "@/components/ui/ProductImage";
@@ -14,7 +14,7 @@ import { getReviews, getReviewsSummary } from "@/lib/reviews";
 export const metadata: Metadata = {
   title: "Отзывы",
   description:
-    "Отзывы покупателей о пусковых устройствах JOIM Easy Start ES-19 и ES-29 и автопылесосе PVC-1: оценки, распределение баллов и живые тексты.",
+    "Отзывы покупателей о пусковых устройствах JOIM Easy Start ES-19 и ES-29 и автопылесосе PVC-1: оценки, распределение баллов и тексты без правок.",
   alternates: { canonical: "/reviews" },
 };
 
@@ -92,7 +92,7 @@ export default function ReviewsPage() {
               <div className="min-w-[180px] flex-1">
                 <h2 className="font-display text-xl leading-snug font-semibold tracking-[-0.02em]">
                   <Link
-                    href={`/catalog/${product.slug}`}
+                    href={`/product/${product.slug}`}
                     className="transition-colors duration-300 hover:text-accent"
                   >
                     {product.name}
@@ -152,24 +152,8 @@ export default function ReviewsPage() {
         );
       })}
 
-      <Container size="wide" className="mt-20">
-        <Reveal className="rounded-2xl border border-line bg-surface p-6 lg:p-10">
-          <h2 className="font-display text-xl font-semibold tracking-[-0.02em]">
-            Откуда эти отзывы
-          </h2>
-          <p className="mt-4 max-w-3xl text-[15px] leading-relaxed text-muted">
-            Собраны на площадках, где мы продаём. Ничего не переписываем
-            и не сочиняем.
-          </p>
-          <p className="mt-4 max-w-3xl text-[13px] leading-relaxed text-faint">
-            Это подборка. Средняя оценка и распределение баллов над каждой
-            моделью посчитаны по всем покупателям и включают низкие оценки.
-          </p>
-        </Reveal>
-      </Container>
-
       <div className="mt-16 lg:mt-32">
-        <CtaBand />
+        <LeadForm />
       </div>
     </div>
   );

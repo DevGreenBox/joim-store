@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { Logo } from "@/components/ui/Logo";
 import { getCategories } from "@/lib/catalog";
-import { allPages, site } from "@/lib/site";
+import { allPages, legalPages, site } from "@/lib/site";
 
 export function Footer() {
   const categories = getCategories();
@@ -47,7 +47,7 @@ export function Footer() {
               {categories.map((category) => (
                 <li key={category.slug}>
                   <Link
-                    href={`/catalog?category=${category.slug}`}
+                    href={`/catalog/${category.slug}`}
                     className="flex min-h-11 items-center text-sm text-muted transition-colors duration-300 hover:text-ink lg:min-h-0"
                   >
                     {category.name}
@@ -96,13 +96,28 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-14 flex flex-col gap-4 border-t border-line pt-8 text-xs text-faint sm:flex-row sm:items-center sm:justify-between">
+        {/* Правовые документы — отдельной строкой над копирайтом:
+            там их ищут, и там их проверяют. */}
+        <ul className="mt-14 flex flex-wrap gap-x-8 gap-y-2 border-t border-line pt-8 text-xs">
+          {legalPages.map((page) => (
+            <li key={page.href}>
+              <Link
+                href={page.href}
+                className="flex min-h-11 items-center text-faint transition-colors duration-300 hover:text-ink lg:min-h-0"
+              >
+                {page.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-6 flex flex-col gap-4 border-t border-line pt-8 text-xs text-faint sm:flex-row sm:items-center sm:justify-between">
           <p>
             © {year} {site.name}. Товары JOIM и их характеристики настоящие.
           </p>
           <p>
-            Остальные позиции каталога, адрес и телефон — демонстрационные,
-            приём заказов работает в тестовом режиме.
+            Адрес, телефон и реквизиты — демонстрационные. Оплата на сайте
+            не подключена: заказ подтверждает менеджер.
           </p>
         </div>
       </Container>

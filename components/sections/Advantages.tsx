@@ -8,7 +8,6 @@ export function Advantages() {
     <section className="border-y border-line bg-surface py-16 lg:py-32">
       <Container size="wide">
         <SectionHeading
-          eyebrow={home.sections.advantages.eyebrow}
           title={home.sections.advantages.title}
         />
 

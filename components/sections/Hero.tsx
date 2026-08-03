@@ -1,15 +1,46 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { CountUp } from "@/components/ui/CountUp";
 import home from "@/content/pages/home.json";
+import { getProduct } from "@/lib/catalog";
+import { formatPrice, plural } from "@/lib/format";
+import { getReviewsSummary } from "@/lib/reviews";
 import { site } from "@/lib/site";
 
 const { hero } = home;
 
+/**
+ * Первый экран: кадр товара во всю высоту справа, текст поверх него слева,
+ * показания — стеклянными карточками над кадром, внизу полоса цифр.
+ *
+ * Кадр выходит за контейнер намеренно, и только он: текст, карточки
+ * и полоса живут в прежней ширине макета. Так первый экран получает
+ * масштаб, а сетка страницы не меняется.
+ *
+ * На мобильном перекрытие нечитаемо, поэтому кадр уходит из фона
+ * в поток и встаёт под текстом, а карточки — под ним.
+ *
+ * Кадр, цена и показания берутся из каталога по слагу в `home.json`,
+ * оценка и число отзывов — из того же источника, что и страница отзывов.
+ */
+
+/** «40+» → «40» и «+»: хвост CountUp не считает, он дописывается рядом. */
+function split(value: string): { count: string; tail: string } {
+  const match = value.match(/^([\d\s.,]+)(.*)$/);
+  if (!match) return { count: "", tail: value };
+  return { count: match[1].trim(), tail: match[2] };
+}
+
 export function Hero() {
   const [titleTop, titleBottom] = hero.title.split("\n");
+  const product = getProduct(hero.product);
+  const photo = product?.images[0];
+  const summary = getReviewsSummary();
+  // Две карточки: ток и число запусков. Третья уже загораживает товар.
+  const cards = product ? [product.highlights[0], product.highlights[2]] : [];
 
   return (
     <section className="relative isolate overflow-hidden">
@@ -20,160 +51,205 @@ export function Hero() {
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-1/3 left-1/2 -z-10 h-[820px] w-[1100px] -translate-x-1/2 animate-drift rounded-full bg-[radial-gradient(closest-side,rgba(140,197,63,0.13),rgba(140,197,63,0.04)_45%,transparent_72%)] blur-[2px]"
+        className="pointer-events-none absolute -top-1/3 left-[68%] -z-10 h-[900px] w-[1100px] -translate-x-1/2 animate-drift rounded-full bg-[radial-gradient(closest-side,rgba(140,197,63,0.18),rgba(140,197,63,0.05)_45%,transparent_72%)]"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-64 bg-[linear-gradient(to_top,var(--color-void),transparent)]"
+        className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-72 bg-[linear-gradient(to_top,var(--color-void),transparent)]"
       />
 
-      <Container
-        size="wide"
-        className="grid gap-12 pt-12 pb-16 lg:grid-cols-[1.15fr_1fr] lg:items-center lg:gap-10 lg:pt-24 lg:pb-28"
-      >
-        <div>
-          <p
-            className="eyebrow inline-flex items-center gap-2.5 animate-rise"
-            style={{ animationDelay: "60ms" }}
-          >
-            <span className="inline-block size-1.5 rounded-full bg-accent animate-sheen" />
-            {hero.eyebrow}
-          </p>
-
-          <h1 className="font-display mt-7 text-[clamp(2.5rem,7.2vw,5rem)] leading-[0.98] font-semibold tracking-[-0.035em] text-balance">
-            <span
-              className="block animate-rise"
-              style={{ animationDelay: "140ms" }}
+      <Container size="wide" className="relative pt-10 pb-12 lg:pt-14 lg:pb-16">
+        <div className="grid gap-10 lg:min-h-[560px] lg:grid-cols-[1.05fr_1fr] lg:gap-8">
+          <div className="flex flex-col justify-center">
+            <p
+              className="eyebrow inline-flex items-center gap-3 animate-rise"
+              style={{ animationDelay: "60ms" }}
             >
-              {titleTop}
-            </span>
-            <span
-              className="block animate-rise text-muted"
-              style={{ animationDelay: "240ms" }}
-            >
-              {titleBottom}
-            </span>
-          </h1>
+              <span className="grid size-8 shrink-0 place-items-center rounded-full border border-accent/30">
+                <span className="block size-1.5 rounded-full bg-accent animate-sheen" />
+              </span>
+              {hero.eyebrow}
+            </p>
 
-          <p
-            className="mt-8 max-w-xl text-[15px] leading-relaxed text-muted animate-rise sm:text-base"
-            style={{ animationDelay: "340ms" }}
-          >
-            {hero.lead}
-          </p>
+            {/* Строки разбиты переносом в контенте, поэтому text-balance
+                здесь только мешал: он ломал вторую на «где сел». */}
+            <h1 className="font-display mt-8 text-[clamp(2.25rem,5.2vw,4.25rem)] leading-[1.02] font-semibold tracking-[-0.04em]">
+              <span
+                className="block animate-rise"
+                style={{ animationDelay: "140ms" }}
+              >
+                {titleTop}
+              </span>
+              <span
+                className="block animate-rise text-muted"
+                style={{ animationDelay: "240ms" }}
+              >
+                {titleBottom}
+              </span>
+            </h1>
 
-          <div
-            className="mt-10 flex flex-wrap items-center gap-3 animate-rise"
-            style={{ animationDelay: "430ms" }}
-          >
-            <ButtonLink href={hero.primaryCta.href} size="lg" arrow>
-              {hero.primaryCta.label}
-            </ButtonLink>
-            <ButtonLink
-              href={hero.secondaryCta.href}
-              size="lg"
-              variant="outline"
+            <p
+              className="mt-8 max-w-md text-[15px] leading-relaxed text-muted animate-rise"
+              style={{ animationDelay: "340ms" }}
             >
-              {hero.secondaryCta.label}
-            </ButtonLink>
+              {hero.lead}
+            </p>
+
+            <div
+              className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-5 animate-rise"
+              style={{ animationDelay: "430ms" }}
+            >
+              <ButtonLink href={hero.primaryCta.href} size="lg" arrow>
+                {hero.primaryCta.label}
+              </ButtonLink>
+
+              {/* Вместо чужих аватарок — своя оценка и число отзывов:
+                  и то и другое посчитано по реальным покупателям. */}
+              <Link
+                href="/reviews"
+                className="group/proof flex min-h-11 items-center gap-3 text-[13px]"
+              >
+                <span className="flex gap-0.5" aria-hidden="true">
+                  {[0, 1, 2, 3, 4].map((star) => (
+                    <svg key={star} viewBox="0 0 14 14" className="size-3.5">
+                      <path
+                        d="m7 1.5 1.7 3.5 3.8.5-2.8 2.7.7 3.8L7 10.2 3.6 12l.7-3.8L1.5 5.5l3.8-.5z"
+                        fill="var(--color-accent)"
+                      />
+                    </svg>
+                  ))}
+                </span>
+                <span className="text-muted transition-colors duration-300 group-hover/proof:text-ink">
+                  <span className="num text-ink">
+                    {summary.average.toFixed(1).replace(".", ",")}
+                  </span>{" "}
+                  по {summary.total.toLocaleString("ru-RU")}{" "}
+                  {plural(summary.total, "оценке", "оценкам", "оценкам")}
+                </span>
+              </Link>
+            </div>
           </div>
 
-          <ul
-            className="mt-10 flex flex-wrap gap-x-7 gap-y-3 animate-rise"
-            style={{ animationDelay: "520ms" }}
-          >
-            {hero.marks.map((mark) => (
-              <li
-                key={mark}
-                className="flex items-center gap-2.5 text-[13px] text-faint"
-              >
-                <svg viewBox="0 0 12 12" aria-hidden="true" className="size-3">
-                  <path
-                    d="m2 6.2 2.6 2.6L10 3.4"
-                    fill="none"
-                    stroke="var(--color-accent)"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+          {/* Кадр в потоке — только на мобильном, где перекрытие не работает */}
+          {photo && product ? (
+            <div className="relative mx-auto aspect-[16/11] w-full max-w-[460px] animate-fade lg:hidden">
+              <Image
+                src={photo.src}
+                alt={`${product.name} — ${photo.caption.toLowerCase()}`}
+                fill
+                sizes="(min-width: 1024px) 0px, 88vw"
+                className="object-contain drop-shadow-[0_24px_60px_rgba(0,0,0,0.8)]"
+              />
+            </div>
+          ) : null}
+
+          {product ? (
+            <div className="relative flex flex-wrap items-end justify-start gap-4 lg:justify-end">
+              {/* Кадр держится правой колонки и чуть выходит за поле
+                  контейнера. Раньше он тянулся во всю высоту секции —
+                  вместе с полосой цифр это давало под тысячу пикселей,
+                  и товар подавлял всё остальное. */}
+              {photo ? (
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute top-1/2 right-[-2.5rem] -z-10 hidden h-[560px] w-[600px] -translate-y-1/2 lg:block"
+                >
+                  <Image
+                    src={photo.src}
+                    alt=""
+                    fill
+                    preload
+                    sizes="(min-width: 1024px) 600px, 0px"
+                    className="object-contain object-right drop-shadow-[0_40px_90px_rgba(0,0,0,0.85)]"
                   />
-                </svg>
-                {mark}
-              </li>
-            ))}
-          </ul>
+                </div>
+              ) : null}
+
+              {cards.map((item, index) => {
+                const { count, tail } = split(item.value);
+                return (
+                  <div
+                    key={item.label}
+                    className="relative min-w-[150px] flex-1 rounded-2xl border border-white/12 bg-void/60 p-5 backdrop-blur-xl animate-fade lg:max-w-[220px] lg:flex-none lg:p-7"
+                    style={{ animationDelay: `${520 + index * 90}ms` }}
+                  >
+                    <span
+                      aria-hidden="true"
+                      className="readout absolute top-4 right-5 text-[13px] leading-none text-faint"
+                    >
+                      ✳
+                    </span>
+                    <p className="num font-display text-[clamp(1.5rem,2.6vw,2.25rem)] leading-none font-semibold tracking-[-0.03em]">
+                      {count ? <CountUp value={count} /> : null}
+                      {tail}
+                      {item.unit ? (
+                        <span className="readout ml-1 text-[13px] font-normal text-faint">
+                          {item.unit}
+                        </span>
+                      ) : null}
+                    </p>
+                    <p className="readout mt-4 text-[11px] leading-snug tracking-[0.1em] text-muted uppercase">
+                      {item.label}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          ) : null}
         </div>
 
-        {/* Визуал: кольца, медленно вращающаяся риска и иллюстрация */}
-        <div
-          className="relative mx-auto aspect-square w-full max-w-[460px] animate-fade lg:max-w-none"
-          style={{ animationDelay: "300ms" }}
-        >
-          <div
-            aria-hidden="true"
-            className="absolute inset-[8%] rounded-full border border-line"
-          />
-          <div
-            aria-hidden="true"
-            className="absolute inset-[20%] rounded-full border border-line"
-          />
-          <div
-            aria-hidden="true"
-            className="absolute inset-[32%] rounded-full border border-line-strong"
-          />
-          <div
-            aria-hidden="true"
-            className="absolute inset-[8%] animate-spin-slow rounded-full border border-transparent [background:conic-gradient(from_0deg,transparent_0deg,rgba(140,197,63,0.55)_18deg,transparent_38deg)] [mask:radial-gradient(farthest-side,transparent_calc(100%-1.5px),#000_calc(100%-1.5px))]"
-          />
-          <div
-            aria-hidden="true"
-            className="absolute inset-[26%] rounded-full bg-[radial-gradient(closest-side,rgba(140,197,63,0.16),transparent_70%)]"
-          />
-
-          {/* Реальное фото товара, а не иллюстрация. Единственная картинка
-              первого экрана и заведомый LCP — поэтому preload, то есть
-              <link> в head. В Next 16 он пришёл на смену priority. */}
-          <Image
-            src="/images/products/joim-es19-1.webp"
-            alt="Пусковое устройство JOIM Easy Start ES-19"
-            width={568}
-            height={1200}
-            preload
-            sizes="(min-width: 1024px) 460px, 70vw"
-            className="absolute inset-[24%] size-[52%] object-contain drop-shadow-[0_24px_60px_rgba(0,0,0,0.75)]"
-          />
-
-          <p className="readout absolute top-[6%] left-0 rounded-full border border-line bg-surface/70 px-3.5 py-2 text-[11px] tracking-wide text-muted backdrop-blur-sm">
-            3300 А · 29 600 мВт·ч
-          </p>
-          {/* Моноширинным набирается только то, что действительно показание:
-              токи, ёмкости, артикулы. Обычная фраза остаётся текстом. */}
-          <p className="absolute right-0 bottom-[16%] rounded-full border border-line bg-surface/70 px-3.5 py-2 text-[12px] text-muted backdrop-blur-sm">
-            Заводит с нуля
-          </p>
-        </div>
+        {/* Подпись к кадру: что показано и почём */}
+        {product ? (
+          <div className="mt-10 lg:mt-2">
+            <Link
+              href={`/product/${product.slug}`}
+              className="group/hero inline-flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-muted transition-colors duration-300 hover:text-ink"
+            >
+              <span className="readout text-[11px] tracking-[0.12em] text-accent uppercase">
+                {hero.productNote}
+              </span>
+              <span>{product.name}</span>
+              <span className="num text-ink">{formatPrice(product.price)}</span>
+              <svg
+                viewBox="0 0 16 16"
+                aria-hidden="true"
+                className="size-3.5 transition-transform duration-500 ease-out-expo group-hover/hero:translate-x-1"
+              >
+                <path
+                  d="M2 8h11M9 4l4 4-4 4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </Link>
+          </div>
+        ) : null}
       </Container>
 
-      {/* Полоса цифр */}
+      {/* Полоса цифр по нижнему краю первого экрана */}
       <Container size="wide">
-        <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line lg:grid-cols-4">
+        <dl className="grid grid-cols-2 gap-x-8 gap-y-6 border-t border-line py-7 lg:grid-cols-4 lg:py-8">
           {site.stats.map((stat, index) => (
             <div
               key={stat.label}
-              className="bg-surface p-6 animate-fade lg:p-8"
-              style={{ animationDelay: `${600 + index * 80}ms` }}
+              className="animate-fade"
+              style={{ animationDelay: `${640 + index * 80}ms` }}
             >
-              <dt className="num font-display text-[clamp(1.75rem,3.4vw,2.5rem)] leading-none font-semibold tracking-[-0.03em]">
+              <dt className="num font-display text-[clamp(1.25rem,1.9vw,1.625rem)] leading-none font-semibold tracking-[-0.02em]">
                 {/* Год основания не отсчитываем: это дата, а не показание. */}
                 {stat.count === false ? (
                   stat.value
                 ) : (
                   <CountUp value={stat.value} />
                 )}
-                <span className="text-lg font-medium text-faint">
+                <span className="text-[13px] font-medium text-faint">
                   {stat.suffix}
                 </span>
               </dt>
-              <dd className="mt-3 text-[13px] leading-snug text-muted">
+              <dd className="readout mt-3 text-[11px] leading-snug tracking-[0.08em] text-faint uppercase">
                 {stat.label}
               </dd>
             </div>

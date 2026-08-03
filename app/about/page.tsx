@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { CtaBand } from "@/components/sections/CtaBand";
+import { LeadForm } from "@/components/sections/LeadForm";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
@@ -86,7 +86,7 @@ export default function AboutPage() {
         </ul>
       </Container>
 
-      <CtaBand />
+      <LeadForm />
     </div>
   );
 }

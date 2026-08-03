@@ -41,6 +41,20 @@ export function countByCategory(slug: string): number {
   return products.filter((p) => p.category === slug).length;
 }
 
+/**
+ * Ценовые корзины, в которых есть товары.
+ *
+ * Пока моделей три и все дешевле десяти тысяч, две корзины из трёх пустые:
+ * фильтр, который ничего не отбирает, — это мусор в интерфейсе. Список
+ * считается по каталогу, поэтому с ростом ассортимента диапазоны появятся
+ * сами, без правки вёрстки.
+ */
+export function priceBucketsInUse() {
+  return PRICE_BUCKETS.filter((bucket) =>
+    products.some((p) => p.price >= bucket.min && p.price < bucket.max),
+  );
+}
+
 /** Похожие товары: та же категория, кроме самого товара. */
 export function getRelated(product: Product, limit = 3): Product[] {
   return products

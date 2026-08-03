@@ -50,3 +50,6 @@ next-env.d.ts
 /assets/**/*.mp4
 /assets/**/*.zip
 /assets/**/*.rar
+
+# Пример переменных окружения нужен в репозитории
+!.env.example

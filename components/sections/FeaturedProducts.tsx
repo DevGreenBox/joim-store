@@ -13,7 +13,6 @@ export function FeaturedProducts() {
     <section className="py-16 lg:py-32">
       <Container size="wide">
         <SectionHeading
-          eyebrow={home.sections.featured.eyebrow}
           title={home.sections.featured.title}
           text={home.sections.featured.text}
           action={

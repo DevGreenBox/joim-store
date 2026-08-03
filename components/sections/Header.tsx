@@ -87,8 +87,12 @@ export function Header() {
     };
   }, [open]);
 
-  const isActive = (href: string) =>
-    href === "/" ? pathname === "/" : pathname.startsWith(href);
+  const isActive = (item: (typeof nav)[number]) => {
+    if (pathname.startsWith(item.href)) return true;
+    return ("also" in item ? item.also : []).some((branch) =>
+      pathname.startsWith(branch),
+    );
+  };
 
   return (
     <>
@@ -111,9 +115,9 @@ export function Header() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    aria-current={isActive(item.href) ? "page" : undefined}
+                    aria-current={isActive(item) ? "page" : undefined}
                     className={`group/nav relative inline-flex h-10 items-center rounded-full px-4 text-sm transition-colors duration-300 ${
-                      isActive(item.href)
+                      isActive(item)
                         ? "text-ink"
                         : "text-muted hover:text-ink"
                     }`}
@@ -122,7 +126,7 @@ export function Header() {
                     <span
                       aria-hidden="true"
                       className={`absolute inset-x-4 bottom-1.5 h-px origin-left bg-accent transition-transform duration-[400ms] ease-out-expo ${
-                        isActive(item.href)
+                        isActive(item)
                           ? "scale-x-100"
                           : "scale-x-0 group-hover/nav:scale-x-100"
                       }`}

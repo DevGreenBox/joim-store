@@ -13,6 +13,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/delivery", priority: 0.5 },
     { path: "/about", priority: 0.5 },
     { path: "/contacts", priority: 0.6 },
+    { path: "/privacy", priority: 0.2 },
+    { path: "/offer", priority: 0.2 },
   ];
 
   return [
@@ -22,12 +24,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: page.priority,
     })),
     ...getCategories().map((category) => ({
-      url: `${site.url}/catalog?category=${category.slug}`,
+      url: `${site.url}/catalog/${category.slug}`,
       changeFrequency: "weekly" as const,
       priority: 0.7,
     })),
     ...getProducts().map((product) => ({
-      url: `${site.url}/catalog/${product.slug}`,
+      url: `${site.url}/product/${product.slug}`,
       changeFrequency: "weekly" as const,
       priority: 0.6,
     })),

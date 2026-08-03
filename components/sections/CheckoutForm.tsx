@@ -1,35 +1,27 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useEffect, useState } from "react";
+import {
+  useActionState,
+  useEffect,
+  useState,
+  useTransition,
+} from "react";
 
 import { Button, ButtonLink } from "@/components/ui/Button";
-import { submitOrder, type OrderState } from "@/lib/actions";
+import { OrderInvoice } from "@/components/ui/OrderInvoice";
+import {
+  estimateShipping,
+  submitOrder,
+  type OrderState,
+} from "@/lib/actions";
+import { GOALS, track } from "@/lib/analytics";
+import type { ShippingQuote } from "@/lib/cdek";
 import { useCart } from "@/lib/cart";
 import { formatPrice, plural } from "@/lib/format";
-import { COURIER_PRICE, FREE_SHIPPING_FROM, site } from "@/lib/site";
+import { deliveryOptions, FREE_SHIPPING_FROM } from "@/lib/delivery";
+import { site } from "@/lib/site";
 import type { Product } from "@/lib/types";
-
-const DELIVERY_OPTIONS = [
-  {
-    id: "pickup",
-    title: "Самовывоз",
-    hint: site.addressShort,
-    price: 0,
-  },
-  {
-    id: "courier",
-    title: "Курьер по Москве",
-    hint: "В день заказа при оформлении до 15:00",
-    price: COURIER_PRICE,
-  },
-  {
-    id: "cdek",
-    title: "СДЭК по России",
-    hint: "2–7 дней, с проверкой при получении",
-    price: 390,
-  },
-] as const;
 
 const fieldClass =
   "h-12 w-full rounded-xl border border-line bg-surface px-4 text-[16px] text-ink sm:text-[15px] " +
@@ -77,6 +69,17 @@ export function CheckoutForm({ products }: { products: Product[] }) {
     { status: "idle" },
   );
   const [delivery, setDelivery] = useState<string>("pickup");
+  const [city, setCity] = useState("");
+  /**
+   * Живой расчёт СДЭК вместе с тем набором, для которого он получен.
+   * Сбрасывать его при смене города через setState в эффекте нельзя —
+   * это лишний каскад перерисовок. Вместо сброса сверяем ключ: не сошёлся,
+   * значит ответ уже не про текущий выбор, и показываем фиксированный тариф.
+   */
+  const [live, setLive] = useState<{ key: string; quote: ShippingQuote } | null>(
+    null,
+  );
+  const [pending, startEstimate] = useTransition();
 
   const items = lines
     .map((line) => ({
@@ -93,15 +96,48 @@ export function CheckoutForm({ products }: { products: Product[] }) {
   );
   const count = items.reduce((sum, item) => sum + item.qty, 0);
   const deliveryOption =
-    DELIVERY_OPTIONS.find((option) => option.id === delivery) ??
-    DELIVERY_OPTIONS[0];
-  const shipping =
+    deliveryOptions.find((option) => option.id === delivery) ??
+    deliveryOptions[0];
+  const flatShipping =
     subtotal >= FREE_SHIPPING_FROM || subtotal === 0 ? 0 : deliveryOption.price;
+
+  const itemsField = items
+    .map((item) => `${item.product.sku}×${item.qty}`)
+    .join(", ");
+
+  const quoteKey = `${delivery}|${city.trim().toLowerCase()}|${itemsField}`;
+  const askCdek =
+    delivery === "cdek" && city.trim().length >= 2 && flatShipping > 0;
+  const fresh =
+    live?.key === quoteKey && live.quote.source === "cdek" ? live.quote : null;
+  const shipping = fresh ? fresh.price : flatShipping;
+
+  // Спрашиваем СДЭК, когда покупатель дописал город. Полсекунды тишины —
+  // чтобы не дёргать сервер на каждой букве.
+  useEffect(() => {
+    if (!askCdek) return;
+
+    const timer = setTimeout(() => {
+      startEstimate(async () => {
+        const quote = await estimateShipping(itemsField, delivery, city);
+        setLive({ key: `${delivery}|${city.trim().toLowerCase()}|${itemsField}`, quote });
+      });
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [askCdek, city, delivery, itemsField]);
 
   // Заказ принят — корзину очищаем, чтобы возврат на сайт был с чистого листа.
   useEffect(() => {
-    if (state.status === "success") clear();
-  }, [state.status, clear]);
+    if (state.status !== "success") return;
+    clear();
+    track(GOALS.orderDone, { order: state.orderId, total: state.invoice.total });
+  }, [state, clear]);
+
+  // Оформление открыто с непустой корзиной — считаем это шагом воронки.
+  useEffect(() => {
+    if (ready && items.length > 0) track(GOALS.checkoutOpen);
+  }, [ready, items.length]);
 
   const errors = state.status === "error" ? state.errors : {};
 
@@ -132,14 +168,21 @@ export function CheckoutForm({ products }: { products: Product[] }) {
           и согласует доставку.
         </p>
         <p className="mx-auto mt-4 max-w-lg text-[13px] leading-relaxed text-faint">
-          Это демонстрационная версия сайта: заявка нигде не сохраняется, деньги
-          не списываются.
+          Оплата на сайте пока не подключена — рассчитаетесь при получении
+          или по счёту.
         </p>
 
         <div className="mt-9 flex flex-wrap justify-center gap-3">
           <ButtonLink href="/catalog" arrow>
             Вернуться в каталог
           </ButtonLink>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => window.print()}
+          >
+            Распечатать накладную
+          </Button>
           <a
             href={`tel:${site.phoneHref}`}
             className="num inline-flex h-11 items-center rounded-full border border-line-strong px-6 text-sm font-medium transition-colors duration-300 hover:border-ink/60"
@@ -147,6 +190,8 @@ export function CheckoutForm({ products }: { products: Product[] }) {
             {site.phone}
           </a>
         </div>
+
+        <OrderInvoice invoice={state.invoice} />
       </div>
     );
   }
@@ -174,13 +219,7 @@ export function CheckoutForm({ products }: { products: Product[] }) {
       className="mt-12 grid gap-10 lg:grid-cols-[1fr_380px] lg:gap-14"
     >
       <input type="hidden" name="itemsCount" value={count} />
-      <input
-        type="hidden"
-        name="items"
-        value={items
-          .map((item) => `${item.product.sku}×${item.qty}`)
-          .join(", ")}
-      />
+      <input type="hidden" name="items" value={itemsField} />
 
       <div className="space-y-10">
         <fieldset>
@@ -223,7 +262,7 @@ export function CheckoutForm({ products }: { products: Product[] }) {
         <fieldset>
           <legend className="eyebrow mb-6">Получение</legend>
           <div className="grid gap-3">
-            {DELIVERY_OPTIONS.map((option) => (
+            {deliveryOptions.map((option) => (
               <label
                 key={option.id}
                 className={`flex cursor-pointer items-start gap-4 rounded-xl border p-5 transition-[border-color,background-color] duration-300 ease-out-soft ${
@@ -274,12 +313,23 @@ export function CheckoutForm({ products }: { products: Product[] }) {
           </div>
 
           {delivery !== "pickup" ? (
-            <div className="mt-5">
+            <div className="mt-5 grid gap-5 sm:grid-cols-2">
+              {/* Город отдельным полем: по нему СДЭК считает тариф.
+                  Из общей строки адреса его пришлось бы угадывать. */}
               <Field
-                label="Адрес доставки"
+                label="Город"
+                name="city"
+                autoComplete="address-level2"
+                placeholder="Казань"
+                value={city}
+                onChange={(event) => setCity(event.target.value)}
+                error={errors.city}
+              />
+              <Field
+                label="Улица, дом, квартира"
                 name="address"
                 autoComplete="street-address"
-                placeholder="Город, улица, дом, квартира"
+                placeholder="Тверская, 1, кв. 2"
                 error={errors.address}
               />
             </div>
@@ -295,7 +345,7 @@ export function CheckoutForm({ products }: { products: Product[] }) {
             id="comment"
             name="comment"
             rows={4}
-            placeholder="Что важно учесть: объём двигателя, удобное время звонка, адрес пункта выдачи"
+            placeholder="Удобное время звонка, адрес пункта выдачи, пожелания к упаковке"
             className="w-full resize-y rounded-xl border border-line bg-surface p-4 text-[16px] leading-relaxed text-ink sm:text-[15px] transition-colors duration-300 outline-none placeholder:text-faint focus:border-line-strong"
           />
         </fieldset>
@@ -334,9 +384,21 @@ export function CheckoutForm({ products }: { products: Product[] }) {
               <dd className="num">{formatPrice(subtotal)}</dd>
             </div>
             <div className="flex items-baseline justify-between gap-4">
-              <dt className="text-muted">{deliveryOption.title}</dt>
+              <dt className="text-muted">
+                {deliveryOption.title}
+                {fresh && fresh.maxDays > 0 ? (
+                  <span className="block text-[12px] text-faint">
+                    {fresh.minDays === fresh.maxDays
+                      ? `${fresh.maxDays} дн.`
+                      : `${fresh.minDays}–${fresh.maxDays} дн.`}{" "}
+                    по расчёту СДЭК
+                  </span>
+                ) : null}
+              </dt>
               <dd className="num">
-                {shipping === 0 ? (
+                {pending ? (
+                  <span className="text-faint">считаем…</span>
+                ) : shipping === 0 ? (
                   <span className="text-accent">бесплатно</span>
                 ) : (
                   formatPrice(shipping)
@@ -359,12 +421,19 @@ export function CheckoutForm({ products }: { products: Product[] }) {
               className="mt-0.5 size-5 shrink-0 accent-[var(--color-accent)] sm:size-4"
             />
             <span>
-              Согласен на обработку персональных данных и принимаю условия{" "}
+              Согласен на{" "}
               <Link
-                href="/delivery"
+                href="/privacy"
                 className="text-ink underline underline-offset-2 transition-opacity duration-300 hover:opacity-70"
               >
-                доставки и возврата
+                обработку персональных данных
+              </Link>{" "}
+              и принимаю{" "}
+              <Link
+                href="/offer"
+                className="text-ink underline underline-offset-2 transition-opacity duration-300 hover:opacity-70"
+              >
+                условия продажи
               </Link>
             </span>
           </label>

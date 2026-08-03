@@ -83,7 +83,7 @@ export function ModelCompare({
                         product.name
                       ) : (
                         <Link
-                          href={`/catalog/${product.slug}`}
+                          href={`/product/${product.slug}`}
                           className="transition-colors duration-300 hover:text-accent"
                         >
                           {product.name}

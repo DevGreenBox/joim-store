@@ -6,7 +6,7 @@ import { ButtonLink } from "@/components/ui/Button";
 import { ProductImage } from "@/components/ui/ProductImage";
 import { useCart } from "@/lib/cart";
 import { formatPrice, plural } from "@/lib/format";
-import { COURIER_PRICE, FREE_SHIPPING_FROM } from "@/lib/site";
+import { FREE_SHIPPING_FROM, getDeliveryOption } from "@/lib/delivery";
 import type { Product } from "@/lib/types";
 
 export function CartView({ products }: { products: Product[] }) {
@@ -26,7 +26,8 @@ export function CartView({ products }: { products: Product[] }) {
     0,
   );
   const count = items.reduce((sum, item) => sum + item.qty, 0);
-  const shipping = subtotal >= FREE_SHIPPING_FROM ? 0 : COURIER_PRICE;
+  const shipping =
+    subtotal >= FREE_SHIPPING_FROM ? 0 : getDeliveryOption("courier").price;
   const toFreeShipping = Math.max(0, FREE_SHIPPING_FROM - subtotal);
 
   if (!ready) {
@@ -81,7 +82,7 @@ export function CartView({ products }: { products: Product[] }) {
               </p>
               <h2 className="font-display mt-2 text-base leading-snug font-semibold tracking-[-0.01em]">
                 <Link
-                  href={`/catalog/${product.slug}`}
+                  href={`/product/${product.slug}`}
                   className="inline-flex min-h-11 items-center transition-colors duration-300 hover:text-accent lg:min-h-0"
                 >
                   {product.name}
