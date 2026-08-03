@@ -111,7 +111,7 @@ export function StoryScroll({ steps }: { steps: Step[] }) {
             ref={(node) => {
               stepsRef.current[index] = node;
             }}
-            className="lg:flex lg:min-h-[62vh] lg:flex-col lg:justify-center"
+            className="lg:flex lg:min-h-[46vh] lg:flex-col lg:justify-center"
           >
             {/* На мобильном кадр едет со своим шагом */}
             <div className="relative isolate mb-6 aspect-[4/3] overflow-hidden rounded-2xl border border-line bg-surface-2 lg:hidden">
