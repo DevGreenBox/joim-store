@@ -49,7 +49,7 @@ export function ProductBuy({
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <div className="flex h-13 items-center rounded-full border border-line-strong">
+      <div className="flex h-13 shrink-0 items-center rounded-full border border-line-strong">
         <button
           type="button"
           onClick={() => setQty((value) => Math.max(1, value - 1))}
@@ -84,7 +84,14 @@ export function ProductBuy({
         </button>
       </div>
 
-      <Button size="lg" onClick={handleAdd} className="min-w-[190px]">
+      {/* На телефоне кнопка добирает остаток строки: счётчик и кнопка
+          встают вровень с краями карточки. С sm ширина снова
+          фиксированная — тянуть кнопку через всю колонку незачем. */}
+      <Button
+        size="lg"
+        onClick={handleAdd}
+        className="flex-1 sm:flex-none sm:min-w-[190px]"
+      >
         {added ? "Добавлено" : "В корзину"}
       </Button>
 
@@ -93,26 +100,38 @@ export function ProductBuy({
         {added ? `В корзине ${qty} шт.` : ""}
       </p>
 
-      {/* Пока ссылка не проявилась — она inert: невидимое, но фокусируемое
-          звено ломает обход с клавиатуры. Прозрачность анимируется как была. */}
-      <Link
-        href="/cart"
-        inert={!added}
-        className="inline-flex min-h-11 items-center gap-2 text-[13px] text-accent transition-opacity duration-500 lg:min-h-0"
-        style={{ opacity: added ? 1 : 0 }}
+      {/* На телефоне ссылка занимала пустую полосу в 44 px под кнопкой,
+          пока её не о чем было показывать: строка складывается по высоте
+          и разворачивается вместе с проявлением. С sm она снова обычное
+          звено строки — обёртки исчезают через `contents`.
+
+          Пока ссылка не проявилась — она inert: невидимое, но фокусируемое
+          звено ломает обход с клавиатуры. */}
+      <div
+        className="grid w-full transition-[grid-template-rows] duration-500 ease-out-expo sm:contents"
+        style={{ gridTemplateRows: added ? "1fr" : "0fr" }}
       >
-        Перейти в корзину
-        <svg viewBox="0 0 16 16" aria-hidden="true" className="size-3.5">
-          <path
-            d="M2 8h11M9 4l4 4-4 4"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </Link>
+        <div className="overflow-hidden sm:contents">
+          <Link
+            href="/cart"
+            inert={!added}
+            className="inline-flex min-h-11 items-center gap-2 text-[13px] text-accent transition-opacity duration-500 lg:min-h-0"
+            style={{ opacity: added ? 1 : 0 }}
+          >
+            Перейти в корзину
+            <svg viewBox="0 0 16 16" aria-hidden="true" className="size-3.5">
+              <path
+                d="M2 8h11M9 4l4 4-4 4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

@@ -9,6 +9,7 @@ import {
 } from "react";
 
 import { Button, ButtonLink } from "@/components/ui/Button";
+import { Checkbox } from "@/components/ui/Checkbox";
 import { OrderInvoice } from "@/components/ui/OrderInvoice";
 import {
   estimateShipping,
@@ -414,29 +415,22 @@ export function CheckoutForm({ products }: { products: Product[] }) {
             </p>
           </div>
 
-          <label className="mt-6 flex cursor-pointer items-start gap-3 text-[12px] leading-relaxed text-muted">
-            <input
-              type="checkbox"
-              name="consent"
-              className="mt-0.5 size-5 shrink-0 accent-[var(--color-accent)] sm:size-4"
-            />
-            <span>
-              Согласен на{" "}
-              <Link
-                href="/privacy"
-                className="text-ink underline underline-offset-2 transition-opacity duration-300 hover:opacity-70"
-              >
-                обработку персональных данных
-              </Link>{" "}
-              и принимаю{" "}
-              <Link
-                href="/offer"
-                className="text-ink underline underline-offset-2 transition-opacity duration-300 hover:opacity-70"
-              >
-                условия продажи
-              </Link>
-            </span>
-          </label>
+          <Checkbox name="consent" className="mt-6">
+            Согласен на{" "}
+            <Link
+              href="/privacy"
+              className="text-ink underline underline-offset-2 transition-opacity duration-300 hover:opacity-70"
+            >
+              обработку персональных данных
+            </Link>{" "}
+            и принимаю{" "}
+            <Link
+              href="/offer"
+              className="text-ink underline underline-offset-2 transition-opacity duration-300 hover:opacity-70"
+            >
+              условия продажи
+            </Link>
+          </Checkbox>
           {errors.consent ? (
             <p className="mt-2 text-[12px] text-danger">{errors.consent}</p>
           ) : null}

@@ -101,7 +101,10 @@ export function CartView({ products }: { products: Product[] }) {
               </button>
             </div>
 
-            <div className="flex items-center gap-6">
+            {/* На телефоне строка переносится под картинку: счётчик слева,
+                сумма справа, оба по краям карточки. Раньше пара стояла
+                слева одним комком, а справа оставалась пустота. */}
+            <div className="flex w-full items-center justify-between gap-6 sm:w-auto sm:justify-normal">
               <div className="flex h-10 items-center rounded-full border border-line">
                 <button
                   type="button"

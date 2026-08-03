@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useActionState, useEffect } from "react";
 
 import { Button } from "@/components/ui/Button";
+import { Checkbox } from "@/components/ui/Checkbox";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import lead from "@/content/pages/lead.json";
@@ -193,22 +194,15 @@ export function LeadForm() {
                   />
                 </div>
 
-                <label className="flex cursor-pointer items-start gap-3 text-[12px] leading-relaxed text-muted">
-                  <input
-                    type="checkbox"
-                    name="consent"
-                    className="mt-0.5 size-5 shrink-0 accent-[var(--color-accent)] sm:size-4"
-                  />
-                  <span>
-                    {lead.consent} —{" "}
-                    <Link
-                      href="/privacy"
-                      className="text-ink underline underline-offset-2 transition-opacity duration-300 hover:opacity-70"
-                    >
-                      условия
-                    </Link>
-                  </span>
-                </label>
+                <Checkbox name="consent">
+                  {lead.consent} —{" "}
+                  <Link
+                    href="/privacy"
+                    className="text-ink underline underline-offset-2 transition-opacity duration-300 hover:opacity-70"
+                  >
+                    условия
+                  </Link>
+                </Checkbox>
                 {errors.consent ? (
                   <p className="text-[12px] text-danger">{errors.consent}</p>
                 ) : null}
