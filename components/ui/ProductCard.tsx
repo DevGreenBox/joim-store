@@ -30,6 +30,7 @@ export function ProductCard({
           product={product}
           sizes={sizes}
           eager={eager}
+          hoverSwap
           className="size-full"
         />
 

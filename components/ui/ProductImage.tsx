@@ -25,6 +25,11 @@ type Props = {
    * а где это побочный эффект от первого ряда каталога.
    */
   preload?: boolean;
+  /**
+   * Переход на второй ракурс при наведении — для плиток каталога.
+   * В корзине и на странице отзывов картинка одна и меняться не должна.
+   */
+  hoverSwap?: boolean;
   className?: string;
 };
 
@@ -45,9 +50,23 @@ export function ProductImage({
   sizes,
   eager = false,
   preload = false,
+  hoverSwap = false,
   className = "",
 }: Props) {
   const photo = product.images[0];
+  const hover =
+    hoverSwap && product.hoverImage !== undefined
+      ? product.images[product.hoverImage]
+      : undefined;
+
+  // Оба слоя увеличиваются одинаково, а меняется только прозрачность:
+  // так наезд читается одним движением, а не двумя разными.
+  //
+  // В переходе именно `scale`, а не `transform`: Tailwind 4 задаёт масштаб
+  // отдельным свойством, и со списком `transform` наезд срабатывал скачком.
+  const zoom =
+    "object-contain p-[10%] transition-[opacity,scale] duration-700 ease-out-expo " +
+    "group-hover:scale-[1.06] group-active:scale-[1.04] group-active:duration-300";
   // Пока товары в одной категории делят иллюстрацию, разводим их светом:
   // положение и размер пятна выводим из slug — плитки перестают выглядеть
   // копиями друг друга, а разметка остаётся детерминированной.
@@ -73,18 +92,34 @@ export function ProductImage({
       />
 
       {photo ? (
-        <Image
-          src={photo.src}
-          alt={`${product.name} — ${photo.caption.toLowerCase()}`}
-          fill
-          sizes={sizes}
-          {...(preload
-            ? { preload: true }
-            : eager
-              ? { loading: "eager" as const }
-              : null)}
-          className="object-contain p-[10%] transition-transform duration-700 ease-out-expo group-hover:scale-[1.06] group-active:scale-[1.04] group-active:duration-300"
-        />
+        <>
+          <Image
+            src={photo.src}
+            alt={`${product.name} — ${photo.caption.toLowerCase()}`}
+            fill
+            sizes={sizes}
+            {...(preload
+              ? { preload: true }
+              : eager
+                ? { loading: "eager" as const }
+                : null)}
+            className={`${zoom} ${
+              hover ? "group-hover:opacity-0 group-active:opacity-0" : ""
+            }`}
+          />
+          {hover ? (
+            // Пустой alt: ракурс тот же товар, и второе описание подряд
+            // экранной читалке ничего не добавляет. Грузится лениво —
+            // на первый экран эти кадры не нужны.
+            <Image
+              src={hover.src}
+              alt=""
+              fill
+              sizes={sizes}
+              className={`${zoom} opacity-0 group-hover:opacity-100 group-active:opacity-100`}
+            />
+          ) : null}
+        </>
       ) : (
         <ProductArt
           art={artFor(product)}

@@ -143,6 +143,7 @@
         "caption": "Комплект целиком"
       }
     ],
+    "hoverImage": 1,
     "shipping": {
       "weight": 1100,
       "length": 25,
@@ -302,6 +303,7 @@
         "caption": "Порты зарядки"
       }
     ],
+    "hoverImage": 2,
     "shipping": {
       "weight": 800,
       "length": 22,
@@ -444,6 +446,7 @@
         "caption": "Циклонный фильтр"
       }
     ],
+    "hoverImage": 1,
     "shipping": {
       "weight": 700,
       "length": 30,
