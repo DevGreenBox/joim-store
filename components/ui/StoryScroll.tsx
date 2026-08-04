@@ -1,21 +1,25 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
-import { ScrollTrack } from "@/components/ui/ScrollTrack";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 
 /**
- * Закреплённый кадр, рядом с которым сменяется текст.
+ * Три шага в ряд и полоска под ними, которая наливается слева направо.
  *
- * На десктопе колонка с изображением стоит на месте, пока мимо проходят
- * шаги; активный шаг определяет наблюдатель по центру экрана, кадры
- * перекрываются по прозрачности. На мобильном закреплять нечего —
- * кадр едет вместе со своим шагом, а sticky не включается вовсе.
+ * Рамки стоят пустыми с самого начала — по ним сразу видно, что шагов
+ * три и сколько осталось. Содержимое проявляется по мере хода полоски:
+ * дошла до первой трети — появился первый кадр, и так далее.
  *
- * Индекс меняется одним состоянием на всю секцию: наблюдателей три,
- * перерисовка одна. При `prefers-reduced-motion` смена мгновенная —
- * переход задан временем, а его глобально обнуляет `globals.css`.
+ * На десктопе блок закрепляется, и полоска отмеряет ровно тот путь,
+ * который он висит на месте. На телефоне закреплять нечего: шаги идут
+ * столбиком, полоска переезжает наверх и показывает, сколько секции
+ * пройдено, а сами шаги видны сразу — ход полоски там не совпадает
+ * с их положением на экране, и шаг мог оказаться перед глазами пустым.
+ *
+ * Значение `--track` пишется прямо в узел, всё остальное считает CSS:
+ * во время скролла React не участвует.
  */
 
 type Step = {
@@ -25,147 +29,160 @@ type Step = {
   alt: string;
 };
 
-export function StoryScroll({ steps }: { steps: Step[] }) {
-  const [active, setActive] = useState(0);
-  const stepsRef = useRef<(HTMLLIElement | null)[]>([]);
+/** Доля хода полоски, на которой шаг начинает проявляться. */
+const ENTER = [0, 0.3, 0.6];
+
+export function StoryScroll({
+  steps,
+  title,
+  text,
+}: {
+  steps: Step[];
+  title: string;
+  text?: string;
+}) {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const pinRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const nodes = stepsRef.current.filter(Boolean) as HTMLLIElement[];
-    if (nodes.length === 0 || typeof IntersectionObserver === "undefined") {
+    const wrap = wrapRef.current;
+    const pin = pinRef.current;
+    if (!wrap || !pin) return;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      wrap.style.setProperty("--track", "1");
       return;
     }
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          const index = nodes.indexOf(entry.target as HTMLLIElement);
-          if (index >= 0) setActive(index);
-        }
-      },
-      // Узкая полоса по центру экрана: шаг становится активным, когда
-      // доезжает до середины, а не когда только показался снизу.
-      { rootMargin: "-45% 0px -45% 0px" },
-    );
+    let frame = 0;
 
-    for (const node of nodes) observer.observe(node);
-    return () => observer.disconnect();
+    function measure() {
+      frame = 0;
+      if (!wrap || !pin) return;
+
+      const rect = wrap.getBoundingClientRect();
+      const style = window.getComputedStyle(pin);
+      let value = 0;
+
+      if (style.position === "sticky") {
+        // Пока блок закреплён, его верх стоит на `top`, а обёртка едет.
+        // Отсчёт равен пройденной части этого пути — иначе полоска
+        // не успевала дойти до конца к моменту, когда блок отлипает.
+        const top = Number.parseFloat(style.top) || 0;
+        const usable = rect.height - pin.offsetHeight;
+        value = usable > 0 ? (top - rect.top) / usable : 0;
+      } else {
+        // Без закрепления считаем по проходу секции через экран.
+        const start = window.innerHeight * 0.8;
+        const end = window.innerHeight * 0.3;
+        value = (start - rect.top) / (start - end + rect.height);
+      }
+
+      wrap.style.setProperty(
+        "--track",
+        Math.min(1, Math.max(0, value)).toFixed(4),
+      );
+    }
+
+    function schedule() {
+      if (!frame) frame = requestAnimationFrame(measure);
+    }
+
+    schedule();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule, { passive: true });
+
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+    };
   }, [steps.length]);
 
   return (
-    <div className="mt-10 grid gap-10 lg:mt-16 lg:grid-cols-2 lg:gap-16">
-      {/* Закреплённый кадр — только с lg, на мобильном его нет в потоке */}
-      <div className="hidden lg:block">
-        <div className="sticky top-[calc(var(--header-h)+40px)]">
-          <div className="relative isolate aspect-square overflow-hidden rounded-2xl border border-line bg-surface-2">
-            <div
-              aria-hidden="true"
-              className="absolute inset-0 -z-10 grid-lines opacity-40"
-            />
-            <div
-              aria-hidden="true"
-              className="absolute inset-0 -z-10"
-              style={{
-                backgroundImage:
-                  "radial-gradient(56% 52% at 50% 46%, rgba(140,197,63,0.16), transparent 70%)",
-              }}
-            />
+    <div
+      ref={wrapRef}
+      style={{ "--track": 0 } as React.CSSProperties}
+      className="lg:h-[230vh]"
+    >
+      {/* Высота закреплённого блока минимальная, а не жёсткая: на низком
+          экране содержимое должно раздвинуть его, а не упереться в край. */}
+      <div
+        ref={pinRef}
+        className="flex flex-col lg:sticky lg:top-[calc(var(--header-h)+4vh)] lg:min-h-[84vh] lg:justify-center"
+      >
+        {/* Заголовок закреплён вместе с шагами: иначе он уезжал за экран
+            первым же движением и весь прокат шёл без подписи. */}
+        <SectionHeading title={title} text={text} className="order-1" />
 
-            {steps.map((step, index) => (
-              <Image
-                key={step.image}
-                src={step.image}
-                alt={step.alt}
-                fill
-                sizes="(max-width: 1023px) 0px, 45vw"
-                className="object-contain p-[12%] transition-opacity duration-700 ease-out-expo"
-                style={{ opacity: index === active ? 1 : 0 }}
-              />
-            ))}
-
-            <p className="readout absolute bottom-5 left-5 text-[12px] text-faint">
-              {String(active + 1).padStart(2, "0")} /{" "}
-              {String(steps.length).padStart(2, "0")}
-            </p>
+        {/* Полоска: на телефоне над шагами, на десктопе под ними */}
+        <div className="order-2 mt-10 mb-10 lg:order-3 lg:mt-12 lg:mb-0">
+          <div className="relative h-px w-full bg-line">
+            <span
+              aria-hidden="true"
+              className="absolute inset-y-0 left-0 w-full origin-left bg-accent"
+              style={{ transform: "scaleX(var(--track))" }}
+            />
+            {/* Головка: по ней видно, под каким шагом сейчас полоска */}
+            <span
+              aria-hidden="true"
+              className="absolute top-1/2 -ml-[3px] size-1.5 -translate-y-1/2 rounded-full bg-accent"
+              style={{ left: "calc(var(--track) * 100%)" }}
+            />
           </div>
         </div>
-      </div>
 
-      {/* Рельс с бегущей полосой: она тянется от первого шага к третьему
-          по мере прохождения секции. Значение `--track` пишет ScrollTrack
-          прямо в узел, всё остальное считает CSS — во время скролла
-          React не участвует. */}
-      <ScrollTrack as="ol" className="relative grid gap-10 pl-8 lg:gap-0 lg:pl-10">
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute top-1.5 bottom-1.5 left-[5px] w-px bg-line-strong"
-        />
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute top-1.5 bottom-1.5 left-[5px] w-px origin-top bg-accent"
-          style={{ transform: "scaleY(var(--track))" }}
-        />
-        {steps.map((step, index) => (
-          <li
-            key={step.title}
-            ref={(node) => {
-              stepsRef.current[index] = node;
-            }}
-            className="lg:flex lg:min-h-[46vh] lg:flex-col lg:justify-center"
-          >
-            {/* На мобильном кадр едет со своим шагом */}
-            <div className="relative isolate mb-6 aspect-[4/3] overflow-hidden rounded-2xl border border-line bg-surface-2 lg:hidden">
-              <div
-                aria-hidden="true"
-                className="absolute inset-0 -z-10 grid-lines opacity-40"
-              />
-              <Image
-                src={step.image}
-                alt={step.alt}
-                fill
-                sizes="(max-width: 1023px) 100vw, 0px"
-                className="object-contain p-[8%]"
-              />
-            </div>
-
-            <div className="relative">
-              {/* Отметка на рельсе: загорается, когда полоса дошла
-                  до её деления. Считает CSS, состояния тут нет. */}
-              <span
-                aria-hidden="true"
-                className="absolute top-[1px] -left-8 z-10 block size-[11px] rounded-full border border-line-strong bg-void lg:-left-10"
-              >
-                <span
-                  className="absolute inset-[2px] rounded-full bg-accent"
+        <ol className="order-3 grid gap-8 lg:order-2 lg:mt-14 lg:grid-cols-3 lg:gap-8">
+          {steps.map((step, index) => (
+            <li
+              key={step.title}
+              className="story-slide"
+              style={{ "--at": ENTER[index] ?? 0 } as React.CSSProperties}
+            >
+              <div className="relative isolate h-[clamp(190px,32vh,340px)] overflow-hidden rounded-2xl border border-line bg-surface-2">
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 -z-10 grid-lines opacity-40"
+                />
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 -z-10 transition-opacity duration-700"
                   style={{
-                    opacity: `clamp(0, calc((var(--track) - ${(
-                      index / steps.length
-                    ).toFixed(3)}) * 14), 1)`,
+                    opacity: "var(--in)",
+                    backgroundImage:
+                      "radial-gradient(58% 54% at 50% 46%, rgba(140,197,63,0.14), transparent 70%)",
                   }}
                 />
-              </span>
+                <Image
+                  src={step.image}
+                  alt={step.alt}
+                  fill
+                  sizes="(max-width: 1023px) 100vw, 30vw"
+                  className="object-contain p-[9%]"
+                  style={{ opacity: "var(--in)" }}
+                />
+              </div>
 
-              <p className="readout text-[11px] text-faint">
-                {String(index + 1).padStart(2, "0")}
-              </p>
-              <h3
-              className="font-display mt-3 text-[clamp(1.375rem,3vw,2rem)] leading-tight font-semibold tracking-[-0.02em] transition-colors duration-500"
-              style={{
-                color:
-                  index === active
-                    ? "var(--color-ink)"
-                    : "var(--color-faint)",
-              }}
-            >
-              {step.title}
-            </h3>
-              <p className="mt-4 max-w-md text-[15px] leading-relaxed text-muted">
-                {step.text}
-              </p>
-            </div>
-          </li>
-        ))}
-      </ScrollTrack>
+              <div
+                style={{
+                  opacity: "var(--in)",
+                  transform: "translateY(calc((1 - var(--in)) * 14px))",
+                }}
+              >
+                <p className="readout mt-6 text-[11px] text-faint">
+                  {String(index + 1).padStart(2, "0")}
+                </p>
+                <h3 className="font-display mt-2.5 text-[clamp(1.25rem,2.2vw,1.625rem)] leading-tight font-semibold tracking-[-0.02em]">
+                  {step.title}
+                </h3>
+                <p className="mt-3 max-w-md text-[14px] leading-relaxed text-muted">
+                  {step.text}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
     </div>
   );
 }
