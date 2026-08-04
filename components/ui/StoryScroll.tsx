@@ -123,6 +123,21 @@ export function StoryScroll({
               className="absolute inset-y-0 left-0 w-full origin-left bg-accent"
               style={{ transform: "scaleX(var(--track))" }}
             />
+            {/* Разделители на стыках шагов. Считаем от той же ширины
+                колонки, что и у сетки: колонка — (100% − 2 промежутка) / 3,
+                метка стоит по центру промежутка. Проценты от общей ширины
+                дали бы сдвиг — промежутки в них не учтены. */}
+            {[1, 2].map((n) => (
+              <span
+                key={n}
+                aria-hidden="true"
+                className="absolute top-1/2 hidden h-3 w-px -translate-x-1/2 -translate-y-1/2 bg-faint/60 lg:block"
+                style={{
+                  left: `calc((100% - 4rem) * ${n} / 3 + ${n * 2 - 1}rem)`,
+                }}
+              />
+            ))}
+
             {/* Головка: по ней видно, под каким шагом сейчас полоска */}
             <span
               aria-hidden="true"
