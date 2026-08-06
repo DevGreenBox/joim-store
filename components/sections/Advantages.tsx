@@ -5,7 +5,7 @@ import home from "@/content/pages/home.json";
 
 export function Advantages() {
   return (
-    <section className="border-y border-line bg-surface py-16 lg:py-32">
+    <section className="border-y border-line bg-surface py-16 lg:py-[75px]">
       <Container size="wide">
         <SectionHeading
           title={home.sections.advantages.title}

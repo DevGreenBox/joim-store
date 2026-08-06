@@ -19,7 +19,7 @@ export function ModelPicker() {
   if (products.length < 2) return null;
 
   return (
-    <section id="podbor" className="scroll-mt-24 py-16 lg:py-32">
+    <section id="podbor" className="scroll-mt-24 py-16 lg:py-[75px]">
       <Container size="wide">
         <SectionHeading
           title={home.sections.picker.title}

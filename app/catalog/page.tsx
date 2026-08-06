@@ -69,7 +69,7 @@ export default async function CatalogPage({
   const activeSort = query.sort ?? "popular";
 
   return (
-    <div className="pt-10 pb-16 lg:pt-16 lg:pb-32">
+    <div className="pt-10 pb-16 lg:pt-16 lg:pb-[75px]">
       <Container size="wide">
         <Breadcrumbs
           items={[
@@ -88,7 +88,7 @@ export default async function CatalogPage({
         </div>
       </Container>
 
-      <Container size="wide" className="mt-12 lg:mt-16">
+      <Container size="wide" className="mt-12 lg:mt-[150px]">
         <div className="grid gap-10 lg:grid-cols-[264px_1fr] lg:gap-14">
           <aside className="lg:sticky lg:top-[calc(var(--header-h)+24px)] lg:self-start">
             <FilterPanel total={products.length}>

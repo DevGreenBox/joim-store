@@ -10,7 +10,7 @@ export function FeaturedProducts() {
   const products = getFeatured(6);
 
   return (
-    <section className="py-16 lg:py-32">
+    <section className="py-16 lg:py-[75px]">
       <Container size="wide">
         <SectionHeading
           title={home.sections.featured.title}

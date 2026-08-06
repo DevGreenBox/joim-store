@@ -22,7 +22,7 @@ export function LegalPage({ doc }: { doc: Doc }) {
   const { requisites } = legal;
 
   return (
-    <div className="pt-12 pb-16 lg:pt-16 lg:pb-32">
+    <div className="pt-12 pb-16 lg:pt-16 lg:pb-[75px]">
       <Container size="narrow">
         <Breadcrumbs items={[{ label: doc.title }]} />
 

@@ -47,7 +47,7 @@ export function LeadForm() {
   const errors = state.status === "error" ? state.errors : {};
 
   return (
-    <section className="pb-16 lg:pb-32">
+    <section className="pb-16 lg:pt-[75px] lg:pb-[75px]">
       <Container size="wide">
         <Reveal className="relative isolate overflow-hidden rounded-3xl border border-line bg-surface px-6 py-14 lg:px-16 lg:py-20">
           <div

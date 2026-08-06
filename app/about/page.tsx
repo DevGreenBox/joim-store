@@ -30,7 +30,7 @@ export default function AboutPage() {
         </div>
       </Container>
 
-      <Container size="wide" className="mt-16 lg:mt-20">
+      <Container size="wide" className="mt-16 lg:mt-[150px]">
         <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line lg:grid-cols-4">
           {site.stats.map((stat, index) => (
             <Reveal key={stat.label} delay={index * 70} className="bg-surface p-6 lg:p-8">
@@ -58,7 +58,7 @@ export default function AboutPage() {
           Строками этой беды нет: каждая строка выравнивает свои две
           половины сама, а линейки держат последовательность. Нумерация
           читается как порядок, чем она и является. */}
-      <Container size="wide" className="mt-16 lg:mt-32">
+      <Container size="wide" className="mt-16 lg:mt-[150px]">
         <ol className="border-t border-line">
           {about.blocks.map((block, index) => (
             <Reveal
@@ -82,7 +82,7 @@ export default function AboutPage() {
         </ol>
       </Container>
 
-      <Container size="wide" className="mt-16 lg:mt-32">
+      <Container size="wide" className="lg:mb-[75px] mt-16 lg:mt-[150px]">
         <h2 className="eyebrow mb-6">Команда</h2>
         <ul className="divide-y divide-line border-y border-line">
           {about.team.map((member, index) => (

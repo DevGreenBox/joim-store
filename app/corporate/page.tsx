@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function CorporatePage() {
   return (
-    <div className="pt-10 pb-16 lg:pt-16 lg:pb-32">
+    <div className="pt-10 pb-16 lg:pt-16 lg:pb-[75px]">
       <Container size="wide">
         <Breadcrumbs items={[{ label: "Компаниям" }]} />
         <div className="mt-7 max-w-3xl">
@@ -29,7 +29,7 @@ export default function CorporatePage() {
         </div>
       </Container>
 
-      <Container size="wide" className="mt-16 lg:mt-20">
+      <Container size="wide" className="mt-16 lg:mt-[150px]">
         <ul className="grid gap-px overflow-hidden rounded-2xl border border-line bg-line md:grid-cols-2">
           {corporate.offers.map((offer, index) => (
             <Reveal
@@ -49,7 +49,7 @@ export default function CorporatePage() {
         </ul>
       </Container>
 
-      <Container size="wide" className="mt-20">
+      <Container size="wide" className="mt-16 lg:mt-[150px]">
         <h2 className="eyebrow mb-6">Условия</h2>
         <dl className="divide-y divide-line border-y border-line">
           {corporate.terms.map((term, index) => (
@@ -66,7 +66,7 @@ export default function CorporatePage() {
         </dl>
       </Container>
 
-      <Container size="wide" className="mt-20">
+      <Container size="wide" className="mt-16 lg:mt-[150px]">
         <Reveal className="rounded-2xl border border-line bg-surface p-6 lg:p-10">
           <h2 className="font-display text-xl font-semibold tracking-[-0.02em]">
             {corporate.cta.title}

@@ -12,14 +12,14 @@ export function Footer() {
   return (
     <footer
       id="site-footer"
-      className="relative mt-32 border-t border-line bg-surface"
+      className="relative border-t border-line bg-surface"
     >
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(to_right,transparent,var(--color-accent),transparent)] opacity-40"
       />
 
-      <Container size="wide" className="py-16 lg:py-20">
+      <Container size="wide" className="py-16 lg:pt-[75px] lg:pb-20">
         <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
           <div>
             <Logo />

@@ -9,7 +9,7 @@ import home from "@/content/pages/home.json";
  */
 export function Faq() {
   return (
-    <section className="py-16 lg:py-32">
+    <section className="py-16 lg:py-[75px]">
       <Container size="wide" className="grid gap-14 lg:grid-cols-[0.85fr_1.15fr]">
         <SectionHeading
           title={home.sections.faq.title}

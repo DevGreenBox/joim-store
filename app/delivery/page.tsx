@@ -29,7 +29,7 @@ export default function DeliveryPage() {
         </div>
       </Container>
 
-      <Container size="wide" className="mt-16 lg:mt-20">
+      <Container size="wide" className="mt-16 lg:mt-[150px]">
         <h2 className="eyebrow mb-6">Способы доставки</h2>
         <ul className="grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2">
           {delivery.delivery.map((item, index) => (
@@ -55,7 +55,7 @@ export default function DeliveryPage() {
         </ul>
       </Container>
 
-      <Container size="wide" className="mt-20">
+      <Container size="wide" className="mt-16 lg:mt-[150px]">
         <h2 className="eyebrow mb-6">Оплата</h2>
         <ul className="divide-y divide-line border-y border-line">
           {delivery.payment.map((item, index) => (
@@ -77,7 +77,7 @@ export default function DeliveryPage() {
         </ul>
       </Container>
 
-      <Container size="wide" className="mt-20">
+      <Container size="wide" className="mt-16 lg:mt-[150px] lg:mb-[75px]">
         <Reveal className="rounded-2xl border border-line bg-surface p-6 lg:p-10">
           <h2 className="font-display text-xl font-semibold tracking-[-0.02em]">
             {delivery.returns.title}
@@ -88,7 +88,7 @@ export default function DeliveryPage() {
         </Reveal>
       </Container>
 
-      <div className="mt-16 lg:mt-32">
+      <div className="mt-16 lg:mt-[75px]">
         <LeadForm />
       </div>
     </div>

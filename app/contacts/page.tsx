@@ -38,7 +38,7 @@ export default function ContactsPage() {
   ];
 
   return (
-    <div className="pt-10 pb-16 lg:pt-16 lg:pb-32">
+    <div className="pt-10 pb-16 lg:pt-16 lg:pb-[75px]">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

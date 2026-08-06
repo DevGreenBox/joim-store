@@ -14,7 +14,7 @@ export function CategoryGrid() {
   const total = getProducts().length;
 
   return (
-    <section className="py-16 lg:py-32">
+    <section className="py-16 lg:py-[75px]">
       <Container size="wide">
         <SectionHeading
           title={home.sections.categories.title}

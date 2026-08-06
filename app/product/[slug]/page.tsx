@@ -116,7 +116,7 @@ export default async function ProductPage({ params }: { params: Params }) {
   };
 
   return (
-    <div className="pt-10 pb-16 lg:pt-16 lg:pb-32">
+    <div className="pt-10 pb-16 lg:pt-16 lg:pb-[75px]">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -302,7 +302,7 @@ export default async function ProductPage({ params }: { params: Params }) {
       {/* Ролик идёт перед сценариями: он показывает то же самое движением,
           а плитки ниже разбирают увиденное по пунктам. */}
       {product.video ? (
-        <div className="mt-16 lg:mt-32">
+        <div className="mt-16 lg:mt-[150px]">
           <ProductVideo
             title={product.video.title}
             text={product.video.text}
@@ -312,7 +312,7 @@ export default async function ProductPage({ params }: { params: Params }) {
       ) : null}
 
       {product.spin ? (
-        <Container size="wide" className="mt-16 lg:mt-32">
+        <Container size="wide" className="mt-16 lg:mt-[150px]">
           <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
             <div>
               <h2 className="font-display text-[clamp(1.5rem,3.4vw,2.25rem)] leading-tight font-semibold tracking-[-0.02em]">
@@ -332,7 +332,7 @@ export default async function ProductPage({ params }: { params: Params }) {
         </Container>
       ) : null}
 
-      <div className="mt-16 lg:mt-32">
+      <div className="mt-16 lg:mt-[150px]">
         <ProductScenarios
           title={sections.scenarios.title}
           items={product.scenarios}
@@ -341,7 +341,7 @@ export default async function ProductPage({ params }: { params: Params }) {
       </div>
 
       {product.protections?.length || product.compatibility?.length ? (
-        <div className="mt-16 lg:mt-32">
+        <div className="mt-16 lg:mt-[150px]">
           <ProductProtection
             title={sections.protection.title}
             text={sections.protection.text}
@@ -353,7 +353,7 @@ export default async function ProductPage({ params }: { params: Params }) {
       ) : null}
 
       {showSavings ? (
-        <div className="mt-16 lg:mt-32">
+        <div className="mt-16 lg:mt-[150px]">
           <SavingsBand
             title={savings.title}
             note={savings.note}
@@ -365,7 +365,7 @@ export default async function ProductPage({ params }: { params: Params }) {
       ) : null}
 
       {reviews && reviews.items.length > 0 ? (
-        <Container size="wide" className="mt-16 lg:mt-32">
+        <Container size="wide" className="mt-16 lg:mt-[150px]">
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div>
               <h2 className="font-display text-[clamp(1.5rem,3.4vw,2.25rem)] leading-tight font-semibold tracking-[-0.02em]">
@@ -403,7 +403,7 @@ export default async function ProductPage({ params }: { params: Params }) {
       {/* Есть с чем сравнивать — сравниваем. Одна плитка «из этой же
           категории» в сетке на три колонки смотрелась сиротой и не отвечала
           на единственный вопрос покупателя: какую из двух брать. */}
-      <div className="mt-16 lg:mt-32">
+      <div className="mt-16 lg:mt-[150px]">
         <ProductFit
           title={sections.fits.title}
           whoLabel={sections.fits.whoLabel}
@@ -413,7 +413,7 @@ export default async function ProductPage({ params }: { params: Params }) {
       </div>
 
       {siblings.length > 1 ? (
-        <div className="mt-16 lg:mt-32">
+        <div className="mt-16 lg:mt-[150px]">
           <ModelCompare
             products={siblings}
             currentSlug={product.slug}
@@ -421,7 +421,7 @@ export default async function ProductPage({ params }: { params: Params }) {
           />
         </div>
       ) : others.length > 0 ? (
-        <Container size="wide" className="mt-16 lg:mt-32">
+        <Container size="wide" className="mt-16 lg:mt-[150px]">
           <div className="flex flex-wrap items-end justify-between gap-6">
             <h2 className="font-display text-[clamp(1.5rem,3.4vw,2.25rem)] leading-tight font-semibold tracking-[-0.02em]">
               Смотрите также

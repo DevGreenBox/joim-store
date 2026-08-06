@@ -92,7 +92,7 @@ export default async function CategoryPage({ params }: { params: Params }) {
   const showPicker = products.length > 1;
 
   return (
-    <div className="pt-10 pb-16 lg:pt-16 lg:pb-32">
+    <div className="pt-10 pb-16 lg:pt-16 lg:pb-[75px]">
       <Container size="wide">
         <Breadcrumbs
           items={[
@@ -111,11 +111,11 @@ export default async function CategoryPage({ params }: { params: Params }) {
         </div>
       </Container>
 
-      <Container size="wide" className="mt-12 lg:mt-16">
+      <Container size="wide" className="mt-12 lg:mt-[150px]">
         <ProductHighlights items={stats(products)} columns={4} />
       </Container>
 
-      <Container size="wide" className="mt-16 lg:mt-24">
+      <Container size="wide" className="mt-16 lg:mt-[150px]">
         <div className="flex flex-wrap items-end justify-between gap-6 border-b border-line pb-5">
           <h2 className="font-display text-[clamp(1.5rem,3.4vw,2.25rem)] leading-tight font-semibold tracking-[-0.02em]">
             {content.gridTitle}
@@ -146,7 +146,7 @@ export default async function CategoryPage({ params }: { params: Params }) {
       </Container>
 
       {showPicker ? (
-        <Container size="wide" className="mt-16 lg:mt-24">
+        <Container size="wide" className="mt-16 lg:mt-[150px]">
           <Reveal className="flex flex-col gap-8 rounded-2xl border border-line bg-surface p-6 md:flex-row md:items-center md:justify-between lg:p-12">
             <div className="max-w-xl">
               <h2 className="font-display text-[clamp(1.375rem,2.8vw,1.875rem)] leading-tight font-semibold tracking-[-0.02em] text-balance">
@@ -163,7 +163,7 @@ export default async function CategoryPage({ params }: { params: Params }) {
         </Container>
       ) : null}
 
-      <Container size="wide" className="mt-14">
+      <Container size="wide" className="mt-14 lg:mt-[150px]">
         <ButtonLink href="/catalog" variant="outline" arrow>
           {content.allLabel}
         </ButtonLink>

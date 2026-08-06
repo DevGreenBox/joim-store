@@ -43,7 +43,7 @@ export function Hero() {
   const cards = product ? [product.highlights[0], product.highlights[2]] : [];
 
   return (
-    <section className="relative isolate overflow-hidden">
+    <section className="relative isolate overflow-hidden lg:pb-[75px]">
       {/* Слои фона. Всё на CSS: ни одной картинки и ни одного запроса. */}
       <div
         aria-hidden="true"

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function CheckoutPage() {
   return (
-    <div className="pt-10 pb-16 lg:pt-16 lg:pb-32">
+    <div className="pt-10 pb-16 lg:pt-16 lg:pb-[75px]">
       <Container size="wide">
         <Breadcrumbs
           items={[{ label: "Корзина", href: "/cart" }, { label: "Оформление" }]}

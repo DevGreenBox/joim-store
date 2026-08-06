@@ -31,7 +31,7 @@ export default function WarrantyPage() {
         </div>
       </Container>
 
-      <Container size="wide" className="mt-16 lg:mt-20">
+      <Container size="wide" className="mt-16 lg:mt-[150px]">
         <ul className="grid gap-px overflow-hidden rounded-2xl border border-line bg-line md:grid-cols-2">
           {warranty.blocks.map((block, index) => (
             <Reveal
@@ -51,7 +51,7 @@ export default function WarrantyPage() {
         </ul>
       </Container>
 
-      <Container size="wide" className="mt-16 lg:mt-32">
+      <Container size="wide" className="mt-16 lg:mt-[150px]">
         <h2 className="eyebrow mb-10">Как проходит обращение</h2>
         <ol className="relative grid gap-12 md:grid-cols-2 lg:grid-cols-4 lg:gap-8">
           <span
@@ -83,7 +83,7 @@ export default function WarrantyPage() {
         </ol>
       </Container>
 
-      <Container size="wide" className="mt-24">
+      <Container size="wide" className="mt-16 lg:mt-[150px] lg:mb-[75px]">
         <Reveal className="rounded-2xl border border-line bg-surface p-6 lg:p-10">
           <h2 className="font-display text-xl font-semibold tracking-[-0.02em]">
             {warranty.returns.title}
@@ -107,7 +107,7 @@ export default function WarrantyPage() {
         </Reveal>
       </Container>
 
-      <div className="mt-16 lg:mt-32">
+      <div className="mt-16 lg:mt-[75px]">
         <LeadForm />
       </div>
     </div>

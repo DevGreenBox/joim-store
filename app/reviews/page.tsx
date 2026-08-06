@@ -39,7 +39,7 @@ export default function ReviewsPage() {
         </div>
       </Container>
 
-      <Container size="wide" className="mt-14">
+      <Container size="wide" className="mt-14 lg:mt-[150px]">
         <dl className="grid grid-cols-3 gap-px overflow-hidden rounded-2xl border border-line bg-line">
           <Reveal className="bg-surface p-6 lg:p-8">
             <dt className="num font-display text-[clamp(1.75rem,3.4vw,2.5rem)] leading-none font-semibold tracking-[-0.03em]">
@@ -77,7 +77,7 @@ export default function ReviewsPage() {
           <Container
             key={product.slug}
             size="wide"
-            className="mt-14 lg:mt-28"
+            className="mt-14 lg:mt-[150px]"
             id={product.slug}
           >
             <div className="flex flex-wrap items-center gap-6 border-b border-line pb-8">
@@ -152,7 +152,7 @@ export default function ReviewsPage() {
         );
       })}
 
-      <div className="mt-16 lg:mt-32">
+      <div className="mt-16 lg:mt-[75px]">
         <LeadForm />
       </div>
     </div>

@@ -11,7 +11,7 @@ import home from "@/content/pages/home.json";
  */
 export function HowItWorks() {
   return (
-    <section className="border-y border-line bg-surface py-16 lg:py-24">
+    <section className="border-y border-line bg-surface py-16 lg:py-[75px]">
       <Container size="wide">
         <StoryScroll
           steps={home.story}
