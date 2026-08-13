@@ -53,10 +53,10 @@ export function CategoryGrid() {
                 className={`group relative isolate grid h-full overflow-hidden rounded-2xl border border-line ${tone[index % tone.length]} transition-shadow duration-500 ease-out-soft hover:shadow-[0_18px_44px_rgba(29,33,31,0.12)] sm:grid-cols-[1fr_42%]`}
               >
                 {/* Знак подложкой, как в кадрах товара: развёрнут, крупный
-                    и подрезан плашкой. Размер задан шириной с квадратной
-                    пропорцией — плашка низкая и широкая, и от её высоты знак
-                    вышел бы вчетверо мельче, чем в плитке каталога. */}
-                <StarMark className="pointer-events-none absolute -right-[9%] -bottom-[36%] -z-10 aspect-square w-[58%] rotate-[-14deg] text-ink/[0.055]" />
+                    и подрезан плашкой. Размер задан высотой — знак берёт
+                    её целиком и выходит за оба края, поэтому в кадре видны
+                    дуги плеч, а не знак целиком. */}
+                <StarMark className="pointer-events-none absolute -top-[19%] -right-[7%] -z-10 aspect-square h-[138%] rotate-[-14deg] text-ink/[0.055]" />
 
                 <div className="flex flex-col p-6 lg:p-9">
                   <p className="eyebrow">{category.tagline}</p>
