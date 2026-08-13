@@ -59,12 +59,12 @@ export function Hero() {
           fill
           preload
           sizes="100vw"
-          className="object-cover object-[62%_42%]"
+          className="object-cover object-[66%_46%]"
         />
         {/* Диагональная завеса рассчитана на широкий экран: слева плотно
             под текст, справа открыто под предмет. На телефоне колонка одна
             и текст идёт поверх кадра, поэтому там завеса вертикальная. */}
-        <div className="absolute inset-0 hidden bg-[linear-gradient(100deg,var(--color-void)_0%,rgba(17,19,19,0.96)_24%,rgba(17,19,19,0.76)_42%,rgba(17,19,19,0.42)_56%,rgba(17,19,19,0.3)_72%,rgba(17,19,19,0.55)_100%)] lg:block" />
+        <div className="absolute inset-0 hidden bg-[linear-gradient(100deg,var(--color-void)_0%,rgba(17,19,19,0.96)_24%,rgba(17,19,19,0.82)_40%,rgba(17,19,19,0.5)_49%,rgba(17,19,19,0.16)_62%,rgba(17,19,19,0.2)_78%,rgba(17,19,19,0.5)_100%)] lg:block" />
         <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(17,19,19,0.94)_0%,rgba(17,19,19,0.86)_38%,rgba(17,19,19,0.5)_62%,rgba(17,19,19,0.72)_100%)] lg:hidden" />
         <div className="absolute inset-x-0 bottom-0 h-[22rem] bg-[linear-gradient(to_top,var(--color-void)_26%,rgba(17,19,19,0.55)_58%,transparent)]" />
         <div className="absolute inset-x-0 top-0 h-28 bg-[linear-gradient(to_bottom,rgba(17,19,19,0.8),transparent)]" />
@@ -72,11 +72,12 @@ export function Hero() {
         {/* Акцент на приборе. Затемняем всё, кроме пятна над ним:
             прибор остаётся в своей яркости, а окружение уходит вниз —
             так «ярче» получается без осветления, от которого кадр
-            выцветает. Центр совпадает с местом, куда он посажен
-            кадрированием. */}
-        <div className="absolute inset-0 hidden bg-[radial-gradient(46%_52%_at_68%_46%,transparent_0%,rgba(17,19,19,0.18)_46%,rgba(17,19,19,0.5)_100%)] lg:block" />
-        {/* И совсем немного света сверху — блик, а не подсветка */}
-        <div className="absolute inset-0 hidden mix-blend-screen bg-[radial-gradient(30%_34%_at_68%_44%,rgba(255,255,255,0.1),transparent_70%)] lg:block" />
+            выцветает. Центр — 66% ширины и половина высоты: туда прибор
+            посажен кадрированием, ровно в просвет между заголовком
+            и карточками показаний. */}
+        <div className="absolute inset-0 hidden bg-[radial-gradient(40%_48%_at_66%_50%,transparent_0%,rgba(17,19,19,0.2)_44%,rgba(17,19,19,0.62)_100%)] lg:block" />
+        {/* И немного света сверху — блик по корпусу, а не подсветка */}
+        <div className="absolute inset-0 hidden mix-blend-screen bg-[radial-gradient(25%_29%_at_66%_48%,rgba(255,255,255,0.14),transparent_72%)] lg:block" />
       </div>
 
       {/* Фирменные линии поверх кадра — тише, чем на пустом фоне */}
