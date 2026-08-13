@@ -27,6 +27,10 @@ export type Category = {
   tagline: string;
   description: string;
   art: ArtKey;
+  /** Подпись кнопки на витрине категорий: «Смотреть модели», «Смотреть PVC-1». */
+  cta: string;
+  /** Кадр товара сбоку от текста на витрине категорий. */
+  cover: { src: string; alt: string };
 };
 
 /** Крупное показание в начале карточки: «3300 А», «более 20». */
