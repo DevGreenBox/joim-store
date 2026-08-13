@@ -14,7 +14,10 @@ export function CategoryGrid() {
   const total = getProducts().length;
 
   return (
-    <section className="py-16 lg:py-[75px]">
+    // Светлый блок в тёмной странице — чередование по просьбе заказчика.
+    // Категории для этого и выбраны: на их макете светлой была ровно
+    // эта плашка.
+    <section className="section-light py-16 lg:py-[75px]">
       <Container size="wide">
         <SectionHeading
           title={home.sections.categories.title}

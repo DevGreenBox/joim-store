@@ -127,8 +127,8 @@
     ],
     "images": [
       {
-        "src": "/images/products/joim-es29-1.webp",
-        "caption": "Корпус с двух сторон"
+        "src": "/images/products/joim-es29-front.webp",
+        "caption": "Устройство целиком"
       },
       {
         "src": "/images/products/joim-es29-2.webp",
@@ -291,8 +291,8 @@
     },
     "images": [
       {
-        "src": "/images/products/joim-es19-1.webp",
-        "caption": "Общий план"
+        "src": "/images/products/joim-es19-front.webp",
+        "caption": "Устройство целиком"
       },
       {
         "src": "/images/products/joim-es19-2.webp",
