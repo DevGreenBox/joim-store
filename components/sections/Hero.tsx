@@ -77,8 +77,6 @@ export function Hero() {
             экрана, а не за его край. Радиус взят с запасом, чтобы накрыть
             весь этот разброс. */}
         <div className="absolute inset-0 hidden bg-[radial-gradient(44%_50%_at_63%_48%,transparent_0%,rgba(17,19,19,0.2)_44%,rgba(17,19,19,0.62)_100%)] lg:block" />
-        {/* И немного света сверху — блик по корпусу, а не подсветка */}
-        <div className="absolute inset-0 hidden mix-blend-screen bg-[radial-gradient(30%_32%_at_63%_46%,rgba(255,255,255,0.14),transparent_72%)] lg:block" />
       </div>
 
       {/* Фирменные линии поверх кадра — тише, чем на пустом фоне */}
