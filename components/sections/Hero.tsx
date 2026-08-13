@@ -64,10 +64,19 @@ export function Hero() {
         {/* Диагональная завеса рассчитана на широкий экран: слева плотно
             под текст, справа открыто под предмет. На телефоне колонка одна
             и текст идёт поверх кадра, поэтому там завеса вертикальная. */}
-        <div className="absolute inset-0 hidden bg-[linear-gradient(100deg,var(--color-void)_0%,rgba(17,19,19,0.96)_24%,rgba(17,19,19,0.74)_40%,rgba(17,19,19,0.2)_60%,rgba(17,19,19,0.12)_84%,rgba(17,19,19,0.42)_100%)] lg:block" />
+        <div className="absolute inset-0 hidden bg-[linear-gradient(100deg,var(--color-void)_0%,rgba(17,19,19,0.96)_24%,rgba(17,19,19,0.76)_42%,rgba(17,19,19,0.42)_56%,rgba(17,19,19,0.3)_72%,rgba(17,19,19,0.55)_100%)] lg:block" />
         <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(17,19,19,0.94)_0%,rgba(17,19,19,0.86)_38%,rgba(17,19,19,0.5)_62%,rgba(17,19,19,0.72)_100%)] lg:hidden" />
         <div className="absolute inset-x-0 bottom-0 h-[22rem] bg-[linear-gradient(to_top,var(--color-void)_26%,rgba(17,19,19,0.55)_58%,transparent)]" />
         <div className="absolute inset-x-0 top-0 h-28 bg-[linear-gradient(to_bottom,rgba(17,19,19,0.8),transparent)]" />
+
+        {/* Акцент на приборе. Затемняем всё, кроме пятна над ним:
+            прибор остаётся в своей яркости, а окружение уходит вниз —
+            так «ярче» получается без осветления, от которого кадр
+            выцветает. Центр совпадает с местом, куда он посажен
+            кадрированием. */}
+        <div className="absolute inset-0 hidden bg-[radial-gradient(46%_52%_at_68%_46%,transparent_0%,rgba(17,19,19,0.18)_46%,rgba(17,19,19,0.5)_100%)] lg:block" />
+        {/* И совсем немного света сверху — блик, а не подсветка */}
+        <div className="absolute inset-0 hidden mix-blend-screen bg-[radial-gradient(30%_34%_at_68%_44%,rgba(255,255,255,0.1),transparent_70%)] lg:block" />
       </div>
 
       {/* Фирменные линии поверх кадра — тише, чем на пустом фоне */}
@@ -77,7 +86,7 @@ export function Hero() {
       />
 
       <Container size="wide" className="relative pt-10 pb-12 lg:pt-14 lg:pb-16">
-        <div className="grid gap-10 lg:min-h-[560px] lg:grid-cols-[1.05fr_1fr] lg:gap-8">
+        <div className="grid gap-10 lg:min-h-[560px] lg:grid-cols-[1fr_240px] lg:gap-8">
           <div className="flex flex-col justify-center">
             <p
               className="eyebrow inline-flex items-center gap-3 animate-rise"
@@ -151,15 +160,16 @@ export function Hero() {
           </div>
 
           {product ? (
-            <div className="relative flex flex-wrap items-end justify-start gap-4 lg:justify-end">
-              {/* Вырезанного товара здесь больше нет: устройство показано
-                  съёмкой на фоне, в работе. Остались только показания. */}
+            /* Показания стоят столбцом у правого края: прибор занимает
+               середину кадра, и в строку карточки ложились прямо на него.
+               Столбцом они встают рядом, а не поверх. */
+            <div className="relative flex flex-wrap items-end justify-start gap-4 lg:flex-col lg:flex-nowrap lg:items-end lg:justify-center">
               {cards.map((item, index) => {
                 const { count, tail } = split(item.value);
                 return (
                   <div
                     key={item.label}
-                    className="relative min-w-[150px] flex-1 rounded-2xl border border-white/12 bg-void/60 p-5 backdrop-blur-xl animate-fade lg:max-w-[220px] lg:flex-none lg:p-7"
+                    className="relative min-w-[150px] flex-1 rounded-2xl border border-white/12 bg-void/60 p-5 backdrop-blur-xl animate-fade lg:w-[212px] lg:flex-none lg:p-6"
                     style={{ animationDelay: `${520 + index * 90}ms` }}
                   >
                     <span
