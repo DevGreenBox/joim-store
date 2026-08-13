@@ -59,7 +59,7 @@ export function Hero() {
           fill
           preload
           sizes="100vw"
-          className="object-cover object-[66%_46%]"
+          className="object-cover object-[64%_50%] lg:object-[50%_50%]"
         />
         {/* Диагональная завеса рассчитана на широкий экран: слева плотно
             под текст, справа открыто под предмет. На телефоне колонка одна
@@ -72,12 +72,13 @@ export function Hero() {
         {/* Акцент на приборе. Затемняем всё, кроме пятна над ним:
             прибор остаётся в своей яркости, а окружение уходит вниз —
             так «ярче» получается без осветления, от которого кадр
-            выцветает. Центр — 66% ширины и половина высоты: туда прибор
-            посажен кадрированием, ровно в просвет между заголовком
-            и карточками показаний. */}
-        <div className="absolute inset-0 hidden bg-[radial-gradient(40%_48%_at_66%_50%,transparent_0%,rgba(17,19,19,0.2)_44%,rgba(17,19,19,0.62)_100%)] lg:block" />
+            выцветает. Центр — 63% ширины: прибор стоит на 65% при 1280,
+            на 63% при 1440 и на 60% при 1912 — кадр держится за середину
+            экрана, а не за его край. Радиус взят с запасом, чтобы накрыть
+            весь этот разброс. */}
+        <div className="absolute inset-0 hidden bg-[radial-gradient(44%_50%_at_63%_48%,transparent_0%,rgba(17,19,19,0.2)_44%,rgba(17,19,19,0.62)_100%)] lg:block" />
         {/* И немного света сверху — блик по корпусу, а не подсветка */}
-        <div className="absolute inset-0 hidden mix-blend-screen bg-[radial-gradient(25%_29%_at_66%_48%,rgba(255,255,255,0.14),transparent_72%)] lg:block" />
+        <div className="absolute inset-0 hidden mix-blend-screen bg-[radial-gradient(30%_32%_at_63%_46%,rgba(255,255,255,0.14),transparent_72%)] lg:block" />
       </div>
 
       {/* Фирменные линии поверх кадра — тише, чем на пустом фоне */}
