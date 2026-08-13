@@ -44,7 +44,7 @@ export function ProductScenarios({
             <div className="relative isolate aspect-[16/10] overflow-hidden bg-surface-2">
               <div
                 aria-hidden="true"
-                className="absolute inset-0 -z-10 grid-lines opacity-40"
+                className="absolute inset-0 -z-10 brand-lines opacity-40"
               />
               <div
                 aria-hidden="true"

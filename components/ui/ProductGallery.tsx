@@ -73,7 +73,7 @@ export function ProductGallery({
         />
         <div
           aria-hidden="true"
-          className="absolute inset-0 -z-10 grid-lines opacity-40"
+          className="absolute inset-0 -z-10 brand-lines opacity-40"
         />
 
         <div className="relative aspect-square w-full">

@@ -316,12 +316,25 @@ body {
   height: 1px;
 }
 
-/* Сетка тонких линий — «техническая» подложка */
-@utility grid-lines {
+/* Фирменные линии — подложка блоков.
+
+   Была ортогональная сетка 88×88 нейтральным белым: к бренду отношения
+   не имела и читалась как «техническая» разлиновка из любого шаблона.
+   Заказчик просит линии в форме сторон звезды — плечи знака стоят
+   с наклоном около девяти градусов, отсюда угол и перпендикуляр к нему.
+   Цвет фирменный, но на 5%: линии должны угадываться, а не считаться. */
+@utility brand-lines {
   background-image:
-    linear-gradient(to right, #ffffff08 1px, transparent 1px),
-    linear-gradient(to bottom, #ffffff08 1px, transparent 1px);
-  background-size: 88px 88px;
+    repeating-linear-gradient(
+      9deg,
+      rgba(153, 196, 83, 0.05) 0 1px,
+      transparent 1px 88px
+    ),
+    repeating-linear-gradient(
+      99deg,
+      rgba(153, 196, 83, 0.05) 0 1px,
+      transparent 1px 88px
+    );
 }
 
 @utility mask-fade-y {

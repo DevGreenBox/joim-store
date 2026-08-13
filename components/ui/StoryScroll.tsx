@@ -157,7 +157,7 @@ export function StoryScroll({
               <div className="relative isolate h-[clamp(190px,32vh,340px)] overflow-hidden rounded-2xl border border-line bg-surface-2">
                 <div
                   aria-hidden="true"
-                  className="absolute inset-0 -z-10 grid-lines opacity-40"
+                  className="absolute inset-0 -z-10 brand-lines opacity-40"
                 />
                 <div
                   aria-hidden="true"

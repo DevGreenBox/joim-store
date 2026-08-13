@@ -64,8 +64,12 @@ export function ProductImage({
   //
   // В переходе именно `scale`, а не `transform`: Tailwind 4 задаёт масштаб
   // отдельным свойством, и со списком `transform` наезд срабатывал скачком.
+  // drop-shadow берёт силуэт из альфы, поэтому тень повторяет корпус,
+  // а не рамку кадра. Две ступени: близкая держит контур, дальняя
+  // отрывает предмет от плашки.
   const zoom =
     "object-contain p-[10%] transition-[opacity,scale] duration-700 ease-out-expo " +
+    "[filter:drop-shadow(0_18px_28px_rgba(0,0,0,0.55))_drop-shadow(0_2px_4px_rgba(0,0,0,0.4))] " +
     "group-hover:scale-[1.06] group-active:scale-[1.04] group-active:duration-300";
   // Пока товары в одной категории делят иллюстрацию, разводим их светом:
   // положение и размер пятна выводим из slug — плитки перестают выглядеть
@@ -88,7 +92,15 @@ export function ProductImage({
       />
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10 grid-lines opacity-40"
+        className="absolute inset-0 -z-10 brand-lines opacity-40"
+      />
+
+      {/* Контактная тень: предмет вырезан по контуру и без неё висит
+          в воздухе. Эллипс у нижней трети — там, где он касался бы
+          поверхности. */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-[14%] bottom-[9%] -z-10 h-[12%] rounded-[50%] bg-[radial-gradient(closest-side,rgba(0,0,0,0.62),transparent)] blur-[6px]"
       />
 
       {photo ? (

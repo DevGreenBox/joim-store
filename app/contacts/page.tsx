@@ -103,7 +103,7 @@ export default function ContactsPage() {
           <Reveal className="relative isolate min-h-[420px] overflow-hidden rounded-3xl border border-line bg-surface">
             <div
               aria-hidden="true"
-              className="absolute inset-0 -z-10 grid-lines opacity-70"
+              className="absolute inset-0 -z-10 brand-lines opacity-70"
             />
             <div
               aria-hidden="true"

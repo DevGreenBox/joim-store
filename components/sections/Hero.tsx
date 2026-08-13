@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { CountUp } from "@/components/ui/CountUp";
+import { StarMark } from "@/components/ui/StarMark";
 import home from "@/content/pages/home.json";
 import { getProduct } from "@/lib/catalog";
 import { formatPrice, plural } from "@/lib/format";
@@ -47,7 +48,7 @@ export function Hero() {
       {/* Слои фона. Всё на CSS: ни одной картинки и ни одного запроса. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-20 grid-lines mask-fade-y opacity-60"
+        className="pointer-events-none absolute inset-0 -z-20 brand-lines mask-fade-y opacity-60"
       />
       <div
         aria-hidden="true"
@@ -65,8 +66,10 @@ export function Hero() {
               className="eyebrow inline-flex items-center gap-3 animate-rise"
               style={{ animationDelay: "60ms" }}
             >
+              {/* Знак вместо точки: первое, что видно на странице,
+                  и это фирменная звезда, а не абстрактный кружок. */}
               <span className="grid size-8 shrink-0 place-items-center rounded-full border border-accent/30">
-                <span className="block size-1.5 rounded-full bg-accent animate-sheen" />
+                <StarMark className="size-3.5 text-accent animate-sheen" />
               </span>
               {hero.eyebrow}
             </p>
