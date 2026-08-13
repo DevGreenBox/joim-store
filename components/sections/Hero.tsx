@@ -38,25 +38,42 @@ function split(value: string): { count: string; tail: string } {
 export function Hero() {
   const [titleTop, titleBottom] = hero.title.split("\n");
   const product = getProduct(hero.product);
-  const photo = product?.images[0];
   const summary = getReviewsSummary();
-  // Две карточки: ток и число запусков. Третья уже загораживает товар.
+  // Две карточки: ток и число запусков. Третья уже загораживает кадр.
   const cards = product ? [product.highlights[0], product.highlights[2]] : [];
 
   return (
     <section className="relative isolate overflow-hidden lg:pb-[75px]">
-      {/* Слои фона. Всё на CSS: ни одной картинки и ни одного запроса. */}
+      {/* Съёмка в подкапотном пространстве во всю ширину — вместо
+          вырезанного товара. Сюжет договаривает заголовок: «где сел
+          аккумулятор» — это моторный отсек, а не студия.
+
+          Поверх три завесы. Слева — плотная, под текст: без неё
+          заголовок ложится на светлый бачок и провода. Снизу — в цвет
+          страницы, чтобы полоса цифр стояла на сплошном. Сверху —
+          лёгкая, под шапку. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-20">
+        <Image
+          src="/images/hero/engine.webp"
+          alt=""
+          fill
+          preload
+          sizes="100vw"
+          className="object-cover object-[62%_42%]"
+        />
+        {/* Диагональная завеса рассчитана на широкий экран: слева плотно
+            под текст, справа открыто под предмет. На телефоне колонка одна
+            и текст идёт поверх кадра, поэтому там завеса вертикальная. */}
+        <div className="absolute inset-0 hidden bg-[linear-gradient(100deg,var(--color-void)_0%,rgba(17,19,19,0.96)_24%,rgba(17,19,19,0.74)_40%,rgba(17,19,19,0.2)_60%,rgba(17,19,19,0.12)_84%,rgba(17,19,19,0.42)_100%)] lg:block" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(17,19,19,0.94)_0%,rgba(17,19,19,0.86)_38%,rgba(17,19,19,0.5)_62%,rgba(17,19,19,0.72)_100%)] lg:hidden" />
+        <div className="absolute inset-x-0 bottom-0 h-[22rem] bg-[linear-gradient(to_top,var(--color-void)_26%,rgba(17,19,19,0.55)_58%,transparent)]" />
+        <div className="absolute inset-x-0 top-0 h-28 bg-[linear-gradient(to_bottom,rgba(17,19,19,0.8),transparent)]" />
+      </div>
+
+      {/* Фирменные линии поверх кадра — тише, чем на пустом фоне */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-20 brand-lines mask-fade-y opacity-60"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-1/3 left-[68%] -z-10 h-[900px] w-[1100px] -translate-x-1/2 animate-drift rounded-full bg-[radial-gradient(closest-side,rgba(140,197,63,0.18),rgba(140,197,63,0.05)_45%,transparent_72%)]"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-72 bg-[linear-gradient(to_top,var(--color-void),transparent)]"
+        className="pointer-events-none absolute inset-0 -z-10 brand-lines mask-fade-y opacity-35"
       />
 
       <Container size="wide" className="relative pt-10 pb-12 lg:pt-14 lg:pb-16">
@@ -133,41 +150,10 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Кадр в потоке — только на мобильном, где перекрытие не работает */}
-          {photo && product ? (
-            <div className="relative mx-auto aspect-[16/11] w-full max-w-[460px] animate-fade lg:hidden">
-              <Image
-                src={photo.src}
-                alt={`${product.name} — ${photo.caption.toLowerCase()}`}
-                fill
-                sizes="(min-width: 1024px) 0px, 88vw"
-                className="object-contain drop-shadow-[0_24px_60px_rgba(0,0,0,0.8)]"
-              />
-            </div>
-          ) : null}
-
           {product ? (
             <div className="relative flex flex-wrap items-end justify-start gap-4 lg:justify-end">
-              {/* Кадр держится правой колонки и чуть выходит за поле
-                  контейнера. Раньше он тянулся во всю высоту секции —
-                  вместе с полосой цифр это давало под тысячу пикселей,
-                  и товар подавлял всё остальное. */}
-              {photo ? (
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute top-1/2 right-[-2.5rem] -z-10 hidden h-[560px] w-[600px] -translate-y-1/2 lg:block"
-                >
-                  <Image
-                    src={photo.src}
-                    alt=""
-                    fill
-                    preload
-                    sizes="(min-width: 1024px) 600px, 0px"
-                    className="object-contain object-right drop-shadow-[0_40px_90px_rgba(0,0,0,0.85)]"
-                  />
-                </div>
-              ) : null}
-
+              {/* Вырезанного товара здесь больше нет: устройство показано
+                  съёмкой на фоне, в работе. Остались только показания. */}
               {cards.map((item, index) => {
                 const { count, tail } = split(item.value);
                 return (
