@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { Container } from "@/components/ui/Container";
+import { FrameBackdrop } from "@/components/ui/FrameBackdrop";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import type { Scenario } from "@/lib/types";
@@ -42,18 +43,7 @@ export function ProductScenarios({
             className="flex flex-col bg-surface"
           >
             <div className="relative isolate aspect-[16/10] overflow-hidden bg-surface-2">
-              <div
-                aria-hidden="true"
-                className="absolute inset-0 -z-10 brand-lines opacity-40"
-              />
-              <div
-                aria-hidden="true"
-                className="absolute inset-0 -z-10"
-                style={{
-                  backgroundImage:
-                    "radial-gradient(58% 54% at 50% 46%, rgba(140,197,63,0.14), transparent 70%)",
-                }}
-              />
+              <FrameBackdrop />
 
               {item.image ? (
                 <Image

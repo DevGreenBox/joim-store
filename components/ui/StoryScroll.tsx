@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 
+import { FrameBackdrop } from "@/components/ui/FrameBackdrop";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
 /**
@@ -155,19 +156,7 @@ export function StoryScroll({
               style={{ "--at": ENTER[index] ?? 0 } as React.CSSProperties}
             >
               <div className="relative isolate h-[clamp(190px,32vh,340px)] overflow-hidden rounded-2xl border border-line bg-surface-2">
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 -z-10 brand-lines opacity-40"
-                />
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 -z-10 transition-opacity duration-700"
-                  style={{
-                    opacity: "var(--in)",
-                    backgroundImage:
-                      "radial-gradient(58% 54% at 50% 46%, rgba(140,197,63,0.14), transparent 70%)",
-                  }}
-                />
+                <FrameBackdrop />
                 <Image
                   src={step.image}
                   alt={step.alt}

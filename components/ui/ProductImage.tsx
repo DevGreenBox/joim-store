@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import { FrameBackdrop } from "@/components/ui/FrameBackdrop";
 import { ProductArt } from "@/components/ui/ProductArt";
 import { artFor } from "@/lib/catalog";
 import type { Product } from "@/lib/types";
@@ -35,16 +36,9 @@ type Props = {
 
 /**
  * Изображение товара. Пока фотографий нет — рисуем векторную иллюстрацию
- * категории на «световом» фоне. Появятся файлы в `product.images` —
+ * категории на фирменной подложке. Появятся файлы в `product.images` —
  * автоматически подхватятся через next/image, без правок вёрстки.
  */
-/** Стабильное число из slug: одинаковое на сервере и в браузере. */
-function hash(value: string): number {
-  let sum = 0;
-  for (let i = 0; i < value.length; i += 1) sum = (sum * 31 + value.charCodeAt(i)) % 997;
-  return sum;
-}
-
 export function ProductImage({
   product,
   sizes,
@@ -71,29 +65,12 @@ export function ProductImage({
     "object-contain p-[10%] transition-[opacity,scale] duration-700 ease-out-expo " +
     "[filter:drop-shadow(0_18px_28px_rgba(0,0,0,0.55))_drop-shadow(0_2px_4px_rgba(0,0,0,0.4))] " +
     "group-hover:scale-[1.06] group-active:scale-[1.04] group-active:duration-300";
-  // Пока товары в одной категории делят иллюстрацию, разводим их светом:
-  // положение и размер пятна выводим из slug — плитки перестают выглядеть
-  // копиями друг друга, а разметка остаётся детерминированной.
-  const seed = hash(product.slug);
-  const glowX = 40 + (seed % 21);
-  const glowSize = 54 + (seed % 13);
 
   return (
     <div
       className={`relative isolate overflow-hidden bg-surface-2 ${className}`}
     >
-      {/* Световое пятно за товаром — даёт объём плоской картинке */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 -z-10"
-        style={{
-          backgroundImage: `radial-gradient(${glowSize}% 52% at ${glowX}% 42%, rgba(140,197,63,0.15), transparent 70%)`,
-        }}
-      />
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 -z-10 brand-lines opacity-40"
-      />
+      <FrameBackdrop />
 
       {/* Контактная тень: предмет вырезан по контуру и без неё висит
           в воздухе. Эллипс у нижней трети — там, где он касался бы

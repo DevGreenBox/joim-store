@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useRef, useState, type ReactNode } from "react";
 
+import { FrameBackdrop } from "@/components/ui/FrameBackdrop";
 import { ProductArt } from "@/components/ui/ProductArt";
 import { artFor } from "@/lib/catalog";
 import type { Product } from "@/lib/types";
@@ -66,15 +67,8 @@ export function ProductGallery({
           go(delta < 0 ? index + 1 : index - 1);
         }}
       >
-        {/* Подложка та же, что в плитках каталога: пятно света и сетка линий */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 -z-10 bg-[radial-gradient(58%_52%_at_46%_42%,rgba(140,197,63,0.15),transparent_70%)]"
-        />
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 -z-10 brand-lines opacity-40"
-        />
+        {/* Подложка та же, что в плитках каталога */}
+        <FrameBackdrop />
 
         <div className="relative aspect-square w-full">
           {images.length > 0 ? (
