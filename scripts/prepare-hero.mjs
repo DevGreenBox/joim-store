@@ -49,10 +49,14 @@ const OUT_H = 1043;
  */
 const HERO = [
   {
+    // Кадр взят целиком по высоте: на этом снимке прибор снят ближе,
+    // и любая подрезка делает его на первом экране великаном. Поле справа
+    // от этого широкое, поэтому оно зеркальное, как на втором кадре.
     src: "assets/scenes/hero-1-source.jpg",
     out: "public/images/hero/engine.webp",
-    crop: { left: 0, top: 102, width: 1680, height: 1012 },
-    pad: { left: 595, right: 73 },
+    crop: { left: 0, top: 0, width: 1680, height: 1122 },
+    pad: { left: 678, right: 159 },
+    mirrorRight: true,
   },
   {
     // Прибор здесь стоит вертикально и почти по середине кадра, поэтому
