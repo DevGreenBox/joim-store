@@ -31,6 +31,37 @@ function valueOf(product: Product, label: string): string {
   return product.specs.find((spec) => spec.label === label)?.value ?? "—";
 }
 
+/** Содержимое шапки столбца: одинаковое со ссылкой и без неё. */
+function head(product: Product, current: boolean) {
+  return (
+    <>
+      <span className="block size-16 overflow-hidden rounded-xl border border-line transition-colors duration-300 group-hover/model:border-accent/50">
+        <ProductImage product={product} sizes="64px" className="size-full" />
+      </span>
+
+      <span
+        className={`font-display mt-4 block text-base leading-snug font-semibold tracking-[-0.01em] transition-colors duration-300 ${
+          current ? "" : "group-hover/model:text-accent"
+        }`}
+      >
+        {product.name}
+      </span>
+
+      <span className="num mt-2 block text-[15px] font-medium">
+        {formatPrice(product.price)}
+      </span>
+
+      <span
+        className={`readout mt-3 block text-[11px] ${
+          current ? "text-accent" : "text-faint"
+        }`}
+      >
+        {current ? "вы смотрите эту" : "открыть карточку"}
+      </span>
+    </>
+  );
+}
+
 export function ModelCompare({
   products,
   currentSlug,
@@ -70,38 +101,20 @@ export function ModelCompare({
                       current ? "bg-surface-2" : "bg-surface"
                     }`}
                   >
-                    <span className="block size-16 overflow-hidden rounded-xl border border-line">
-                      <ProductImage
-                        product={product}
-                        sizes="64px"
-                        className="size-full"
-                      />
-                    </span>
-
-                    <span className="font-display mt-4 block text-base leading-snug font-semibold tracking-[-0.01em]">
-                      {current ? (
-                        product.name
-                      ) : (
-                        <Link
-                          href={`/product/${product.slug}`}
-                          className="transition-colors duration-300 hover:text-accent"
-                        >
-                          {product.name}
-                        </Link>
-                      )}
-                    </span>
-
-                    <span className="num mt-2 block text-[15px] font-medium">
-                      {formatPrice(product.price)}
-                    </span>
-
-                    <span
-                      className={`readout mt-3 block text-[11px] ${
-                        current ? "text-accent" : "text-faint"
-                      }`}
-                    >
-                      {current ? "вы смотрите эту" : "открыть карточку"}
-                    </span>
+                    {/* Ссылкой работает вся шапка столбца — кадр, имя, цена
+                        и подпись. Раньше нажималось только имя: в кадр и в цену
+                        человек целится первым делом, а они не отвечали.
+                        У открытой модели ссылки нет, вести некуда. */}
+                    {current ? (
+                      <span className="block">{head(product, current)}</span>
+                    ) : (
+                      <Link
+                        href={`/product/${product.slug}`}
+                        className="group/model block"
+                      >
+                        {head(product, current)}
+                      </Link>
+                    )}
                   </th>
                 );
               })}
