@@ -81,7 +81,9 @@ export function ProductGallery({
                 sizes="(min-width: 1024px) 640px, 92vw"
                 {...(i === 0 ? { preload: true } : null)}
                 aria-hidden={i === index ? undefined : true}
-                className="object-contain p-[9%] transition-[opacity,transform] duration-700 ease-out-expo"
+                className={`transition-[opacity,transform] duration-700 ease-out-expo ${
+                  image.cover ? "object-cover" : "object-contain p-[9%]"
+                }`}
                 style={{
                   opacity: i === index ? 1 : 0,
                   // Уходящий кадр чуть отступает вглубь — переход читается
@@ -136,7 +138,9 @@ export function ProductGallery({
                   alt=""
                   fill
                   sizes="140px"
-                  className="object-contain p-2.5 transition-transform duration-500 ease-out-expo group-hover/thumb:scale-105 group-active/thumb:scale-95"
+                  className={`transition-transform duration-500 ease-out-expo group-hover/thumb:scale-105 group-active/thumb:scale-95 ${
+                    image.cover ? "object-cover" : "object-contain p-2.5"
+                  }`}
                 />
               </span>
               {/* Подписи разной длины: одни в строку, другие в две. Полоса

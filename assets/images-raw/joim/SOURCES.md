@@ -26,6 +26,35 @@
 | `joim-pvc1-panel.png` | `…/10.02.26 (JOIM PVC-1)/ФОТОШОП/4Y8A2110в.jpg` |
 | `joim-pvc1-filter.png` | `…/10.02.26 (JOIM PVC-1)/ФОТОШОП/4Y8A2117.JPG` |
 | `joim-pvc1-kit.png` | `…/10.02.26 (JOIM PVC-1)/ФОТОШОП/4Y8A1941.JPG` |
+| `joim-pvc1-kit-flat.png` | `…/10.02.26 (JOIM PVC-1)/ФОТОШОП/4Y8A2174.JPG` |
+| `joim-pvc1-case.png` | `…/10.02.26 (JOIM PVC-1)/ФОТОШОП/4Y8A1904.JPG` |
+| `joim-pvc1-case-open.png` | `…/10.02.26 (JOIM PVC-1)/ФОТОШОП/4Y8A1948.JPG` |
+| `joim-pvc1-cyclone.png` | `…/10.02.26 (JOIM PVC-1)/ФОТОШОП/4Y8A2175.JPG` |
+| `joim-pvc1-brush.png` | `…/10.02.26 (JOIM PVC-1)/ФОТОШОП/4Y8A2179.JPG` |
+| `joim-pvc1-crevice.png` | `…/10.02.26 (JOIM PVC-1)/ФОТОШОП/4Y8A2180.JPG` |
+| `joim-pvc1-turbo.png` | `…/10.02.26 (JOIM PVC-1)/ФОТОШОП/4Y8A3968.JPG` |
+| `joim-pvc1-hose-set.png` | `…/10.02.26 (JOIM PVC-1)/ФОТОШОП/4Y8A2052.JPG` |
+| `joim-pvc1-with-crevice.png` | `…/10.02.26 (JOIM PVC-1)/ФОТОШОП/4Y8A2182.JPG` |
+| `joim-pvc1-with-turbo.png` | `…/10.02.26 (JOIM PVC-1)/ФОТОШОП/4Y8A4208.JPG` |
+
+Репортаж ES-19 — в `assets/images-raw/joim-life/`, без выреза фона:
+
+| Файл в проекте | Путь на Яндекс.Диске |
+| --- | --- |
+| `es19-battery.webp` | `…/18.12.24 (JOIM ES-19, ES-9)/Es-19/DSC09013.jpg` |
+| `es19-bay.webp` | `…/Es-19/DSC09027.jpg` |
+| `es19-closeup.webp` | `…/Es-19/DSC09031.jpg` |
+| `es19-trunk.webp` | `…/Es-19/DSC09271.jpg` |
+| `es19-powerbank.webp` | `…/Es-19/DSC09314.jpg` |
+| `es19-case.webp` | `…/Es-19/DSC09402.jpg` |
+| `es19-ports.webp` | `…/Es-19/DSC09416.jpg` |
+| `es19-clamp.webp` | `…/Es-19/DSC09490.jpg` |
+| `es19-wide.webp` | `…/Es-19/DSC09516.jpg` |
+| `es19-driver.webp` | `…/Es-19/DSC09528.jpg` |
+
+Три кадра «трёх шагов» (`public/images/story/`) заказчик прислал файлами,
+мастера рядом: `step-case-original.webp`, `step-clamps-original.webp`,
+`step-key-original.webp`.
 
 ## Видео
 
@@ -74,7 +103,12 @@ ES-29 и PVC-1 взяты оттуда и обработаны
 Оригиналы в `assets/video-raw/` в репозиторий не попадают: их отсекает
 правило `/assets/**/*.mp4` в `.gitignore`, качать заново — скриптом
 `prepare-videos.mjs`.
-- `…/10.02.26 (JOIM PVC-1)/ФОТОШОП/` — 62 снимка, взято 5.
+- `…/10.02.26 (JOIM PVC-1)/ФОТОШОП/` — 62 снимка, взято 15. Остальные —
+  те же предметы в соседних ракурсах: у каждой насадки по три-четыре
+  кадра, у корпуса — восемь.
+- `…/18.12.24 (JOIM ES-19, ES-9)/Es-19/` — 125 кадров репортажа: подкапотное
+  пространство, багажник, салон, руки. Взято 10. Это единственная живая
+  съёмка в материалах, всё остальное — студия и 3D.
 - `…/10.09.25 (JOIM ES-29)/ФОТОШОП/` — 33 снимка, взято 4.
   Остальные — те же предметы в других ракурсах.
 - `…/10.02.26 (JOIM PVC-1)/AI/` — 6 сгенерированных кадров. **Не берём:**

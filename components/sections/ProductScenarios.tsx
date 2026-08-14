@@ -51,7 +51,7 @@ export function ProductScenarios({
                   alt={`${productName} — ${item.title.toLowerCase()}`}
                   fill
                   sizes="(max-width: 640px) 100vw, 50vw"
-                  className="object-contain p-[9%]"
+                  className={item.cover ? "object-cover" : "object-contain p-[9%]"}
                 />
               ) : item.readout ? (
                 <p className="readout absolute inset-0 flex items-center justify-center text-[clamp(1.75rem,5vw,3rem)] leading-none font-medium tracking-[-0.03em] text-ink/70">

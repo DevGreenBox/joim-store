@@ -241,7 +241,8 @@
         "title": "Мороз",
         "readout": "3 300 А",
         "text": "Датчик температуры следит за батареей: на холоде литий отдаёт меньше. Бензин до 8 литров и дизель до 7 поднимаются с аккумулятора, севшего в ноль.",
-        "image": "/images/products/joim-es19-klemmy.webp"
+        "image": "/images/products/es19-clamp.webp",
+        "cover": true
       },
       {
         "title": "Не только машина",
@@ -258,7 +259,8 @@
         "title": "Повербанк в бардачке",
         "readout": "3 разъёма",
         "text": "Два USB и быстрая зарядка Type-C. В обычные дни это просто аккумулятор для телефона и наушников.",
-        "image": "/images/products/joim-es19-porty.webp"
+        "image": "/images/products/es19-powerbank.webp",
+        "cover": true
       }
     ],
     "compatibility": [
@@ -295,15 +297,25 @@
         "caption": "Устройство целиком"
       },
       {
+        "src": "/images/products/es19-battery.webp",
+        "caption": "В работе на аккумуляторе",
+        "cover": true
+      },
+      {
         "src": "/images/products/joim-es19-2.webp",
         "caption": "Фонарь в работе"
       },
       {
         "src": "/images/products/joim-es19-3.webp",
         "caption": "Порты зарядки"
+      },
+      {
+        "src": "/images/products/es19-case.webp",
+        "caption": "Кейс под капотом",
+        "cover": true
       }
     ],
-    "hoverImage": 2,
+    "hoverImage": 3,
     "shipping": {
       "weight": 800,
       "length": 22,
@@ -403,13 +415,13 @@
         "title": "Полная уборка салона",
         "readout": "40 минут",
         "text": "Хватает на пять сидений, коврики и багажник. Заряжается от Type-C за два с половиной часа.",
-        "image": "/images/products/joim-pvc1-body.webp"
+        "image": "/images/products/joim-pvc1-with-turbo.webp"
       },
       {
         "title": "Щели, под сиденьями, дефлекторы",
         "readout": "3 сопла",
         "text": "Гибкая насадка достаёт под сиденье, щётка снимает шерсть с обивки, узкое сопло идёт в стык между спинкой и подушкой.",
-        "image": "/images/products/joim-pvc1-hose.webp"
+        "image": "/images/products/joim-pvc1-with-crevice.webp"
       },
       {
         "title": "Обратный ход",
@@ -421,16 +433,18 @@
         "title": "Фильтры под кран",
         "readout": "0 ₽",
         "text": "Циклонная фильтрация, контейнер и фильтры промываются водой и ставятся обратно. Покупать сменные не нужно.",
-        "image": "/images/products/joim-pvc1-filter.webp"
+        "image": "/images/products/joim-pvc1-cyclone.webp"
       }
     ],
     "included": [
       "Пылесос PVC-1",
-      "Гибкая насадка",
+      "Гибкий шланг",
       "Щётка для обивки",
+      "Щелевая насадка со щёткой",
       "Три сопла",
-      "Кабель для зарядки Type-C",
-      "Чехол"
+      "Адаптер питания",
+      "Кабель Type-C",
+      "Кейс"
     ],
     "images": [
       {
@@ -438,19 +452,23 @@
         "caption": "Пылесос с гибким шлангом"
       },
       {
+        "src": "/images/products/joim-pvc1-kit-flat.webp",
+        "caption": "Что в комплекте"
+      },
+      {
+        "src": "/images/products/joim-pvc1-case-open.webp",
+        "caption": "Кейс изнутри"
+      },
+      {
+        "src": "/images/products/joim-pvc1-cyclone.webp",
+        "caption": "Контейнер и фильтр"
+      },
+      {
         "src": "/images/products/joim-pvc1-body.webp",
         "caption": "Корпус и контейнер"
-      },
-      {
-        "src": "/images/products/joim-pvc1-kit.webp",
-        "caption": "Кейс с насадками"
-      },
-      {
-        "src": "/images/products/joim-pvc1-filter.webp",
-        "caption": "Циклонный фильтр"
       }
     ],
-    "hoverImage": 2,
+    "hoverImage": 1,
     "shipping": {
       "weight": 700,
       "length": 30,
