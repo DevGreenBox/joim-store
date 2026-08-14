@@ -53,13 +53,25 @@ export function Hero() {
           страницы, чтобы полоса цифр стояла на сплошном. Сверху —
           лёгкая, под шапку. */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-20">
+        {/* Два кадра одной съёмки, по семь секунд на каждый. Нижний лежит
+            открытым, верхний уходит и возвращается по прозрачности —
+            вторую анимацию заводить не нужно. Прибор на обоих посажен
+            в одно место, поэтому меняется сюжет, а не композиция. */}
+        <Image
+          src="/images/hero/engine-2.webp"
+          alt=""
+          fill
+          loading="eager"
+          sizes="100vw"
+          className="object-cover object-[64%_50%] lg:object-[50%_50%]"
+        />
         <Image
           src="/images/hero/engine.webp"
           alt=""
           fill
           preload
           sizes="100vw"
-          className="object-cover object-[64%_50%] lg:object-[50%_50%]"
+          className="object-cover object-[64%_50%] animate-hero-swap lg:object-[50%_50%]"
         />
         {/* Диагональная завеса рассчитана на широкий экран: слева плотно
             под текст, справа открыто под предмет. На телефоне колонка одна

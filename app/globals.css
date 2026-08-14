@@ -66,6 +66,27 @@
   --animate-fade: fade 0.6s var(--ease-out-soft) both;
   --animate-sheen: sheen 6s var(--ease-in-out-soft) infinite;
   --animate-spin-slow: spin-slow 18s linear infinite;
+  --animate-hero-swap: hero-swap 14s var(--ease-in-out-soft) infinite;
+}
+
+/* Перелистывание фона первого экрана: два кадра, по семь секунд на каждый.
+   Анимирован только верхний — нижний лежит под ним и просто открывается,
+   когда верхний уходит. Так не нужно синхронизировать две анимации.
+
+   Прибор на обоих кадрах посажен в одно и то же место (см.
+   `scripts/prepare-hero.mjs`), поэтому меняется сюжет, а композиция стоит. */
+@keyframes hero-swap {
+  0%,
+  46% {
+    opacity: 1;
+  }
+  54%,
+  96% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 @keyframes marquee {

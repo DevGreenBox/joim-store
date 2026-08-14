@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useActionState, useEffect } from "react";
@@ -50,13 +51,29 @@ export function LeadForm() {
     <section className="pb-16 lg:pt-[75px] lg:pb-[75px]">
       <Container size="wide">
         <Reveal className="relative isolate overflow-hidden rounded-3xl border border-line bg-surface px-6 py-14 lg:px-16 lg:py-20">
+          {/* Кадр из съёмки подложкой. Предмет стоит в левой трети — там же,
+              где заголовок, — поэтому поверх идут две завесы: диагональная
+              под текст и полей, и общая. Кадр остаётся фактурой, а не
+              вторым сюжетом: контраст заголовка на нём 12:1, полей — 7:1. */}
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+            <Image
+              src="/images/hero/lead.webp"
+              alt=""
+              fill
+              sizes="(max-width: 1023px) 100vw, 1200px"
+              className="object-cover object-[42%_12%]"
+            />
+            <div className="absolute inset-0 hidden bg-[linear-gradient(102deg,rgba(29,33,31,0.93)_0%,rgba(29,33,31,0.88)_34%,rgba(29,33,31,0.8)_52%,rgba(29,33,31,0.92)_74%,rgba(29,33,31,0.96)_100%)] lg:block" />
+            <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(29,33,31,0.9),rgba(29,33,31,0.94))] lg:hidden" />
+          </div>
+
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 -top-1/2 -z-10 h-[560px] animate-drift bg-[radial-gradient(closest-side,rgba(140,197,63,0.14),transparent_70%)]"
+            className="pointer-events-none absolute inset-x-0 -top-1/2 -z-10 h-[560px] animate-drift bg-[radial-gradient(closest-side,rgba(140,197,63,0.1),transparent_70%)]"
           />
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 -z-10 brand-lines opacity-50"
+            className="pointer-events-none absolute inset-0 -z-10 brand-lines opacity-40"
           />
 
           {state.status === "success" ? (
