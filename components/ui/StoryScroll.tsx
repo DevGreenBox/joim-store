@@ -166,12 +166,15 @@ export function StoryScroll({
             >
               <div className="relative isolate h-[clamp(190px,32vh,340px)] overflow-hidden rounded-2xl border border-line bg-surface-2">
                 <FrameBackdrop />
+                {/* Кадры съёмочные, с фоном, а не вырезанные по контуру:
+                    заполняют рамку целиком. Пока шаг не проявился, под ними
+                    видна фирменная подложка. */}
                 <Image
                   src={step.image}
                   alt={step.alt}
                   fill
                   sizes="(max-width: 1023px) 100vw, 30vw"
-                  className="object-contain p-[9%]"
+                  className="object-cover"
                   style={{ opacity: "var(--in)" }}
                 />
               </div>
