@@ -1,3 +1,4 @@
+import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -39,6 +40,14 @@ export function Faq() {
               </details>
             </Reveal>
           ))}
+
+          {/* Половина вопросов упирается в гарантию и возврат — там условия
+              расписаны целиком, а не одним абзацем. */}
+          <Reveal as="li" className="pt-8">
+            <ButtonLink href={home.sections.faq.cta.href} variant="outline" arrow>
+              {home.sections.faq.cta.label}
+            </ButtonLink>
+          </Reveal>
         </ul>
       </Container>
     </section>

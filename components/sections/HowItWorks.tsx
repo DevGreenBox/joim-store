@@ -1,4 +1,6 @@
+import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
+import { Reveal } from "@/components/ui/Reveal";
 import { StoryScroll } from "@/components/ui/StoryScroll";
 import home from "@/content/pages/home.json";
 
@@ -18,6 +20,14 @@ export function HowItWorks() {
           title={home.sections.story.title}
           text={home.sections.story.text}
         />
+
+        {/* Шаги дочитаны — дальше человеку нужно выбрать модель. Подбор
+            стоит следующим блоком, кнопка ведёт прямо в него. */}
+        <Reveal className="mt-10 lg:mt-14">
+          <ButtonLink href={home.sections.story.cta.href} variant="outline" arrow>
+            {home.sections.story.cta.label}
+          </ButtonLink>
+        </Reveal>
       </Container>
     </section>
   );

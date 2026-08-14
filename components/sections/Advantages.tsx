@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -52,7 +53,10 @@ export function Advantages() {
               key={item.title}
               as="li"
               delay={index * 80}
-              className="group relative isolate overflow-hidden rounded-2xl border border-white/12 bg-void/82 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.45)] backdrop-blur-xl transition-colors duration-500 ease-out-soft hover:border-white/22 hover:bg-void/88 active:border-white/22 active:bg-void/88 lg:p-9"
+              // Размытие подложки только на десктопе и не `xl`: плашка стоит
+              // на 82% непрозрачности, и сильнее размывать нечего, а четыре
+              // больших размытых области на телефоне заметно роняют скролл.
+              className="group relative isolate overflow-hidden rounded-2xl border border-white/12 bg-void/82 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.45)] transition-colors duration-500 ease-out-soft hover:border-white/22 hover:bg-void/88 active:border-white/22 active:bg-void/88 lg:p-9 lg:backdrop-blur-md"
             >
               <span
                 aria-hidden="true"
@@ -94,6 +98,14 @@ export function Advantages() {
             </Reveal>
           ))}
         </ul>
+
+        {/* Четыре довода о компании — и выход на страницу, где о ней
+            рассказано целиком. С главной на неё иначе не попасть. */}
+        <Reveal className="mt-10 lg:mt-14">
+          <ButtonLink href={home.sections.advantages.cta.href} variant="outline" arrow>
+            {home.sections.advantages.cta.label}
+          </ButtonLink>
+        </Reveal>
       </Container>
     </section>
   );
