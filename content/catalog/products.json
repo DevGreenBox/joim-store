@@ -286,7 +286,8 @@
       "Кабель для зарядки Type-C"
     ],
     "spin": {
-      "video": "/video/es19-360.mp4",
+      "frames": "/images/spin/es19",
+      "count": 72,
       "poster": "/images/products/es19-360-poster.webp",
       "title": "Покрутите в руках",
       "text": "Заводской 3D-рендер: фонарь, рёбра корпуса, индикатор заряда и разъёмы с торца."

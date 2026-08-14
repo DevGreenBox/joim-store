@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { LeadForm } from "@/components/sections/LeadForm";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Container } from "@/components/ui/Container";
+import { PageMark } from "@/components/ui/PageMark";
 import { Reveal } from "@/components/ui/Reveal";
 import warranty from "@/content/pages/warranty.json";
 import { site } from "@/lib/site";
@@ -19,10 +20,12 @@ export default function WarrantyPage() {
 
   return (
     <div className="pt-12 lg:pt-16">
-      <Container size="wide">
+      <Container size="wide" className="relative">
         <Breadcrumbs items={[{ label: warranty.title }]} />
-        <div className="mt-7 max-w-3xl">
-        <span aria-hidden="true" className="accent-rule mb-6" />
+        <PageMark />
+
+        <div className="relative mt-7 max-w-3xl">
+          <span aria-hidden="true" className="accent-rule mb-6" />
           <h1 className="font-display text-[clamp(2rem,5vw,3.5rem)] leading-[1.03] font-semibold tracking-[-0.035em] text-balance">
             {warranty.title}
           </h1>

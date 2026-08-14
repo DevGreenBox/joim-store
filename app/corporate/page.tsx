@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
+import { PageMark } from "@/components/ui/PageMark";
 import { Reveal } from "@/components/ui/Reveal";
 import corporate from "@/content/pages/corporate.json";
 import { site } from "@/lib/site";
@@ -17,10 +18,12 @@ export const metadata: Metadata = {
 export default function CorporatePage() {
   return (
     <div className="pt-10 pb-16 lg:pt-16 lg:pb-[75px]">
-      <Container size="wide">
+      <Container size="wide" className="relative">
         <Breadcrumbs items={[{ label: "Компаниям" }]} />
-        <div className="mt-7 max-w-3xl">
-        <span aria-hidden="true" className="accent-rule mb-6" />
+        <PageMark />
+
+        <div className="relative mt-7 max-w-3xl">
+          <span aria-hidden="true" className="accent-rule mb-6" />
           <h1 className="font-display text-[clamp(2rem,5vw,3.5rem)] leading-[1.03] font-semibold tracking-[-0.035em] text-balance">
             {corporate.title}
           </h1>

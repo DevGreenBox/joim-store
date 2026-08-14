@@ -324,7 +324,11 @@ export default async function ProductPage({ params }: { params: Params }) {
             </div>
 
             <Spin360
-              video={product.spin.video}
+              frames={Array.from(
+                { length: product.spin.count },
+                (_, i) =>
+                  `${product.spin!.frames}/${String(i).padStart(2, "0")}.webp`,
+              )}
               poster={product.spin.poster}
               label={product.name}
             />

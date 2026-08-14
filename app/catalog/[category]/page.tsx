@@ -5,6 +5,7 @@ import { ProductHighlights } from "@/components/sections/ProductHighlights";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
+import { PageMark } from "@/components/ui/PageMark";
 import { ProductCard } from "@/components/ui/ProductCard";
 import { Reveal } from "@/components/ui/Reveal";
 import catalogContent from "@/content/pages/catalog.json";
@@ -93,7 +94,7 @@ export default async function CategoryPage({ params }: { params: Params }) {
 
   return (
     <div className="pt-10 pb-16 lg:pt-16 lg:pb-[75px]">
-      <Container size="wide">
+      <Container size="wide" className="relative">
         <Breadcrumbs
           items={[
             { label: "Каталог", href: "/catalog" },
@@ -101,8 +102,10 @@ export default async function CategoryPage({ params }: { params: Params }) {
           ]}
         />
 
-        <div className="mt-7 max-w-3xl">
-        <span aria-hidden="true" className="accent-rule mb-6" />
+        <PageMark />
+
+        <div className="relative mt-7 max-w-3xl">
+          <span aria-hidden="true" className="accent-rule mb-6" />
           <h1 className="font-display text-[clamp(2rem,5vw,3.25rem)] leading-[1.05] font-semibold tracking-[-0.03em] text-balance">
             {category.name}
           </h1>

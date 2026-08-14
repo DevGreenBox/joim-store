@@ -96,7 +96,12 @@ export type Product = {
   included: string[];
   /** 360°-облёт, если он есть в библиотеке заказчика. */
   spin?: {
-    video: string;
+    /**
+     * Папка с кадрами облёта и их число. Имена — `00.webp`, `01.webp`
+     * и так далее по порядку; собирает `scripts/prepare-360.mjs`.
+     */
+    frames: string;
+    count: number;
     poster: string;
     title: string;
     text: string;
