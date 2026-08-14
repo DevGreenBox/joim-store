@@ -64,7 +64,7 @@
   --animate-fade: fade 0.6s var(--ease-out-soft) both;
   --animate-sheen: sheen 6s var(--ease-in-out-soft) infinite;
   --animate-hero-swap: hero-swap 20s var(--ease-in-out-soft) infinite;
-  --animate-mark: mark 6s var(--ease-in-out-soft) infinite;
+  --animate-mark: mark 9s var(--ease-in-out-soft) infinite;
 }
 
 /* Пульс знака в шапке раздела: прозрачность и лёгкий масштаб. Оба
@@ -72,12 +72,12 @@
 @keyframes mark {
   0%,
   100% {
-    opacity: 0.55;
+    opacity: 0.78;
     transform: scale(1);
   }
   50% {
     opacity: 1;
-    transform: scale(1.05);
+    transform: scale(1.02);
   }
 }
 
