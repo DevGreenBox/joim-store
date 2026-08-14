@@ -27,6 +27,7 @@ export function LegalPage({ doc }: { doc: Doc }) {
         <Breadcrumbs items={[{ label: doc.title }]} />
 
         <div className="mt-7">
+          <span aria-hidden="true" className="accent-rule mb-6" />
           <h1 className="font-display text-[clamp(1.75rem,4.4vw,3rem)] leading-[1.05] font-semibold tracking-[-0.035em] text-balance">
             {doc.title}
           </h1>

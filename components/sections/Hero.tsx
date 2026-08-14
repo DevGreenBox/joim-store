@@ -117,8 +117,17 @@ export function Hero() {
               </span>
             </h1>
 
+            {/* Риска между заголовком и подзаголовком — та же, что открывает
+                каждый раздел сайта. Здесь она ещё и отбивает крупный набор
+                от мелкого: строки заголовка и лид иначе слипаются. */}
+            <span
+              aria-hidden="true"
+              className="accent-rule mt-8 animate-rise"
+              style={{ animationDelay: "300ms" }}
+            />
+
             <p
-              className="mt-8 max-w-md text-[15px] leading-relaxed text-muted animate-rise"
+              className="mt-6 max-w-md text-[15px] leading-relaxed text-muted animate-rise"
               style={{ animationDelay: "340ms" }}
             >
               {hero.lead}

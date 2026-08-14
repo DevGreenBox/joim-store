@@ -18,7 +18,8 @@ export default function CheckoutPage() {
         <Breadcrumbs
           items={[{ label: "Корзина", href: "/cart" }, { label: "Оформление" }]}
         />
-        <h1 className="font-display mt-7 text-[clamp(2rem,5vw,3.25rem)] leading-[1.05] font-semibold tracking-[-0.03em]">
+        <span aria-hidden="true" className="accent-rule mt-7 mb-6" />
+        <h1 className="font-display text-[clamp(2rem,5vw,3.25rem)] leading-[1.05] font-semibold tracking-[-0.03em]">
           Оформление заказа
         </h1>
         <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-muted">

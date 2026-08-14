@@ -434,6 +434,10 @@
     ],
     "images": [
       {
+        "src": "/images/products/joim-pvc1-hero.webp",
+        "caption": "Пылесос с гибким шлангом"
+      },
+      {
         "src": "/images/products/joim-pvc1-body.webp",
         "caption": "Корпус и контейнер"
       },
@@ -446,7 +450,7 @@
         "caption": "Циклонный фильтр"
       }
     ],
-    "hoverImage": 1,
+    "hoverImage": 2,
     "shipping": {
       "weight": 700,
       "length": 30,

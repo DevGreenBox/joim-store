@@ -79,6 +79,7 @@ export default async function CatalogPage({
         />
 
         <div className="mt-7 max-w-3xl">
+        <span aria-hidden="true" className="accent-rule mb-6" />
           <h1 className="font-display text-[clamp(2rem,5vw,3.25rem)] leading-[1.05] font-semibold tracking-[-0.03em] text-balance">
             {category ? category.name : catalogContent.all.title}
           </h1>

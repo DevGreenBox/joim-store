@@ -20,6 +20,7 @@ export default function CorporatePage() {
       <Container size="wide">
         <Breadcrumbs items={[{ label: "Компаниям" }]} />
         <div className="mt-7 max-w-3xl">
+        <span aria-hidden="true" className="accent-rule mb-6" />
           <h1 className="font-display text-[clamp(2rem,5vw,3.5rem)] leading-[1.03] font-semibold tracking-[-0.035em] text-balance">
             {corporate.title}
           </h1>
