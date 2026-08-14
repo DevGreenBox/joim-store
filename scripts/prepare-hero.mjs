@@ -79,6 +79,41 @@ const LEAD = {
   width: 1800,
 };
 
+/**
+ * Цветокоррекция — общая для первого экрана и анкеты.
+ *
+ * Исходники сняты ровно и плоско: гистограмма стоит в середине, чёрного
+ * нет, тени и света одного тона. На тёмной странице такой кадр читается
+ * серым пятном — заказчик про это и написал.
+ *
+ * Наклон больше единицы со смещением в минус растягивает диапазон:
+ * чёрное садится в чёрное, света остаются на месте. Коэффициенты разные
+ * по каналам — это раздельное тонирование: синий теряет в тенях меньше
+ * остальных, поэтому тень уходит в холод, а света остаются нейтральными.
+ * Ровно так выглядит референс: холодный подкапотный сумрак и тёплые
+ * зелёно-красные акценты на приборе.
+ *
+ * Насыщенность поднимается после тона и бьёт в основном по акцентам:
+ * в кадре, кроме зелёного корпуса и красной клеммы, насыщенного нет.
+ *
+ * `sharpen` здесь не про резкость, а про микроконтраст: большой радиус
+ * и слабая амплитуда добавляют объём, не рисуя каймы по контурам —
+ * то, чем «дешёвая обработка» выдаёт себя в первую очередь.
+ */
+const GRADE = {
+  slope: [1.42, 1.4, 1.32],
+  offset: [-40, -36, -26],
+  saturation: 1.26,
+  sharpen: { sigma: 1.6, m1: 0.35, m2: 0.9 },
+};
+
+function grade(pipeline) {
+  return pipeline
+    .linear(GRADE.slope, GRADE.offset)
+    .modulate({ saturation: GRADE.saturation })
+    .sharpen(GRADE.sharpen);
+}
+
 /** Насколько кадр уходит в тень по углам. */
 const VIGNETTE = 0.42;
 
@@ -128,14 +163,11 @@ async function hero(slide) {
     });
   }
 
-  // Общая обработка: цвет и контраст съёмки, одинаковые для обоих слоёв.
-  const base = await sharp({
-    create: { width: outW, height: OUT_H, channels: 3, background: VOID },
-  })
-    .composite(layers)
-    .modulate({ saturation: 1.28 })
-    .linear(1.1, -6)
-    .sharpen({ sigma: 0.9 })
+  const base = await grade(
+    sharp({ create: { width: outW, height: OUT_H, channels: 3, background: VOID } }).composite(
+      layers,
+    ),
+  )
     .toColourspace("srgb")
     .removeAlpha()
     .png()
@@ -152,15 +184,18 @@ async function hero(slide) {
 }
 
 async function lead() {
-  // Контраст поднят, а общая яркость опущена: под завесой плоский кадр
-  // превращался в серую кашу, в которой предмет не читался. Теперь тени
-  // глубже, блики на корпусе живые, а средний уровень остался низким —
-  // текст поверх ничего не теряет.
-  const info = await sharp(LEAD.src)
-    .resize(LEAD.width, null, { kernel: "lanczos3" })
-    .modulate({ saturation: 1.2, brightness: 0.86 })
-    .linear(1.42, -26)
-    .webp({ quality: 80 })
+  // Та же коррекция, что в первом экране, плюс виньетка: у анкеты кадр
+  // подложка, и края должны уходить в цвет плашки, а не обрываться.
+  const width = LEAD.width;
+  const height = Math.round((width * 2004) / 3000);
+
+  const base = await grade(sharp(LEAD.src).resize(width, null, { kernel: "lanczos3" }))
+    .png()
+    .toBuffer();
+
+  const info = await sharp(base)
+    .composite([{ input: await vignette(width, height), blend: "over" }])
+    .webp({ quality: 82 })
     .toFile(LEAD.out);
 
   console.log(`${LEAD.out}: ${info.width}×${info.height}, ${Math.round(info.size / 1024)} КБ`);

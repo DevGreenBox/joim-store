@@ -66,9 +66,9 @@ export function LeadForm() {
             {/* Завеса плотная там, где текст и поля, и отпускает кадр
                 внизу слева, где стоит предмет. Раньше она шла ровно
                 и глушила снимок целиком. */}
-            <div className="absolute inset-0 hidden bg-[linear-gradient(168deg,rgba(29,33,31,0.95)_0%,rgba(29,33,31,0.9)_34%,rgba(29,33,31,0.72)_58%,rgba(29,33,31,0.5)_82%,rgba(29,33,31,0.44)_100%)] lg:block" />
-            <div className="absolute inset-0 hidden bg-[linear-gradient(to_right,transparent_0%,transparent_38%,rgba(29,33,31,0.5)_62%,rgba(29,33,31,0.72)_100%)] lg:block" />
-            <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(29,33,31,0.9),rgba(29,33,31,0.94))] lg:hidden" />
+            <div className="absolute inset-0 hidden bg-[linear-gradient(168deg,rgba(17,19,19,0.96)_0%,rgba(17,19,19,0.9)_34%,rgba(17,19,19,0.62)_58%,rgba(17,19,19,0.4)_82%,rgba(17,19,19,0.34)_100%)] lg:block" />
+            <div className="absolute inset-0 hidden bg-[linear-gradient(to_right,transparent_0%,transparent_40%,rgba(17,19,19,0.45)_64%,rgba(17,19,19,0.7)_100%)] lg:block" />
+            <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(17,19,19,0.88),rgba(17,19,19,0.93))] lg:hidden" />
           </div>
 
           <div
