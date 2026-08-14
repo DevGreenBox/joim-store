@@ -11,12 +11,13 @@
  *    добавлены поля цветом страницы слева и справа: они уводят пропорцию
  *    за 2,2 и заодно сдвигают прибор от середины кадра вправо.
  *
- * 2. Поднимает яркость в пятне вокруг прибора — в самих пикселях.
- *    Белый слой `mix-blend-screen` поверх кадра не осветлял, а подмешивал
- *    белое: снимок в этом месте выцветал. Здесь осветляется сама
- *    фотография, а маска только решает, где именно.
+ * 2. Кладёт виньетку — ровное затемнение к краям кадра.
  *
- * 3. Гасит всё остальное: за пределами пятна кадр уходит вниз по яркости.
+ *    Раньше здесь было пятно яркости над прибором: сам он шёл вверх,
+ *    окружение вниз. На светлом фоне второго кадра граница пятна стала
+ *    видна овалом — то самое «свечение», которое заказчик просил убрать.
+ *    Виньетка центральная и без светлого ядра: прибор ничем не подсвечен,
+ *    к краям кадр просто уходит в тень, как в съёмке.
  *
  * Оба кадра первого экрана посажены так, чтобы прибор вставал на одно
  * и то же место: `середина экрана + 193 px`. При перелистывании сюжет
@@ -52,7 +53,6 @@ const HERO = [
     out: "public/images/hero/engine.webp",
     crop: { left: 0, top: 102, width: 1680, height: 1012 },
     pad: { left: 595, right: 73 },
-    spot: { x: 0.591, y: 0.475, rx: 0.145, ry: 0.33 },
   },
   {
     // Прибор здесь стоит вертикально и почти по середине кадра, поэтому
@@ -60,44 +60,45 @@ const HERO = [
     // его делать нельзя: на широком экране оно выходит из-под завесы
     // и читается полосой. Поэтому справа зеркало края кадра: в тёмном
     // размытии шва не видно.
-    src: "assets/scenes/hero-2-source.webp",
+    //
+    // Окно уже полного кадра: заказчик просил прибор крупнее. Исходник
+    // взят с диска в полном разрешении (3000 px против 1280 у присланного
+    // файла), поэтому подрезка не съедает качество.
+    src: "assets/scenes/hero-2-source.jpg",
     out: "public/images/hero/engine-2.webp",
-    crop: { left: 0, top: 5, width: 1280, height: 800 },
-    pad: { left: 433, right: 297 },
+    crop: { left: 0, top: 191, width: 3000, height: 1517 },
+    pad: { left: 200, right: 136 },
     mirrorRight: true,
-    spot: { x: 0.591, y: 0.5, rx: 0.11, ry: 0.35 },
   },
 ];
 
 /** Подложка анкеты: кадр целиком, только приглушённый. */
 const LEAD = {
-  src: "assets/scenes/lead-source.webp",
+  src: "assets/scenes/lead-source.jpg",
   out: "public/images/hero/lead.webp",
   width: 1800,
 };
 
-/** Насколько поднимаем яркость в пятне и насколько гасим за его пределами. */
-const LIT = 1.42;
-const DIM = 0.8;
+/** Насколько кадр уходит в тень по углам. */
+const VIGNETTE = 0.42;
 
 /**
- * Маска пятна: белое в центре, прозрачное по краю. Плато до 40% радиуса —
- * иначе прибор осветляется только по центру и корпус выглядит выпуклым.
+ * Виньетка: прозрачная середина, чёрные углы. Плато до половины радиуса —
+ * затемнение начинается там, где уже нет ни прибора, ни текста, и растёт
+ * плавно, чтобы границы не было видно.
  */
-function spotMask(spot, width, height) {
+function vignette(width, height) {
   const svg = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
     <defs>
-      <radialGradient id="s" cx="${spot.x}" cy="${spot.y}" r="0.5"
-        gradientTransform="translate(${spot.x} ${spot.y}) scale(${spot.rx * 2} ${spot.ry * 2}) translate(${-spot.x} ${-spot.y})">
-        <stop offset="0" stop-color="#fff"/>
-        <stop offset="0.4" stop-color="#fff"/>
-        <stop offset="1" stop-color="#000"/>
+      <radialGradient id="v" cx="0.5" cy="0.5" r="0.72">
+        <stop offset="0" stop-color="#000" stop-opacity="0"/>
+        <stop offset="0.5" stop-color="#000" stop-opacity="0"/>
+        <stop offset="1" stop-color="#000" stop-opacity="${VIGNETTE}"/>
       </radialGradient>
     </defs>
-    <rect width="100%" height="100%" fill="#000"/>
-    <rect width="100%" height="100%" fill="url(#s)"/>
+    <rect width="100%" height="100%" fill="url(#v)"/>
   </svg>`;
-  return sharp(Buffer.from(svg)).greyscale().toColourspace("b-w").toBuffer();
+  return sharp(Buffer.from(svg)).png().toBuffer();
 }
 
 async function hero(slide) {
@@ -140,15 +141,9 @@ async function hero(slide) {
     .png()
     .toBuffer();
 
-  const mask = await spotMask(slide.spot, outW, OUT_H);
-
-  // Тёмный слой — вся площадь. Светлый — только в пятне, через альфу.
-  const dim = await sharp(base).modulate({ brightness: DIM }).toBuffer();
-  const lit = await sharp(base).modulate({ brightness: LIT }).joinChannel(mask).toBuffer();
-
-  const info = await sharp(dim)
-    .composite([{ input: lit, blend: "over" }])
-    .webp({ quality: 74 })
+  const info = await sharp(base)
+    .composite([{ input: await vignette(outW, OUT_H), blend: "over" }])
+    .webp({ quality: 78 })
     .toFile(slide.out);
 
   console.log(
@@ -157,10 +152,15 @@ async function hero(slide) {
 }
 
 async function lead() {
+  // Контраст поднят, а общая яркость опущена: под завесой плоский кадр
+  // превращался в серую кашу, в которой предмет не читался. Теперь тени
+  // глубже, блики на корпусе живые, а средний уровень остался низким —
+  // текст поверх ничего не теряет.
   const info = await sharp(LEAD.src)
     .resize(LEAD.width, null, { kernel: "lanczos3" })
-    .modulate({ saturation: 1.15, brightness: 0.9 })
-    .webp({ quality: 76 })
+    .modulate({ saturation: 1.2, brightness: 0.86 })
+    .linear(1.42, -26)
+    .webp({ quality: 80 })
     .toFile(LEAD.out);
 
   console.log(`${LEAD.out}: ${info.width}×${info.height}, ${Math.round(info.size / 1024)} КБ`);

@@ -63,14 +63,14 @@ export function LeadForm() {
               sizes="(max-width: 1023px) 100vw, 1200px"
               className="object-cover object-[42%_12%]"
             />
-            <div className="absolute inset-0 hidden bg-[linear-gradient(102deg,rgba(29,33,31,0.93)_0%,rgba(29,33,31,0.88)_34%,rgba(29,33,31,0.8)_52%,rgba(29,33,31,0.92)_74%,rgba(29,33,31,0.96)_100%)] lg:block" />
+            {/* Завеса плотная там, где текст и поля, и отпускает кадр
+                внизу слева, где стоит предмет. Раньше она шла ровно
+                и глушила снимок целиком. */}
+            <div className="absolute inset-0 hidden bg-[linear-gradient(168deg,rgba(29,33,31,0.95)_0%,rgba(29,33,31,0.9)_34%,rgba(29,33,31,0.72)_58%,rgba(29,33,31,0.5)_82%,rgba(29,33,31,0.44)_100%)] lg:block" />
+            <div className="absolute inset-0 hidden bg-[linear-gradient(to_right,transparent_0%,transparent_38%,rgba(29,33,31,0.5)_62%,rgba(29,33,31,0.72)_100%)] lg:block" />
             <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(29,33,31,0.9),rgba(29,33,31,0.94))] lg:hidden" />
           </div>
 
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 -top-1/2 -z-10 h-[560px] animate-drift bg-[radial-gradient(closest-side,rgba(140,197,63,0.1),transparent_70%)]"
-          />
           <div
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 -z-10 brand-lines opacity-40"

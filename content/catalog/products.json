@@ -127,7 +127,7 @@
     ],
     "images": [
       {
-        "src": "/images/products/joim-es29-front.webp",
+        "src": "/images/products/joim-es29-card.webp",
         "caption": "Устройство целиком"
       },
       {
@@ -293,7 +293,7 @@
     },
     "images": [
       {
-        "src": "/images/products/joim-es19-front.webp",
+        "src": "/images/products/joim-es19-card.webp",
         "caption": "Устройство целиком"
       },
       {
@@ -448,8 +448,8 @@
     ],
     "images": [
       {
-        "src": "/images/products/joim-pvc1-tower.webp",
-        "caption": "Пылесос целиком"
+        "src": "/images/products/joim-pvc1-card.webp",
+        "caption": "Устройство целиком"
       },
       {
         "src": "/images/products/joim-pvc1-hero.webp",
