@@ -30,9 +30,20 @@ import { site } from "@/lib/site";
  * читал перед тем, как спросить, и разговор начинается не с нуля.
  */
 
+/**
+ * Поля обведены фирменным зелёным, а не общей серой линией: анкета —
+ * единственное место на странице, где от человека ждут действия, и рамка
+ * должна показывать, куда нажимать.
+ *
+ * Три ступени по прозрачности: покой 30%, наведение 55%, фокус — полный
+ * цвет с кольцом. Сплошной зелёный в покое на восьми рамках сразу
+ * превращает анкету в светофор; на трети он читается контуром, а не
+ * заливкой, и оставляет запас для фокуса.
+ */
 const fieldClass =
-  "h-12 w-full rounded-xl border border-line bg-void/40 px-4 text-[16px] text-ink sm:text-[15px] " +
-  "transition-colors duration-300 outline-none placeholder:text-faint focus:border-line-strong";
+  "h-12 w-full rounded-xl border border-accent/30 bg-void/40 px-4 text-[16px] text-ink sm:text-[15px] " +
+  "transition-colors duration-300 outline-none placeholder:text-faint hover:border-accent/55 " +
+  "focus:border-accent focus:ring-1 focus:ring-accent/40";
 
 export function LeadForm() {
   const pathname = usePathname();
@@ -50,7 +61,9 @@ export function LeadForm() {
   return (
     <section className="pb-16 lg:pt-[75px] lg:pb-[75px]">
       <Container size="wide">
-        <Reveal className="relative isolate overflow-hidden rounded-3xl border border-line bg-surface px-6 py-14 lg:px-16 lg:py-20">
+        {/* Контур плашки тем же зелёным, только вдвое тише полей: он обводит
+            весь блок, и на равной силе спорил бы с рамками внутри. */}
+        <Reveal className="relative isolate overflow-hidden rounded-3xl border border-accent/25 bg-surface px-6 py-14 lg:px-16 lg:py-20">
           {/* Кадр из съёмки подложкой. Предмет стоит в левой трети — там же,
               где заголовок, — поэтому поверх идут две завесы: диагональная
               под текст и полей, и общая. Кадр остаётся фактурой, а не
@@ -207,7 +220,7 @@ export function LeadForm() {
                     name="question"
                     rows={3}
                     placeholder={lead.fields.questionPlaceholder}
-                    className="w-full resize-y rounded-xl border border-line bg-void/40 p-4 text-[16px] leading-relaxed text-ink transition-colors duration-300 outline-none placeholder:text-faint focus:border-line-strong sm:text-[15px]"
+                    className="w-full resize-y rounded-xl border border-accent/30 bg-void/40 p-4 text-[16px] leading-relaxed text-ink transition-colors duration-300 outline-none placeholder:text-faint hover:border-accent/55 focus:border-accent focus:ring-1 focus:ring-accent/40 sm:text-[15px]"
                   />
                 </div>
 

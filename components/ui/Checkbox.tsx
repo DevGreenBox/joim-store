@@ -34,7 +34,7 @@ export function Checkbox({
 
       <span
         aria-hidden="true"
-        className="mt-px grid size-[22px] shrink-0 place-items-center rounded-full border border-line-strong transition-colors duration-300 [--tick:1] peer-hover:border-accent/50 peer-checked:border-accent peer-checked:bg-accent/10 peer-checked:[--tick:0] peer-focus-visible:ring-2 peer-focus-visible:ring-accent/50 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-surface sm:size-5"
+        className="mt-px grid size-[22px] shrink-0 place-items-center rounded-full border border-accent/30 transition-colors duration-300 [--tick:1] peer-hover:border-accent/50 peer-checked:border-accent peer-checked:bg-accent/10 peer-checked:[--tick:0] peer-focus-visible:ring-2 peer-focus-visible:ring-accent/50 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-surface sm:size-5"
       >
         <svg viewBox="0 0 24 24" className="size-[13px]">
           <path
