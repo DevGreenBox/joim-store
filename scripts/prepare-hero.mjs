@@ -72,12 +72,20 @@ const HERO = [
   },
 ];
 
-/** Подложка анкеты: кадр целиком, только приглушённый. */
-const LEAD = {
-  src: "assets/scenes/lead-source.jpg",
-  out: "public/images/hero/lead.webp",
-  width: 1800,
-};
+/**
+ * Подложки блоков: кадр целиком, та же коррекция и виньетка.
+ *
+ * Мастер преимуществ лежит в `joim-life`: это кадр из того же репортажа,
+ * что и сценарии карточки, отдельной копии в `scenes` он не требует.
+ */
+const PLATES = [
+  { src: "assets/scenes/lead-source.jpg", out: "public/images/hero/lead.webp", width: 1800 },
+  {
+    src: "assets/images-raw/joim-life/es19-driver.webp",
+    out: "public/images/hero/advantages.webp",
+    width: 2000,
+  },
+];
 
 /**
  * Цветокоррекция — общая для первого экрана и анкеты.
@@ -183,23 +191,22 @@ async function hero(slide) {
   );
 }
 
-async function lead() {
-  // Та же коррекция, что в первом экране, плюс виньетка: у анкеты кадр
-  // подложка, и края должны уходить в цвет плашки, а не обрываться.
-  const width = LEAD.width;
-  const height = Math.round((width * 2004) / 3000);
-
-  const base = await grade(sharp(LEAD.src).resize(width, null, { kernel: "lanczos3" }))
+async function plate(item) {
+  // Та же коррекция, что в первом экране, плюс виньетка: у подложек края
+  // должны уходить в цвет плашки, а не обрываться.
+  const base = await grade(sharp(item.src).resize(item.width, null, { kernel: "lanczos3" }))
     .png()
     .toBuffer();
 
-  const info = await sharp(base)
-    .composite([{ input: await vignette(width, height), blend: "over" }])
-    .webp({ quality: 82 })
-    .toFile(LEAD.out);
+  const { height } = await sharp(base).metadata();
 
-  console.log(`${LEAD.out}: ${info.width}×${info.height}, ${Math.round(info.size / 1024)} КБ`);
+  const info = await sharp(base)
+    .composite([{ input: await vignette(item.width, height), blend: "over" }])
+    .webp({ quality: 82 })
+    .toFile(item.out);
+
+  console.log(`${item.out}: ${info.width}×${info.height}, ${Math.round(info.size / 1024)} КБ`);
 }
 
 for (const slide of HERO) await hero(slide);
-await lead();
+for (const item of PLATES) await plate(item);

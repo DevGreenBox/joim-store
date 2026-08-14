@@ -68,9 +68,10 @@
       "title": "Своя поддержка",
       "text": "Отвечаем сами, без колл-центра подрядчика. Вопросы по эксплуатации разбираем и после окончания гарантии.",
       "image": {
-        "src": "/images/products/joim-es29-hands.webp",
-        "alt": "Разъём пускового устройства JOIM Easy Start ES-29 в руках"
-      }
+        "src": "/images/products/es19-phone.webp",
+        "alt": ""
+      },
+      "cover": true
     }
   ],
   "story": [
