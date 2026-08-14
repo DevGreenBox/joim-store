@@ -63,6 +63,7 @@ export function Hero() {
           fill
           loading="eager"
           sizes="100vw"
+          quality={92}
           className="object-cover object-[64%_50%] lg:object-[50%_50%]"
         />
         <Image
@@ -71,6 +72,7 @@ export function Hero() {
           fill
           preload
           sizes="100vw"
+          quality={92}
           className="object-cover object-[64%_50%] animate-hero-swap lg:object-[50%_50%]"
         />
         {/* Диагональная завеса рассчитана на широкий экран: слева плотно

@@ -33,29 +33,37 @@ import sharp from "sharp";
 
 const VOID = "#111313";
 
-/** Высота итогового кадра. Ширина набирается кадром и полями. */
-const OUT_H = 1043;
+/**
+ * Снимок не масштабируется: кадр идёт в webp в своём разрешении, высота
+ * итогового изображения выводится из окна. Пересэмплировать фотографию
+ * ради круглого числа — значит терять детали на ровном месте.
+ */
 
 /**
  * Кадры первого экрана.
  *
- * `crop` — окно в исходнике. `pad` — поля цветом страницы слева и справа;
- * их разница двигает прибор вправо от середины кадра, сумма задаёт
- * пропорцию. `spot` — центр и полуоси пятна яркости в долях итогового
- * кадра, совпадает с прибором.
+ * `crop` — окно в исходнике. `pad` — поля цветом страницы, долями
+ * от снимка: слева и справа их разница двигает прибор вправо от середины
+ * кадра, а сумма задаёт пропорцию; снизу поле поднимает предмет, не меняя
+ * масштаба. Доли, а не пиксели, потому что размер кадра зависит
+ * от исходника, а композиция — нет.
  *
  * Числа считаны от положения корпуса в каждом исходнике и проверены
- * замером на 1280, 1440 и 1912.
+ * замером на 1280, 1440 и 1912. Пропорция у обоих кадров 2,30.
  */
 const HERO = [
   {
-    // Кадр взят целиком по высоте: на этом снимке прибор снят ближе,
-    // и любая подрезка делает его на первом экране великаном. Поле справа
-    // от этого широкое, поэтому оно зеркальное, как на втором кадре.
+    // На этом снимке прибор снят ближе, и подрезка делает его на первом
+    // экране великаном — окно берём почти во всю высоту. Чтобы поднять
+    // прибор, срезаем сверху и ровно столько же добавляем полем снизу:
+    // высота кадра не меняется, значит не меняется и масштаб, а предмет
+    // уезжает вверх. Поле уходит под нижнюю завесу, его не видно.
+    //
+    // Поле справа широкое, поэтому оно зеркальное, как на втором кадре.
     src: "assets/scenes/hero-1-source.jpg",
     out: "public/images/hero/engine.webp",
-    crop: { left: 0, top: 0, width: 1680, height: 1122 },
-    pad: { left: 678, right: 159 },
+    crop: { left: 0, top: 74, width: 1680, height: 1048 },
+    pad: { left: 0.4343, right: 0.1019, bottom: 0.0706 },
     mirrorRight: true,
   },
   {
@@ -71,7 +79,7 @@ const HERO = [
     src: "assets/scenes/hero-2-source.jpg",
     out: "public/images/hero/engine-2.webp",
     crop: { left: 0, top: 191, width: 3000, height: 1517 },
-    pad: { left: 200, right: 136 },
+    pad: { left: 0.0969, right: 0.0659 },
     mirrorRight: true,
   },
 ];
@@ -149,12 +157,18 @@ function vignette(width, height) {
 }
 
 async function hero(slide) {
-  const photoW = Math.round((slide.crop.width * OUT_H) / slide.crop.height);
-  const outW = photoW + slide.pad.left + slide.pad.right;
+  const photoW = slide.crop.width;
+  const photoH = slide.crop.height;
+
+  const padLeft = Math.round(photoW * slide.pad.left);
+  const padRight = Math.round(photoW * slide.pad.right);
+  const padBottom = Math.round(photoH * (slide.pad.bottom ?? 0));
+
+  const outW = photoW + padLeft + padRight;
+  const outH = photoH + padBottom;
 
   const photo = await sharp(slide.src)
     .extract(slide.crop)
-    .resize(photoW, OUT_H, { kernel: "lanczos3" })
     // Промежуточный формат задаём явно: без него sharp отдаёт буфер
     // в формате исходника, и следующий шаг его не читает.
     .png()
@@ -162,21 +176,21 @@ async function hero(slide) {
 
   // Поля: слева цвет страницы (он под завесой на 96%), справа — либо тот же
   // цвет, либо зеркало края кадра, если поле широкое и вылезает наружу.
-  const layers = [{ input: photo, left: slide.pad.left, top: 0 }];
+  const layers = [{ input: photo, left: padLeft, top: 0 }];
 
-  if (slide.mirrorRight && slide.pad.right > 0) {
+  if (slide.mirrorRight && padRight > 0) {
     layers.push({
       input: await sharp(photo)
-        .extract({ left: photoW - slide.pad.right, top: 0, width: slide.pad.right, height: OUT_H })
+        .extract({ left: photoW - padRight, top: 0, width: padRight, height: photoH })
         .flop()
         .toBuffer(),
-      left: slide.pad.left + photoW,
+      left: padLeft + photoW,
       top: 0,
     });
   }
 
   const base = await grade(
-    sharp({ create: { width: outW, height: OUT_H, channels: 3, background: VOID } }).composite(
+    sharp({ create: { width: outW, height: outH, channels: 3, background: VOID } }).composite(
       layers,
     ),
   )
@@ -186,8 +200,10 @@ async function hero(slide) {
     .toBuffer();
 
   const info = await sharp(base)
-    .composite([{ input: await vignette(outW, OUT_H), blend: "over" }])
-    .webp({ quality: 78 })
+    .composite([{ input: await vignette(outW, outH), blend: "over" }])
+    // Первый экран — единственное место, где кадр видно во всю ширину
+    // окна, и единственное, где имеет смысл платить за качество.
+    .webp({ quality: 92, effort: 6, smartSubsample: true })
     .toFile(slide.out);
 
   console.log(
