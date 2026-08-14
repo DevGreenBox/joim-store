@@ -90,15 +90,17 @@ export type CatalogQuery = {
  */
 export function queryProducts(query: CatalogQuery): Product[] {
   const bucket = PRICE_BUCKETS.find((b) => b.id === query.price);
-  const search = query.q?.trim().toLowerCase();
+  // В текстах стоят неразрывные пробелы (scripts/typo.mjs), а с клавиатуры
+  // приходит обычный. Без этого «в мороз» не находило бы ничего.
+  const plain = (value: string) => value.replace(/ /g, " ").toLowerCase();
+  const search = query.q ? plain(query.q.trim()) : undefined;
 
   let result = products.filter((p) => {
     if (query.category && p.category !== query.category) return false;
     if (query.brand && p.brand !== query.brand) return false;
     if (bucket && (p.price < bucket.min || p.price >= bucket.max)) return false;
     if (search) {
-      const haystack =
-        `${p.name} ${p.brand} ${p.short} ${p.sku}`.toLowerCase();
+      const haystack = plain(`${p.name} ${p.brand} ${p.short} ${p.sku}`);
       if (!haystack.includes(search)) return false;
     }
     return true;

@@ -189,6 +189,18 @@ body {
   border-radius: 2px;
 }
 
+/* Родной список <select> рисует операционная система. Тему она берёт из
+   `color-scheme`, но фон пунктов — только из явных правил: без них список
+   открывается светлым поверх тёмной страницы. */
+select {
+  color-scheme: dark;
+}
+
+select option {
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+}
+
 /* Тонкий скроллбар — деталь, которую замечают */
 * {
   scrollbar-width: thin;
