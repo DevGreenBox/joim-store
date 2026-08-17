@@ -22,7 +22,6 @@
     "eslint-config-next": "16.2.12",
     "sharp": "^0.35.3",
     "tailwindcss": "^4",
-    "typescript": "^5",
-    "wawoff2": "^2.0.1"
+    "typescript": "^5"
   }
 }

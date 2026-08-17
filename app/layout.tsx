@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import localFont from "next/font/local";
+import { Geist_Mono, Golos_Text, Rubik } from "next/font/google";
 
 import { Footer } from "@/components/sections/Footer";
 import { Header } from "@/components/sections/Header";
@@ -10,31 +9,34 @@ import { site } from "@/lib/site";
 import "./globals.css";
 
 /**
- * Заголовки — фирменный Panton Black, всё остальное Geist.
+ * Пара гарнитур подобрана по скелету настоящего Panton, а не на глаз.
  *
- * Panton у бренда на упаковке и в карточках маркетплейсов, и заголовки
- * им сразу читаются «своими». Ставить его в текст нельзя: это очень
- * жирное начертание, абзац из него превращается в чёрную плиту.
- * Поэтому пара: Panton кричит, Geist рассказывает, Geist Mono отвечает
- * за «приборную» часть — надзаголовки, характеристики, артикулы.
+ * С демо-файлов Panton сняты пропорции: cap 710, x-height 520 (x/cap
+ * 0,73 — очень крупные строчные), «O» шириной 0,80 от высоты, узкие
+ * апроши. По этим числам прогнаны одиннадцать кириллических гротесков.
+ * Ближе всех **Rubik**: x/cap 0,743, «O» 0,86 — и та же геометрия
+ * со смягчёнными стыками, которой Panton и узнаётся.
  *
- * Файл демо-версии, лицензия которой прямо разрешает `@font-face`
- * на сайтах. В нём 66 кириллических знаков — весь нужный алфавит.
+ * Сам Panton в заголовках стоять не может: в демо-версии нет строчных,
+ * все буквы нарисованы прописными. Исходники остались в `fonts/`
+ * с разбором в `fonts/LICENSE.md`.
  *
- * Диапазон `font-weight: 100 900` при одном начертании — не хитрость,
- * а защита: браузер перестаёт дорисовывать искусственный жир там, где
- * вёрстка просит 600, и берёт настоящие контуры.
+ * Текст — **Golos Text**: кириллица у него не адаптирована с латиницы,
+ * а нарисована первой, и на длинном абзаце это видно по ритму. x/cap
+ * 0,757 против 0,743 у Rubik — строчные одного роста, пара не спорит.
+ *
+ * Geist Mono остаётся на «приборной» части: надзаголовки,
+ * характеристики, артикулы.
  */
-const panton = localFont({
-  src: "../public/fonts/panton-black.woff2",
-  variable: "--font-panton",
-  weight: "100 900",
+const rubik = Rubik({
+  variable: "--font-display",
+  subsets: ["latin", "cyrillic"],
+  weight: ["500", "600", "700"],
   display: "swap",
-  fallback: ["ui-sans-serif", "system-ui", "sans-serif"],
 });
 
-const geist = Geist({
-  variable: "--font-geist",
+const golos = Golos_Text({
+  variable: "--font-text",
   subsets: ["latin", "cyrillic"],
   display: "swap",
 });
@@ -100,7 +102,7 @@ export default function RootLayout({
       lang="ru"
       data-scroll-behavior="smooth"
       suppressHydrationWarning
-      className={`${geist.variable} ${geistMono.variable} ${panton.variable} h-full antialiased`}
+      className={`${rubik.variable} ${golos.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: enableMotion }} />
