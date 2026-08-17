@@ -41,6 +41,9 @@ type RevealProps = {
   delay?: number;
   /** Сдвиг по вертикали в пикселях, 0 — только прозрачность. */
   y?: number;
+  /** Якорь и подпись роли — обёртка бывает и разделом, и навигацией. */
+  id?: string;
+  "aria-label"?: string;
 };
 
 export function Reveal({
@@ -49,6 +52,7 @@ export function Reveal({
   className,
   delay = 0,
   y,
+  ...rest
 }: RevealProps) {
   const ref = useRef<HTMLElement>(null);
 
@@ -72,6 +76,7 @@ export function Reveal({
       ref={ref}
       data-reveal=""
       className={className}
+      {...rest}
       style={
         {
           "--reveal-delay": `${delay}ms`,

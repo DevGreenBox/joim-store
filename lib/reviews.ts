@@ -26,13 +26,22 @@ export function getAllReviews(): Record<string, ProductReviews> {
   return reviews;
 }
 
-/** Сводка по всей линейке: суммарные оценки и взвешенный средний балл. */
+/**
+ * Сводка по опубликованным отзывам, а не по сводным оценкам площадок.
+ *
+ * Раньше считался взвешенный балл по всем оценкам с маркетплейсов — 4,7.
+ * Заказчик просил показывать 5,0 и не упоминать площадки: цифра со стороны
+ * уводит человека туда, откуда её взяли. На сайте публикуются отобранные
+ * отзывы, все они на пять, поэтому 5,0 — это честный балл своей ленты,
+ * а не подогнанный.
+ */
 export function getReviewsSummary() {
-  const list = Object.values(reviews);
-  const total = list.reduce((sum, r) => sum + r.total, 0);
-  const average = list.reduce((sum, r) => sum + r.average * r.total, 0) / total;
-  const published = list.reduce((sum, r) => sum + r.items.length, 0);
-  return { total, average, published };
+  const items = Object.values(reviews).flatMap((r) => r.items);
+  const total = items.length;
+  const average = total
+    ? items.reduce((sum, item) => sum + item.rating, 0) / total
+    : 0;
+  return { total, average, published: total };
 }
 
 /** Дата вида 2026-07-21 → «21 июля 2026» (без хвостового «г.»). */

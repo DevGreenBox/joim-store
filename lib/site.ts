@@ -12,6 +12,7 @@ export const nav = [
   { href: "/catalog", label: "Каталог", also: ["/product"] },
   { href: "/delivery", label: "Доставка" },
   { href: "/warranty", label: "Гарантия" },
+  { href: "/gifts", label: "Подарки" },
   { href: "/corporate", label: "Компаниям" },
   { href: "/about", label: "О бренде" },
   { href: "/contacts", label: "Контакты" },
@@ -21,6 +22,7 @@ export const nav = [
 export const allPages = [
   ...nav,
   { href: "/reviews", label: "Отзывы" },
+  { href: "/how-to-choose", label: "Как выбрать" },
 ] as const;
 
 /**

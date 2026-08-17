@@ -51,9 +51,12 @@
      а не на второй «красивой» шрифтовой паре. Моноширинная — только
      для технической мелочи. Geist вместо Inter/Manrope: те слишком
      заезжены и читаются как шаблон. */
-  --font-display: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
-  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  /* «Noto Color Emoji» в хвосте: отзывы приходят с эмодзи, а в Geist их
+     нет — браузер рисовал квадраты. Гарнитура подхватывается системная,
+     ничего не загружается. */
+  --font-display: var(--font-geist), ui-sans-serif, system-ui, "Noto Color Emoji", sans-serif;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, "Noto Color Emoji", sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "Noto Color Emoji", monospace;
 
   /* Кривые движения — единый «почерк» анимаций */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
