@@ -56,8 +56,17 @@ export function Spin360({
   const images = useRef<HTMLImageElement[]>([]);
   const angle = useRef(0);
   const speed = useRef(0);
+  /** Точка, где схватили: от неё берётся направление жеста. */
+  const grab = useRef({ x: 0, y: 0 });
   const drawn = useRef(-1);
-  const pointer = useRef<{ x: number; y: number; at: number } | null>(null);
+  const pointer = useRef<{
+    x: number;
+    y: number;
+    at: number;
+    /** Единичный вектор направления жеста; нули — направление ещё не задано. */
+    ux: number;
+    uy: number;
+  } | null>(null);
 
   const [load, setLoad] = useState(false);
   const [ready, setReady] = useState(false);
@@ -196,7 +205,14 @@ export function Spin360({
 
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
     if (!ready) return;
-    pointer.current = { x: event.clientX, y: event.clientY, at: performance.now() };
+    pointer.current = {
+      x: event.clientX,
+      y: event.clientY,
+      at: performance.now(),
+      ux: 0,
+      uy: 0,
+    };
+    grab.current = { x: event.clientX, y: event.clientY };
     speed.current = 0;
     setHeld(true);
     // Захват держит жест за пределами блока. Бросает, если указателя
@@ -212,15 +228,33 @@ export function Spin360({
     const from = pointer.current;
     if (!from) return;
 
-    // Направление жеста не задано жёстко: в поворот идёт и горизонтальное,
-    // и вертикальное движение. Раньше считался только `clientX`, и предмет
-    // не отзывался, пока рука не шла точно вбок — вести приходилось
-    // по линейке. Теперь берут как удобно: вбок, вниз, по диагонали.
+    // Направление задаёт сама рука. При первом заметном сдвиге от точки
+    // захвата запоминаем единичный вектор жеста, дальше в поворот идёт
+    // проекция движения на него.
+    //
+    // Складывать dx и dy, как было, нельзя: на диагоналях «вправо-вверх»
+    // и «влево-вниз» слагаемые гасят друг друга в ноль, и предмет
+    // не отзывался вовсе — замер показал две мёртвые из восьми сторон.
+    // Проекция мёртвых направлений не оставляет: тянут куда угодно,
+    // ведут дальше — крутится, ведут обратно — раскручивается назад.
     const box = event.currentTarget;
     const reach = (box.clientWidth || 1) * TURN;
-    const step =
-      ((event.clientX - from.x + (event.clientY - from.y)) / reach) *
-      images.current.length;
+
+    if (from.ux === 0 && from.uy === 0) {
+      const gx = event.clientX - grab.current.x;
+      const gy = event.clientY - grab.current.y;
+      const len = Math.hypot(gx, gy);
+      if (len < 3) {
+        pointer.current = { ...from, x: event.clientX, y: event.clientY };
+        return;
+      }
+      from.ux = gx / len;
+      from.uy = gy / len;
+    }
+
+    const along =
+      (event.clientX - from.x) * from.ux + (event.clientY - from.y) * from.uy;
+    const step = (along / reach) * images.current.length;
 
     angle.current -= step;
 
@@ -231,7 +265,13 @@ export function Spin360({
     const dt = Math.max(now - from.at, 1) / 1000;
     speed.current = -step / dt;
 
-    pointer.current = { x: event.clientX, y: event.clientY, at: now };
+    pointer.current = {
+      x: event.clientX,
+      y: event.clientY,
+      at: now,
+      ux: from.ux,
+      uy: from.uy,
+    };
   }
 
   function endDrag(event: React.PointerEvent<HTMLDivElement>) {
