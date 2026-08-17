@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 
 import { Footer } from "@/components/sections/Footer";
 import { Header } from "@/components/sections/Header";
@@ -9,10 +10,29 @@ import { site } from "@/lib/site";
 import "./globals.css";
 
 /**
- * Одна гарнитура на весь сайт плюс её моноширинная пара.
- * Geist — на нём держится и текст, и заголовки; Geist Mono отвечает
- * за «приборную» часть: надзаголовки, характеристики, артикулы.
+ * Заголовки — фирменный Panton Black, всё остальное Geist.
+ *
+ * Panton у бренда на упаковке и в карточках маркетплейсов, и заголовки
+ * им сразу читаются «своими». Ставить его в текст нельзя: это очень
+ * жирное начертание, абзац из него превращается в чёрную плиту.
+ * Поэтому пара: Panton кричит, Geist рассказывает, Geist Mono отвечает
+ * за «приборную» часть — надзаголовки, характеристики, артикулы.
+ *
+ * Файл демо-версии, лицензия которой прямо разрешает `@font-face`
+ * на сайтах. В нём 66 кириллических знаков — весь нужный алфавит.
+ *
+ * Диапазон `font-weight: 100 900` при одном начертании — не хитрость,
+ * а защита: браузер перестаёт дорисовывать искусственный жир там, где
+ * вёрстка просит 600, и берёт настоящие контуры.
  */
+const panton = localFont({
+  src: "../public/fonts/panton-black.woff2",
+  variable: "--font-panton",
+  weight: "100 900",
+  display: "swap",
+  fallback: ["ui-sans-serif", "system-ui", "sans-serif"],
+});
+
 const geist = Geist({
   variable: "--font-geist",
   subsets: ["latin", "cyrillic"],
@@ -80,7 +100,7 @@ export default function RootLayout({
       lang="ru"
       data-scroll-behavior="smooth"
       suppressHydrationWarning
-      className={`${geist.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geist.variable} ${geistMono.variable} ${panton.variable} h-full antialiased`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: enableMotion }} />
