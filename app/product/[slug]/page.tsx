@@ -6,6 +6,7 @@ import { ModelCompare } from "@/components/sections/ModelCompare";
 import { ProductFit } from "@/components/sections/ProductFit";
 import { ProductHighlights } from "@/components/sections/ProductHighlights";
 import { ProductProtection } from "@/components/sections/ProductProtection";
+import { ProductRich } from "@/components/sections/ProductRich";
 import { ProductScenarios } from "@/components/sections/ProductScenarios";
 import { ProductVideo } from "@/components/sections/ProductVideo";
 import { SavingsBand } from "@/components/sections/SavingsBand";
@@ -358,6 +359,11 @@ export default async function ProductPage({ params }: { params: Params }) {
           />
         </div>
       ) : null}
+
+      {/* Рич-контент товара: то, что заказчик набирает под каждую модель
+          сам. Стоит после базовых блоков — сначала характеристики
+          и сценарии, потом материалы под конкретный товар. */}
+      <ProductRich blocks={product.rich} />
 
       {showSavings ? (
         <div className="mt-16 lg:mt-[150px]">
