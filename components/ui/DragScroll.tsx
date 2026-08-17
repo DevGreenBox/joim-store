@@ -21,10 +21,16 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
  * «дальше не листается».
  */
 
-/** Затухание скорости за кадр. Ниже — резче останавливается. */
-const FRICTION = 0.94;
-/** Ниже этой скорости (px/кадр) считаем, что лента встала. */
-const STOP = 0.12;
+/**
+ * Затухание скорости за секунду. Считается от времени, а не от числа
+ * кадров: на экране 120 Гц кадров вдвое больше, и «доля за кадр» гасила
+ * накат вдвое быстрее — лента вела себя по-разному на разных мониторах.
+ */
+const FRICTION = 0.024;
+/** Ниже этой скорости (px/с) считаем, что лента встала. */
+const STOP = 7;
+/** Больше этого шаг времени не берём: вкладка была в фоне. */
+const MAX_STEP = 0.05;
 
 type Props = {
   children: ReactNode;
@@ -118,9 +124,9 @@ export function DragScroll({ children, className = "", ...rest }: Props) {
     // с какой руки ленту отпустили, а не как её вели вначале.
     const dt = event.timeStamp - s.lastAt;
     if (dt > 0) {
-      const perFrame = ((s.lastX - event.clientX) / dt) * 16.7;
+      const perSecond = ((s.lastX - event.clientX) / dt) * 1000;
       // Сглаживаем: одиночный рывок мыши иначе улетает в инерцию.
-      s.velocity = s.velocity * 0.4 + perFrame * 0.6;
+      s.velocity = s.velocity * 0.4 + perSecond * 0.6;
       s.lastX = event.clientX;
       s.lastAt = event.timeStamp;
     }
@@ -147,9 +153,12 @@ export function DragScroll({ children, className = "", ...rest }: Props) {
     }
 
     const max = node.scrollWidth - node.clientWidth;
-    const coast = () => {
-      s.velocity *= FRICTION;
-      const next = node.scrollLeft + s.velocity;
+    let last = performance.now();
+    const coast = (now = performance.now()) => {
+      const dt = Math.min((now - last) / 1000, MAX_STEP);
+      last = now;
+      s.velocity *= Math.pow(FRICTION, dt);
+      const next = node.scrollLeft + s.velocity * dt;
 
       // Упёрлись в край — гасим сразу, без отскока.
       if (next <= 0 || next >= max) {

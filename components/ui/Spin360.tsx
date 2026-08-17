@@ -29,14 +29,20 @@ import { useEffect, useRef, useState } from "react";
 
 /** Сколько ширины блока нужно протащить на полный оборот. */
 const TURN = 1.1;
-/** Трение: доля скорости, остающаяся за кадр. */
-const FRICTION = 0.94;
-/** Скорость автооблёта, кадров в секунду отрисовки. */
-const IDLE_SPEED = 0.14;
+/**
+ * Трение: доля скорости, остающаяся за секунду. Всё движение считается
+ * от времени, а не от числа кадров: на экране 120 Гц кадров вдвое больше,
+ * и «доля за кадр» гасила вращение вдвое быстрее, чем на 60 Гц.
+ */
+const FRICTION = 0.024;
+/** Скорость автооблёта, кадров в секунду. */
+const IDLE_SPEED = 8.4;
 /** Пауза перед автооблётом, мс. */
 const IDLE_AFTER = 3000;
-/** Ниже этого скорость считаем нулевой. */
-const STILL = 0.004;
+/** Ниже этого скорость считаем нулевой, кадров в секунду. */
+const STILL = 0.25;
+/** Больше этого шаг времени не берём: вкладка была в фоне. */
+const MAX_STEP = 0.05;
 
 export function Spin360({
   frames,
@@ -56,7 +62,7 @@ export function Spin360({
   const speed = useRef(0);
   const drawn = useRef(-1);
   const idleAt = useRef(0);
-  const pointer = useRef<{ x: number; at: number } | null>(null);
+  const pointer = useRef<{ x: number; y: number; at: number } | null>(null);
 
   const [load, setLoad] = useState(false);
   const [ready, setReady] = useState(false);
@@ -119,6 +125,7 @@ export function Spin360({
 
     const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let frame = 0;
+    let last = performance.now();
 
     // Больше исходных 720 px холст не берём: растягивать кадр вверх —
     // это мыло без единого лишнего пикселя резкости.
@@ -132,21 +139,24 @@ export function Spin360({
       drawn.current = -1;
     }
 
-    function tick() {
+    function tick(now = performance.now()) {
       frame = requestAnimationFrame(tick);
+      const dt = Math.min((now - last) / 1000, MAX_STEP);
+      last = now;
+
       const total = images.current.length;
       if (!total || !canvas || !ctx) return;
 
       if (!pointer.current) {
         if (Math.abs(speed.current) > STILL) {
-          angle.current += speed.current;
-          speed.current *= FRICTION;
+          angle.current += speed.current * dt;
+          speed.current *= Math.pow(FRICTION, dt);
         } else {
           speed.current = 0;
           // Автооблёт после паузы. Он не «включается» рывком: скорость
           // та же, что осталась бы от медленного вращения.
-          if (!calm && performance.now() - idleAt.current > IDLE_AFTER) {
-            angle.current += IDLE_SPEED;
+          if (!calm && now - idleAt.current > IDLE_AFTER) {
+            angle.current += IDLE_SPEED * dt;
           }
         }
       }
@@ -176,27 +186,42 @@ export function Spin360({
 
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
     if (!ready) return;
-    pointer.current = { x: event.clientX, at: performance.now() };
+    pointer.current = { x: event.clientX, y: event.clientY, at: performance.now() };
     speed.current = 0;
     setHeld(true);
-    event.currentTarget.setPointerCapture(event.pointerId);
+    // Захват держит жест за пределами блока. Бросает, если указателя
+    // с таким id уже нет — тогда крутим без захвата.
+    try {
+      event.currentTarget.setPointerCapture(event.pointerId);
+    } catch {
+      /* пусто */
+    }
   }
 
   function onPointerMove(event: React.PointerEvent<HTMLDivElement>) {
     const from = pointer.current;
     if (!from) return;
 
-    const width = event.currentTarget.clientWidth || 1;
-    const step = ((event.clientX - from.x) / (width * TURN)) * images.current.length;
+    // Направление жеста не задано жёстко: в поворот идёт и горизонтальное,
+    // и вертикальное движение. Раньше считался только `clientX`, и предмет
+    // не отзывался, пока рука не шла точно вбок — вести приходилось
+    // по линейке. Теперь берут как удобно: вбок, вниз, по диагонали.
+    const box = event.currentTarget;
+    const reach = (box.clientWidth || 1) * TURN;
+    const step =
+      ((event.clientX - from.x + (event.clientY - from.y)) / reach) *
+      images.current.length;
+
     angle.current -= step;
 
-    // Скорость считаем по этому же шагу: она уже в кадрах, приводить
-    // ничего не надо, и после отпускания вращение продолжается ровно
-    // с той быстротой, с какой вели рукой.
-    const dt = Math.max(performance.now() - from.at, 1);
-    speed.current = (-step / dt) * 16;
+    // Скорость — в кадрах в секунду: после отпускания вращение
+    // продолжается ровно с той быстротой, с какой вели рукой,
+    // и не зависит от частоты экрана.
+    const now = performance.now();
+    const dt = Math.max(now - from.at, 1) / 1000;
+    speed.current = -step / dt;
 
-    pointer.current = { x: event.clientX, at: performance.now() };
+    pointer.current = { x: event.clientX, y: event.clientY, at: now };
   }
 
   function endDrag(event: React.PointerEvent<HTMLDivElement>) {
@@ -204,11 +229,15 @@ export function Spin360({
     pointer.current = null;
     idleAt.current = performance.now();
     setHeld(false);
-    event.currentTarget.releasePointerCapture?.(event.pointerId);
+    try {
+      event.currentTarget.releasePointerCapture?.(event.pointerId);
+    } catch {
+      /* пусто */
+    }
   }
 
   function nudge(direction: number) {
-    speed.current = direction * 0.9;
+    speed.current = direction * 54;
     idleAt.current = performance.now();
   }
 

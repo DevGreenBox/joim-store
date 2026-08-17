@@ -17,8 +17,8 @@
 
 import sharp from "sharp";
 
-const BAND = 2;
-const THRESHOLD = 14;
+const BAND = 3;
+const THRESHOLD = 8;
 const REACH = 5;
 
 /** Расстояние до прозрачного фона, обрезанное на limit. */
