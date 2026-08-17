@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist_Mono, Golos_Text, Rubik } from "next/font/google";
+import { Geist_Mono, Golos_Text, Manrope } from "next/font/google";
 
 import { Footer } from "@/components/sections/Footer";
 import { Header } from "@/components/sections/Header";
@@ -14,8 +14,9 @@ import "./globals.css";
  * С демо-файлов Panton сняты пропорции: cap 710, x-height 520 (x/cap
  * 0,73 — очень крупные строчные), «O» шириной 0,80 от высоты, узкие
  * апроши. По этим числам прогнаны одиннадцать кириллических гротесков.
- * Ближе всех **Rubik**: x/cap 0,743, «O» 0,86 — и та же геометрия
- * со смягчёнными стыками, которой Panton и узнаётся.
+ * По числам ближе всех Rubik, следом **Manrope** (x/cap 0,750, «O» 0,919).
+ * Заказчик выбрал Manrope: он суше и техничнее, а Rubik со скруглёнными
+ * стыками уходит в дружелюбие, которого тёмному премиуму не нужно.
  *
  * Сам Panton в заголовках стоять не может: в демо-версии нет строчных,
  * все буквы нарисованы прописными. Исходники остались в `fonts/`
@@ -23,15 +24,15 @@ import "./globals.css";
  *
  * Текст — **Golos Text**: кириллица у него не адаптирована с латиницы,
  * а нарисована первой, и на длинном абзаце это видно по ритму. x/cap
- * 0,757 против 0,743 у Rubik — строчные одного роста, пара не спорит.
+ * 0,757 против 0,750 у Manrope — строчные одного роста, пара не спорит.
  *
  * Geist Mono остаётся на «приборной» части: надзаголовки,
  * характеристики, артикулы.
  */
-const rubik = Rubik({
+const manrope = Manrope({
   variable: "--font-display",
   subsets: ["latin", "cyrillic"],
-  weight: ["500", "600", "700"],
+  weight: ["500", "600", "700", "800"],
   display: "swap",
 });
 
@@ -102,7 +103,7 @@ export default function RootLayout({
       lang="ru"
       data-scroll-behavior="smooth"
       suppressHydrationWarning
-      className={`${rubik.variable} ${golos.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${manrope.variable} ${golos.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: enableMotion }} />
