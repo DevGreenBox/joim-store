@@ -131,16 +131,12 @@
         "caption": "Устройство целиком"
       },
       {
-        "src": "/images/products/joim-es29-2.webp",
-        "caption": "В сборе с клеммами"
+        "src": "/images/products/joim-es29-kit.webp",
+        "caption": "Комплект целиком"
       },
       {
         "src": "/images/products/joim-es29-3.webp",
         "caption": "Что внутри"
-      },
-      {
-        "src": "/images/products/joim-es29-kit.webp",
-        "caption": "Комплект целиком"
       }
     ],
     "hoverImage": 1,
