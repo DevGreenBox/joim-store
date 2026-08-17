@@ -34,13 +34,9 @@ const TURN = 1.1;
  * от времени, а не от числа кадров: на экране 120 Гц кадров вдвое больше,
  * и «доля за кадр» гасила вращение вдвое быстрее, чем на 60 Гц.
  */
-const FRICTION = 0.024;
-/** Скорость автооблёта, кадров в секунду. */
-const IDLE_SPEED = 8.4;
-/** Пауза перед автооблётом, мс. */
-const IDLE_AFTER = 3000;
-/** Ниже этого скорость считаем нулевой, кадров в секунду. */
-const STILL = 0.25;
+const FRICTION = 0.05;
+/** Постоянная скорость свободного вращения, кадров в секунду. */
+const IDLE_SPEED = 7.2;
 /** Больше этого шаг времени не берём: вкладка была в фоне. */
 const MAX_STEP = 0.05;
 
@@ -61,7 +57,6 @@ export function Spin360({
   const angle = useRef(0);
   const speed = useRef(0);
   const drawn = useRef(-1);
-  const idleAt = useRef(0);
   const pointer = useRef<{ x: number; y: number; at: number } | null>(null);
 
   const [load, setLoad] = useState(false);
@@ -148,33 +143,48 @@ export function Spin360({
       if (!total || !canvas || !ctx) return;
 
       if (!pointer.current) {
-        if (Math.abs(speed.current) > STILL) {
-          angle.current += speed.current * dt;
-          speed.current *= Math.pow(FRICTION, dt);
-        } else {
-          speed.current = 0;
-          // Автооблёт после паузы. Он не «включается» рывком: скорость
-          // та же, что осталась бы от медленного вращения.
-          if (!calm && now - idleAt.current > IDLE_AFTER) {
-            angle.current += IDLE_SPEED * dt;
-          }
-        }
+        // Скорость сходится не к нулю, а к постоянной скорости вращения:
+        // предмет не останавливается и не «включается» заново, он просто
+        // продолжает крутиться в ту сторону, куда его толкнули. Так ведёт
+        // себя раскрученный шар, и так пропадает разрыв между инерцией
+        // и свободным вращением.
+        const cruise = calm
+          ? 0
+          : IDLE_SPEED * (speed.current < 0 ? -1 : 1);
+        const decay = Math.pow(FRICTION, dt);
+        speed.current = cruise + (speed.current - cruise) * decay;
+        angle.current += speed.current * dt;
       }
 
-      const index = ((Math.round(angle.current) % total) + total) % total;
-      if (index === drawn.current) return;
+      // Дробная позиция между двумя кадрами. 72 кадра — это 5° на кадр,
+      // и округление до ближайшего давало видимую ступеньку. Смешиваем
+      // два соседних кадра по остатку: движение становится непрерывным,
+      // а не покадровым.
+      const wrapped = ((angle.current % total) + total) % total;
+      const base = Math.floor(wrapped);
+      const mix = wrapped - base;
+      // Через 0°/360° переход незаметен: следующий кадр берётся по кругу.
+      const next = (base + 1) % total;
 
+      if (Math.abs(wrapped - drawn.current) < 0.01) return;
+
+      const a = images.current[base];
+      const b = images.current[next];
       // Кадр ещё не долетел — оставляем предыдущий, а не мигаем пустотой.
-      const img = images.current[index];
-      if (!img?.complete || !img.naturalWidth) return;
+      if (!a?.complete || !a.naturalWidth) return;
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      drawn.current = index;
+      ctx.globalAlpha = 1;
+      ctx.drawImage(a, 0, 0, canvas.width, canvas.height);
+      if (mix > 0.01 && b?.complete && b.naturalWidth) {
+        ctx.globalAlpha = mix;
+        ctx.drawImage(b, 0, 0, canvas.width, canvas.height);
+        ctx.globalAlpha = 1;
+      }
+      drawn.current = wrapped;
     }
 
     size();
-    idleAt.current = performance.now();
     frame = requestAnimationFrame(tick);
     window.addEventListener("resize", size);
 
@@ -227,7 +237,6 @@ export function Spin360({
   function endDrag(event: React.PointerEvent<HTMLDivElement>) {
     if (!pointer.current) return;
     pointer.current = null;
-    idleAt.current = performance.now();
     setHeld(false);
     try {
       event.currentTarget.releasePointerCapture?.(event.pointerId);
@@ -237,8 +246,7 @@ export function Spin360({
   }
 
   function nudge(direction: number) {
-    speed.current = direction * 54;
-    idleAt.current = performance.now();
+    speed.current = direction * 40;
   }
 
   return (
@@ -254,7 +262,6 @@ export function Spin360({
       onWheel={(event) => {
         if (!ready) return;
         angle.current += Math.sign(event.deltaY) * 0.8;
-        idleAt.current = performance.now();
       }}
       style={{ cursor: held ? "grabbing" : "grab" }}
       role="group"

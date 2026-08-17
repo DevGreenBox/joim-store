@@ -242,6 +242,13 @@ const BACKDROPS = [
     out: "public/images/hero/plate.webp",
     width: 2400,
   },
+  {
+    // Съёмка подкапотного пространства. Пришла с расширением .ARW,
+    // но внутри webp — sharp читает по содержимому, не по имени.
+    src: "assets/scenes/hero-bay-source.webp",
+    out: "public/images/hero/bay.webp",
+    width: 2400,
+  },
 ];
 
 async function backdrop(item) {
