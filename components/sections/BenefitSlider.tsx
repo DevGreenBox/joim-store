@@ -59,10 +59,15 @@ export function BenefitSlider() {
                 className="object-contain p-[9%]"
               />
 
-              <p className="num font-display absolute top-5 left-6 text-fig font-semibold">
+              {/* Показание на плашке, а не прямо на кадре: у пакшотов
+                  подложка светлеет к середине, и цифра то читалась,
+                  то тонула. Плашка — та же, что подписывает кадры
+                  в сценариях и бейджах карточки: скруглённая, с тонкой
+                  линией, полупрозрачным графитом и размытием под собой. */}
+              <p className="num font-display absolute top-4 left-4 flex items-baseline gap-1 rounded-2xl border border-line-strong bg-void/70 px-3.5 py-2 text-fig leading-none font-semibold backdrop-blur-md">
                 {item.value}
                 {item.unit ? (
-                  <span className="readout ml-1 text-[12px] font-normal text-faint">
+                  <span className="readout text-[12px] font-normal text-faint">
                     {item.unit}
                   </span>
                 ) : null}
