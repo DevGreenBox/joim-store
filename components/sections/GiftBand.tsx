@@ -11,8 +11,8 @@ import home from "@/content/pages/home.json";
  * и компании. Две кнопки, а не одна: сценарии расходятся с первого шага,
  * и общая страница «подарки» заставила бы выбирать дважды.
  *
- * Кадр — оба прибора и кейс на сиденье: подарок показан там, где им
- * пользуются, а не на белой подложке.
+ * Кадр — кейс в руках у открытого капота: подарок показан в момент,
+ * ради которого его дарят, а не на белой подложке.
  */
 export function GiftBand() {
   const { gift } = home.sections;
@@ -20,11 +20,10 @@ export function GiftBand() {
   return (
     <section className="py-16 lg:py-[75px]">
       <Container size="wide">
-        {/* Колонка под кадр узкая, а блок высокий: снимок вертикальный
-            (0,67), и в широкой ячейке обрезка по краю срезала приборы
-            сверху и кейс справа. При отношении около 0,85 в кадр входит
-            вся группа — оба прибора и кейс. */}
-        <Reveal className="relative isolate grid overflow-hidden rounded-3xl border border-line bg-surface lg:grid-cols-[1fr_0.5fr]">
+        {/* Ячейка подогнана под сам кадр: он горизонтальный, 1,50.
+            Колонка 640×420 даёт 1,52 — обрезка съедает два процента
+            высоты, и кейс с руками входит целиком. */}
+        <Reveal className="relative isolate grid overflow-hidden rounded-3xl border border-line bg-surface lg:grid-cols-[1.1fr_1fr]">
           <StarMark className="pointer-events-none absolute -top-[22%] -left-[8%] -z-10 aspect-square w-[46%] rotate-[-14deg] text-accent/[0.06]" />
           <div
             aria-hidden="true"
@@ -51,11 +50,11 @@ export function GiftBand() {
           </div>
 
           {/* Кадр во всю ячейку, без полей: это не пакшот на подложке,
-              а сцена — оба прибора и кейс лежат на сиденье. */}
-          <div className="relative min-h-[380px] sm:min-h-[440px] lg:min-h-[470px]">
+              а сцена — кейс передают из рук в руки у открытого капота. */}
+          <div className="relative min-h-[300px] sm:min-h-[360px] lg:min-h-[420px]">
             <Image
-              src="/images/products/es29-seat.webp"
-              alt="Два пусковых устройства JOIM Easy Start и кейс на пассажирском сиденье"
+              src="/images/products/es19-gift.webp"
+              alt="Жёсткий кейс JOIM Easy Start в руках у открытого капота"
               fill
               sizes="(max-width: 1023px) 100vw, 44vw"
               className="object-cover"

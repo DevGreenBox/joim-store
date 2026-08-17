@@ -78,6 +78,7 @@ const WANTED = [
   { shoot: "18.12.24", dir: "Es-19", cut: false, file: "DSC09031.jpg", out: "es19-closeup" },
   { shoot: "18.12.24", dir: "Es-19", cut: false, file: "DSC09271.jpg", out: "es19-trunk" },
   { shoot: "18.12.24", dir: "Es-19", cut: false, file: "DSC09314.jpg", out: "es19-powerbank" },
+  { shoot: "18.12.24", dir: "Es-19", cut: false, file: "DSC09386.jpg", out: "es19-gift" },
   { shoot: "18.12.24", dir: "Es-19", cut: false, file: "DSC09402.jpg", out: "es19-case" },
   { shoot: "18.12.24", dir: "Es-19", cut: false, file: "DSC09416.jpg", out: "es19-ports" },
   { shoot: "18.12.24", dir: "Es-19", cut: false, file: "DSC09490.jpg", out: "es19-clamp" },

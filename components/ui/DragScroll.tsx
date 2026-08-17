@@ -178,7 +178,11 @@ export function DragScroll({ children, className = "", ...rest }: Props) {
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
-        className={`${className} ${
+        // Родное перетаскивание картинки браузером перехватывает жест:
+        // вместо ленты с места трогается полупрозрачная копия снимка.
+        // Событие всплывает, поэтому глушим его на самой ленте.
+        onDragStart={(event) => event.preventDefault()}
+        className={`${className} [&_img]:[-webkit-user-drag:none] ${
           dragging ? "cursor-grabbing select-none" : "cursor-grab"
         }`}
         {...rest}
