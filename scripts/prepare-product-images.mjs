@@ -6,6 +6,10 @@
  * Пропорции не трогаем: если дорисовать прозрачные поля до квадрата,
  * вытянутый товар в плитке каталога окажется вдвое мельче остальных.
  *
+ * По пути снимается светлый кант вдоль контура (`defringe.mjs`): товары
+ * снимали на белом, и после обтравки вдоль проводов и клемм оставалась
+ * светлая обводка. На белой подложке её не видно, на графите — видно всем.
+ *
  * Оригиналы наружу не отдаются (см. docs/content-guide.md), в репозитории
  * лежит и то и другое: исходник — чтобы можно было пересобрать, webp —
  * чтобы отдавать браузеру.
@@ -17,6 +21,8 @@ import { mkdir, readdir, stat } from "node:fs/promises";
 import path from "node:path";
 
 import sharp from "sharp";
+
+import { defringeFile } from "./defringe.mjs";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const SRC = path.join(ROOT, "assets/images-raw");
@@ -43,7 +49,11 @@ for (const source of sources) {
   const name = path.basename(source).replace(/\.[^.]+$/, "");
   const target = path.join(OUT, `${name}.webp`);
 
-  await sharp(source)
+  // Светлый кант по контуру снимаем до уменьшения: на оригинале граница
+  // альфы точная, после resize она размазана и опору внутри не найти.
+  const { buffer } = await defringeFile(source);
+
+  await sharp(buffer ?? source)
     .resize(SIZE, SIZE, { fit: "inside", withoutEnlargement: true })
     .trim({ threshold: 0 })
     .webp({ quality: QUALITY, effort: 6 })
