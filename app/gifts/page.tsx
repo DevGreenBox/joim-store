@@ -44,7 +44,7 @@ export default function GiftsPage() {
           колонкой рядом с текстом, и первый экран становится одним
           высказыванием вместо двух. */}
       <Container size="wide" className="mt-10 lg:mt-14">
-        <Reveal className="relative isolate grid overflow-hidden rounded-3xl border border-line bg-surface lg:grid-cols-[1.05fr_1fr]">
+        <Reveal className="relative isolate grid overflow-hidden rounded-3xl border border-line bg-surface lg:grid-cols-[1fr_0.5fr]">
           <div
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 -z-10 brand-lines opacity-40"
@@ -60,9 +60,10 @@ export default function GiftsPage() {
             </p>
           </div>
 
-          {/* Высота задана ячейке, а не тексту: кадр вертикальный, и в полосе
-              по высоте текста от него оставалась бы середина. */}
-          <div className="relative min-h-[340px] sm:min-h-[420px] lg:min-h-[480px]">
+          {/* Высота задана ячейке, а не тексту, и колонка узкая: снимок
+              вертикальный (0,67), и в широкой ячейке от него оставалась
+              бы середина — приборы срезаны сверху, кейс справа. */}
+          <div className="relative min-h-[380px] sm:min-h-[440px] lg:min-h-[470px]">
             <Image
               src="/images/products/es29-seat.webp"
               alt="Два пусковых устройства JOIM Easy Start и кейс на пассажирском сиденье"

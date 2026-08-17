@@ -20,7 +20,11 @@ export function GiftBand() {
   return (
     <section className="py-16 lg:py-[75px]">
       <Container size="wide">
-        <Reveal className="relative isolate grid overflow-hidden rounded-3xl border border-line bg-surface lg:grid-cols-[1.1fr_1fr]">
+        {/* Колонка под кадр узкая, а блок высокий: снимок вертикальный
+            (0,67), и в широкой ячейке обрезка по краю срезала приборы
+            сверху и кейс справа. При отношении около 0,85 в кадр входит
+            вся группа — оба прибора и кейс. */}
+        <Reveal className="relative isolate grid overflow-hidden rounded-3xl border border-line bg-surface lg:grid-cols-[1fr_0.5fr]">
           <StarMark className="pointer-events-none absolute -top-[22%] -left-[8%] -z-10 aspect-square w-[46%] rotate-[-14deg] text-accent/[0.06]" />
           <div
             aria-hidden="true"
@@ -47,9 +51,8 @@ export function GiftBand() {
           </div>
 
           {/* Кадр во всю ячейку, без полей: это не пакшот на подложке,
-              а сцена — оба прибора и кейс лежат на сиденье. Обрезка
-              по центру: кадр вертикальный, содержимое в середине. */}
-          <div className="relative min-h-[280px] lg:min-h-0">
+              а сцена — оба прибора и кейс лежат на сиденье. */}
+          <div className="relative min-h-[380px] sm:min-h-[440px] lg:min-h-[470px]">
             <Image
               src="/images/products/es29-seat.webp"
               alt="Два пусковых устройства JOIM Easy Start и кейс на пассажирском сиденье"
