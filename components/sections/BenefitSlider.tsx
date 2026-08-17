@@ -17,6 +17,12 @@ import home from "@/content/pages/home.json";
  * Прилипание ослаблено до `proximity`: при `mandatory` лента дёргается
  * к ближайшей карточке прямо посреди наката и инерция не читается.
  *
+ * `overflow-y` задан явно. По правилам CSS `overflow-x: auto` рядом
+ * с `visible` по второй оси делает прокручиваемыми обе: у ленты набегало
+ * 8 px вертикального хода, и колесо над ней дёргало её саму вместо
+ * страницы. Нижнее поле поднято до 24 px, чтобы эти 8 px не обрезались,
+ * а помещались: гасить переполнение обрезкой — значит прятать симптом.
+ *
  * Баннеров шесть, видно два с половиной: обрезанный третий и есть
  * приглашение листать, а не подпись «листайте».
  *
@@ -39,7 +45,7 @@ export function BenefitSlider() {
           отступом первой карточки. */}
       <DragScroll
         aria-label={home.sections.benefits.title}
-        className="mt-10 flex snap-x snap-proximity gap-5 overflow-x-auto scroll-pl-5 px-5 pb-4 sm:scroll-pl-8 sm:px-8 lg:mt-14 lg:gap-6 lg:scroll-pl-12 lg:px-12 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="mt-10 flex snap-x snap-proximity gap-5 overflow-x-auto overflow-y-hidden scroll-pl-5 px-5 pb-6 sm:scroll-pl-8 sm:px-8 lg:mt-14 lg:gap-6 lg:scroll-pl-12 lg:px-12 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {home.benefits.map((item, index) => (
           <Reveal
@@ -59,11 +65,6 @@ export function BenefitSlider() {
                 className="object-contain p-[9%]"
               />
 
-              {/* Показание на плашке, а не прямо на кадре: у пакшотов
-                  подложка светлеет к середине, и цифра то читалась,
-                  то тонула. Плашка — та же, что подписывает кадры
-                  в сценариях и бейджах карточки: скруглённая, с тонкой
-                  линией, полупрозрачным графитом и размытием под собой. */}
               {/* Ровно тот бейдж, которым на сайте подписаны кадры сценариев
                   и карточки товара: пилюля, тонкая линия, полупрозрачный
                   графит. Кегли сближены — 15 против 11: разница в два с

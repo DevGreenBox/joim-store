@@ -25,13 +25,16 @@ export function ProductCard({
   // указателя нет, и без него плитка на нажатие не реагирует вовсе.
   return (
     <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-surface transition-[border-color,transform,box-shadow] duration-500 ease-out-expo hover:-translate-y-1 hover:border-line-strong hover:shadow-[0_28px_60px_-30px_rgba(0,0,0,0.9)] active:border-line-strong active:duration-200">
-      <div className="relative aspect-[5/4] w-full">
+      {/* Кадр подрастает под курсором: товар выходит вперёд, рамка
+          остаётся на месте. Масштаб держится на самом кадре, а не
+          на всей плитке — иначе поехали бы текст и цена. */}
+      <div className="relative aspect-[5/4] w-full overflow-hidden">
         <ProductImage
           product={product}
           sizes={sizes}
           eager={eager}
           hoverSwap
-          className="size-full"
+          className="size-full transition-transform duration-700 ease-out-expo group-hover:scale-[1.07] group-active:scale-[1.05] group-active:duration-300"
         />
 
         <div className="pointer-events-none absolute inset-x-4 top-4 flex items-start justify-between gap-3">
