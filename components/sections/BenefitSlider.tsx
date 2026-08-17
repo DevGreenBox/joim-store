@@ -64,10 +64,15 @@ export function BenefitSlider() {
                   то тонула. Плашка — та же, что подписывает кадры
                   в сценариях и бейджах карточки: скруглённая, с тонкой
                   линией, полупрозрачным графитом и размытием под собой. */}
-              <p className="num font-display absolute top-4 left-4 flex items-baseline gap-1 rounded-2xl border border-line-strong bg-void/70 px-3.5 py-2 text-fig leading-none font-semibold backdrop-blur-md">
+              {/* Ровно тот бейдж, которым на сайте подписаны кадры сценариев
+                  и карточки товара: пилюля, тонкая линия, полупрозрачный
+                  графит. Кегли сближены — 15 против 11: разница в два с
+                  половиной раза делала единицу нечитаемой, а саму плашку
+                  крупнее кадра, который она подписывает. */}
+              <p className="num font-display absolute top-4 left-4 flex items-baseline gap-1 rounded-full border border-line-strong bg-void/70 px-3 py-1.5 text-[15px] leading-none font-semibold backdrop-blur-sm">
                 {item.value}
                 {item.unit ? (
-                  <span className="readout text-[12px] font-normal text-faint">
+                  <span className="readout text-[11px] font-normal text-faint">
                     {item.unit}
                   </span>
                 ) : null}
