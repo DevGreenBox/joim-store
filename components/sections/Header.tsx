@@ -106,9 +106,12 @@ export function Header() {
         <Container size="wide" className="flex h-full items-center gap-6">
           <Logo />
 
+          {/* Порог меню — `xl`, а не `lg`: с восьмым пунктом («Как выбрать»)
+              на 1024 строка переставала помещаться, пункты ломались на две
+              строки и выдавливали корзину за край. */}
           <nav
             aria-label="Основная навигация"
-            className="ml-auto hidden lg:block"
+            className="ml-auto hidden xl:block"
           >
             <ul className="flex items-center gap-1">
               {nav.map((item) => (
@@ -137,7 +140,7 @@ export function Header() {
             </ul>
           </nav>
 
-          <div className="ml-auto flex items-center gap-2 lg:ml-0 lg:gap-3">
+          <div className="ml-auto flex items-center gap-2 xl:ml-0 xl:gap-3">
             <a
               href={`tel:${site.phoneHref}`}
               className="num hidden text-sm font-medium text-ink transition-colors duration-300 hover:text-accent xl:inline"
@@ -154,7 +157,7 @@ export function Header() {
               aria-expanded={open}
               aria-controls="mobile-menu"
               aria-label={open ? "Закрыть меню" : "Открыть меню"}
-              className="grid size-10 place-items-center rounded-full border border-line text-ink transition-colors duration-300 hover:border-line-strong lg:hidden"
+              className="grid size-10 place-items-center rounded-full border border-line text-ink transition-colors duration-300 hover:border-line-strong xl:hidden"
             >
               <span className="relative block h-3 w-[18px]">
                 <span
@@ -179,7 +182,7 @@ export function Header() {
         ref={panelRef}
         id="mobile-menu"
         hidden={!open}
-        className="fixed inset-x-0 top-(--header-h) bottom-0 z-40 overflow-y-auto border-t border-line bg-void/95 backdrop-blur-xl lg:hidden"
+        className="fixed inset-x-0 top-(--header-h) bottom-0 z-40 overflow-y-auto border-t border-line bg-void/95 backdrop-blur-xl xl:hidden"
       >
         <Container className="flex min-h-full flex-col py-10">
           <ul className="flex flex-col">

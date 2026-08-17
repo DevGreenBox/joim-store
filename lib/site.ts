@@ -10,6 +10,7 @@ export const site = siteJson;
  */
 export const nav = [
   { href: "/catalog", label: "Каталог", also: ["/product"] },
+  { href: "/how-to-choose", label: "Как выбрать" },
   { href: "/delivery", label: "Доставка" },
   { href: "/warranty", label: "Гарантия" },
   { href: "/gifts", label: "Подарки" },
@@ -22,7 +23,6 @@ export const nav = [
 export const allPages = [
   ...nav,
   { href: "/reviews", label: "Отзывы" },
-  { href: "/how-to-choose", label: "Как выбрать" },
 ] as const;
 
 /**
