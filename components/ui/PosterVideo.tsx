@@ -4,6 +4,13 @@ import { useRef, useState } from "react";
 
 import { GOALS, track } from "@/lib/analytics";
 
+/**
+ * Стартовая громкость. Ролики сняты громко, и на полной человек
+ * первым делом ищет, чем это выключить. Дальше он крутит ползунок
+ * сам — своё значение браузер запоминает на сеанс.
+ */
+const START_VOLUME = 0.2;
+
 type Props = {
   src: string;
   poster: string;
@@ -32,6 +39,7 @@ export function PosterVideo({ src, poster, ratio, className = "" }: Props) {
     if (!node) return;
     setStarted(true);
     node.controls = true;
+    node.volume = START_VOLUME;
     node.play();
     track(GOALS.videoPlay, { src });
   }

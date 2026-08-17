@@ -16,7 +16,6 @@ import { Container } from "@/components/ui/Container";
 import { ProductBuy } from "@/components/ui/ProductBuy";
 import { ProductCard } from "@/components/ui/ProductCard";
 import { ProductGallery } from "@/components/ui/ProductGallery";
-import { StarMark } from "@/components/ui/StarMark";
 import { Reveal } from "@/components/ui/Reveal";
 import { ReviewCard } from "@/components/ui/ReviewCard";
 import { Spin360 } from "@/components/ui/Spin360";
@@ -140,75 +139,37 @@ export default async function ProductPage({ params }: { params: Params }) {
           ]}
         />
 
-        {/* Имя над всем экраном: товар стоит по центру, и заголовок
-            в одной из боковых колонок читался бы подписью к ней. */}
-        <div className="mt-8 text-center">
-          <p className="readout text-[11px] leading-none tracking-[0.16em] text-faint uppercase">
-            {product.brand}
-          </p>
-          <h1 className="font-display mt-4 text-h2 font-semibold text-balance">
-            {product.name}
-          </h1>
-          <div className="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[13px] text-muted">
-            <span className="num flex items-center gap-1.5">
-              <svg viewBox="0 0 14 14" aria-hidden="true" className="size-3.5">
-                <path
-                  d="m7 1.5 1.7 3.5 3.8.5-2.8 2.7.7 3.8L7 10.2 3.6 12l.7-3.8L1.5 5.5l3.8-.5z"
-                  fill="var(--color-accent)"
-                />
-              </svg>
-              {product.rating.toFixed(1).replace(".", ",")}
-            </span>
-            <span className="num">
-              {product.reviews}{" "}
-              {plural(product.reviews, "отзыв", "отзыва", "отзывов")}
-            </span>
-            <span className="readout text-faint">Артикул {product.sku}</span>
-            <span
-              className={`flex items-center gap-2 ${
-                product.inStock ? "text-accent" : "text-faint"
-              }`}
-            >
-              <span
-                aria-hidden="true"
-                className={`inline-block size-1.5 rounded-full ${
-                  product.inStock ? "animate-sheen bg-accent" : "bg-current"
-                }`}
-              />
-              {product.inStock ? "В наличии" : "Под заказ"}
-            </span>
-          </div>
-        </div>
+        <div className="mt-8 grid gap-10 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
+          {/* Изображение */}
+          <div className="lg:sticky lg:top-[calc(var(--header-h)+24px)] lg:self-start">
+            <ProductGallery product={product}>
+              {product.badge ? (
+                <span className="rounded-full border border-accent/30 bg-accent/10 px-3 py-1.5 text-[11px] leading-none font-medium tracking-wide text-accent backdrop-blur-sm">
+                  {product.badge}
+                </span>
+              ) : null}
+              {discount > 0 ? (
+                <span className="num rounded-full border border-line-strong bg-void/60 px-3 py-1.5 text-[11px] leading-none font-medium backdrop-blur-sm">
+                  −{discount}%
+                </span>
+              ) : null}
+            </ProductGallery>
 
-        {/*
-          Первый экран: товар по центру, преимущества слева, показания
-          справа, покупка сразу под товаром.
-
-          Раньше это были две колонки — кадр и простыня текста рядом,
-          и главное действие тонуло среди характеристик. Теперь порядок
-          чтения совпадает с порядком решения: что это даёт → как выглядит
-          → сколько стоит → чем подтверждается.
-
-          На телефоне колонок нет: сначала товар и покупка, потом доводы,
-          потом числа. Порядок задан `order`, а не перестановкой разметки,
-          чтобы заголовок колонки оставался рядом со своим списком.
-        */}
-        <div className="mt-10 grid gap-10 lg:mt-14 lg:grid-cols-[0.78fr_1.35fr_0.78fr] lg:items-start lg:gap-12">
-          {/* Преимущества */}
-          <div className="order-2 lg:order-1">
-            <p className="eyebrow mb-5">Преимущества</p>
-            <ul className="space-y-4">
+            <ul className="mt-3 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-3">
               {product.features.map((feature) => (
-                <li key={feature} className="flex gap-3">
-                  <StarMark className="mt-1 size-3 shrink-0 text-accent" />
-                  <span className="text-[14px] leading-relaxed text-muted">
-                    {feature}
-                  </span>
+                <li
+                  key={feature}
+                  className="bg-surface p-5 text-[13px] leading-snug text-muted"
+                >
+                  {feature}
                 </li>
               ))}
             </ul>
 
-            <div className="mt-8 rounded-2xl border border-line bg-surface p-6">
+            {/* «Что в коробке» держит левую колонку в росте с правой:
+                иначе изображение переставало сопровождать характеристики
+                на середине их чтения. */}
+            <div className="mt-3 rounded-2xl border border-line bg-surface p-6 lg:p-7">
               <p className="eyebrow mb-5">В комплекте</p>
               <ul className="divide-y divide-line">
                 {product.included.map((item, index) => (
@@ -228,23 +189,59 @@ export default async function ProductPage({ params }: { params: Params }) {
             </div>
           </div>
 
-          {/* Товар и покупка */}
-          <div className="order-1 lg:order-2">
-            <ProductGallery product={product}>
-              {product.badge ? (
-                <span className="rounded-full border border-accent/30 bg-accent/10 px-3 py-1.5 text-[11px] leading-none font-medium tracking-wide text-accent backdrop-blur-sm">
-                  {product.badge}
-                </span>
-              ) : null}
-              {discount > 0 ? (
-                <span className="num rounded-full border border-line-strong bg-void/60 px-3 py-1.5 text-[11px] leading-none font-medium backdrop-blur-sm">
-                  −{discount}%
-                </span>
-              ) : null}
-            </ProductGallery>
+          {/* Информация и покупка */}
+          <div>
+            <p className="readout text-[11px] leading-none tracking-[0.16em] text-faint uppercase">
+              {product.brand}
+            </p>
 
-            {/* Цена и кнопка сразу под товаром — до любого текста. */}
-            <div className="mt-8 flex flex-wrap items-end justify-center gap-4">
+            <h1 className="font-display mt-4 text-h2 font-semibold text-balance">
+              {product.name}
+            </h1>
+
+            <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] text-muted">
+              <span className="num flex items-center gap-1.5">
+                <svg viewBox="0 0 14 14" aria-hidden="true" className="size-3.5">
+                  <path
+                    d="m7 1.5 1.7 3.5 3.8.5-2.8 2.7.7 3.8L7 10.2 3.6 12l.7-3.8L1.5 5.5l3.8-.5z"
+                    fill="var(--color-accent)"
+                  />
+                </svg>
+                {product.rating.toFixed(1).replace(".", ",")}
+              </span>
+              <span className="num">
+                {product.reviews}{" "}
+                {plural(product.reviews, "отзыв", "отзыва", "отзывов")}
+              </span>
+              <span className="readout text-faint">Артикул {product.sku}</span>
+              <span
+                className={`flex items-center gap-2 ${
+                  product.inStock ? "text-accent" : "text-faint"
+                }`}
+              >
+                <span
+                  aria-hidden="true"
+                  className={`inline-block size-1.5 rounded-full ${
+                    product.inStock
+                      ? "animate-sheen bg-accent"
+                      : "bg-current"
+                  }`}
+                />
+                {product.inStock ? "В наличии" : "Под заказ"}
+              </span>
+            </div>
+
+            {/* Мера ограничена: на 1440 строка описания уходила
+                за 95 знаков — на треть длиннее того, что читается
+                без потери строки. */}
+            <p className="mt-8 max-w-[54ch] text-[15px] leading-relaxed text-muted">
+              {product.description}
+            </p>
+
+            {/* Цена и кнопка до приборной панели. Панель из четырёх плиток
+                стояла выше и сдвигала главное действие страницы на 940 px —
+                за нижний край экрана 1440×900. */}
+            <div className="mt-9 flex items-end gap-4">
               <p className="num font-display text-h2 font-semibold">
                 {formatPrice(product.price)}
               </p>
@@ -255,11 +252,15 @@ export default async function ProductPage({ params }: { params: Params }) {
               ) : null}
             </div>
 
-            <div id="buy" className="mt-6 flex justify-center">
+            <div id="buy" className="mt-7">
               <ProductBuy slug={product.slug} inStock={product.inStock} />
             </div>
 
-            <ul className="mt-8 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2">
+            <div className="mt-10">
+              <ProductHighlights items={product.highlights} />
+            </div>
+
+            <ul className="mt-9 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2">
               <li className="bg-surface p-5">
                 <p className="text-[13px] font-medium">Доставка</p>
                 <p className="mt-1.5 text-[13px] leading-relaxed text-muted">
@@ -280,41 +281,30 @@ export default async function ProductPage({ params }: { params: Params }) {
                 </p>
               </li>
             </ul>
-          </div>
 
-          {/* Характеристики */}
-          <div className="order-3">
-            <p className="eyebrow mb-5">Характеристики</p>
-            <dl className="divide-y divide-line border-y border-line">
-              {product.specs.map((spec) => (
-                <div
-                  key={spec.label}
-                  className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-4"
-                >
-                  <dt className="text-[13px] text-faint">{spec.label}</dt>
-                  <dd
-                    className={`text-[14px] text-ink ${
-                      isReadout(spec.value) ? "readout" : "text-right"
-                    }`}
+            {/* Характеристики */}
+            <div className="mt-12">
+              <h2 className="eyebrow mb-6">Характеристики</h2>
+              <dl className="divide-y divide-line border-y border-line">
+                {product.specs.map((spec) => (
+                  <div
+                    key={spec.label}
+                    className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-4"
                   >
-                    {spec.value}
-                  </dd>
-                </div>
-              ))}
-            </dl>
+                    <dt className="text-[13px] text-faint">{spec.label}</dt>
+                    <dd
+                      className={`text-[14px] text-ink ${
+                        isReadout(spec.value) ? "readout" : "text-right"
+                      }`}
+                    >
+                      {spec.value}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
           </div>
         </div>
-
-        {/* Показания и описание — под всем экраном: сначала решение,
-            потом чтение. Мера описания ограничена, иначе на 1440
-            строка уходит за 95 знаков. */}
-        <div className="mt-16 lg:mt-[75px]">
-          <ProductHighlights items={product.highlights} />
-        </div>
-
-        <p className="mx-auto mt-12 max-w-[62ch] text-center text-[15px] leading-relaxed text-muted lg:mt-14 lg:text-base">
-          {product.description}
-        </p>
       </Container>
 
       {/* Ролик идёт перед сценариями: он показывает то же самое движением,
@@ -396,9 +386,9 @@ export default async function ProductPage({ params }: { params: Params }) {
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div>
               <h2 className="font-display text-h2 font-semibold">
-                {product.rating.toFixed(1).replace(".", ",")} из 5 по{" "}
+                {product.rating.toFixed(1).replace(".", ",")} из 5 —{" "}
                 {product.reviews}{" "}
-                {plural(product.reviews, "отзыву", "отзывам", "отзывам")}
+                {plural(product.reviews, "отзыв", "отзыва", "отзывов")}
               </h2>
             </div>
             <ButtonLink

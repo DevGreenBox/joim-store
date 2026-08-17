@@ -136,8 +136,8 @@ export function Hero() {
                   <span className="num text-ink">
                     {summary.average.toFixed(1).replace(".", ",")}
                   </span>{" "}
-                  по {summary.total}{" "}
-                  {plural(summary.total, "отзыву", "отзывам", "отзывам")}
+                  {summary.total}{" "}
+                  {plural(summary.total, "отзыв", "отзыва", "отзывов")}
                 </span>
               </Link>
             </div>

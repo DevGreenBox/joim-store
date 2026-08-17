@@ -70,8 +70,8 @@ export function ReviewsBand() {
               ))}
             </span>
             <p className="mt-5 text-[13px] leading-relaxed text-muted">
-              по {summary.total}{" "}
-              {plural(summary.total, "отзыву", "отзывам", "отзывам")}{" "}
+              {summary.total}{" "}
+              {plural(summary.total, "отзыв", "отзыва", "отзывов")}{" "}
               владельцев наших устройств
             </p>
           </Reveal>
