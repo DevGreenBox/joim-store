@@ -31,6 +31,16 @@ const OUT = path.join(ROOT, "public/images/products");
 const SIZE = 1200;
 const QUALITY = 82;
 
+/**
+ * Кадры, которые заказчик просил вставлять как есть: без чистки канта
+ * и без обрезки прозрачных полей, только перевод в webp. Качество выше
+ * общего — файл отдаётся таким, каким его прислали.
+ *
+ * Список нужен, чтобы правка пережила пересборку: без него следующий
+ * прогон снова прогнал бы кадр через defringe и trim.
+ */
+const AS_IS = new Map([["joim-es29-kit", 92]]);
+
 async function collect(dir) {
   const entries = await readdir(dir, { withFileTypes: true });
   const files = [];
@@ -49,15 +59,22 @@ for (const source of sources) {
   const name = path.basename(source).replace(/\.[^.]+$/, "");
   const target = path.join(OUT, `${name}.webp`);
 
-  // Светлый кант по контуру снимаем до уменьшения: на оригинале граница
-  // альфы точная, после resize она размазана и опору внутри не найти.
-  const { buffer } = await defringeFile(source);
+  if (AS_IS.has(name)) {
+    await sharp(source)
+      .resize(SIZE, SIZE, { fit: "inside", withoutEnlargement: true })
+      .webp({ quality: AS_IS.get(name), effort: 6 })
+      .toFile(target);
+  } else {
+    // Светлый кант по контуру снимаем до уменьшения: на оригинале граница
+    // альфы точная, после resize она размазана и опору внутри не найти.
+    const { buffer } = await defringeFile(source);
 
-  await sharp(buffer ?? source)
-    .resize(SIZE, SIZE, { fit: "inside", withoutEnlargement: true })
-    .trim({ threshold: 0 })
-    .webp({ quality: QUALITY, effort: 6 })
-    .toFile(target);
+    await sharp(buffer ?? source)
+      .resize(SIZE, SIZE, { fit: "inside", withoutEnlargement: true })
+      .trim({ threshold: 0 })
+      .webp({ quality: QUALITY, effort: 6 })
+      .toFile(target);
+  }
 
   const before = (await stat(source)).size;
   const after = (await stat(target)).size;

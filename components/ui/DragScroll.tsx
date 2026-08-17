@@ -26,9 +26,14 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
  * кадров: на экране 120 Гц кадров вдвое больше, и «доля за кадр» гасила
  * накат вдвое быстрее — лента вела себя по-разному на разных мониторах.
  */
-const FRICTION = 0.024;
-/** Ниже этой скорости (px/с) считаем, что лента встала. */
-const STOP = 7;
+const FRICTION = 0.002;
+/**
+ * Ниже этой скорости (px/с) лента считается остановленной. Порог высокий
+ * намеренно: на низкой скорости `scrollLeft` округляется до целых, и накат
+ * дотягивался шагами 1 px по десятку кадров — это читается не плавностью,
+ * а подёргиванием. Лучше закончить движение, чем доползать.
+ */
+const STOP = 24;
 /** Больше этого шаг времени не берём: вкладка была в фоне. */
 const MAX_STEP = 0.05;
 
@@ -55,6 +60,16 @@ export function DragScroll({ children, className = "", ...rest }: Props) {
     velocity: 0,
     frame: 0,
     snap: "",
+    /**
+     * Своя позиция, дробью. Читать `scrollLeft` обратно нельзя: браузер
+     * округляет его до целых, и на каждом кадре терялся остаток — накат
+     * шёл ступеньками вместо ровного замедления.
+     */
+    pos: 0,
+    /** Последняя точка указателя; в прокрутку идёт раз в кадр, не на событие. */
+    pointerX: 0,
+    /** То же, что `dragging`, но в ref: колбэк кадра не видит свежий state. */
+    held: false,
   });
 
   useEffect(() => {
@@ -85,10 +100,6 @@ export function DragScroll({ children, className = "", ...rest }: Props) {
     state.current.frame = 0;
   }
 
-  function restoreSnap(node: HTMLUListElement) {
-    node.style.scrollSnapType = state.current.snap;
-  }
-
   function onPointerDown(event: React.PointerEvent<HTMLUListElement>) {
     if (event.pointerType !== "mouse" || event.button !== 0) return;
     const node = event.currentTarget;
@@ -110,6 +121,7 @@ export function DragScroll({ children, className = "", ...rest }: Props) {
     s.lastX = event.clientX;
     s.lastAt = event.timeStamp;
     s.velocity = 0;
+    s.held = true;
     setDragging(true);
   }
 
@@ -118,7 +130,19 @@ export function DragScroll({ children, className = "", ...rest }: Props) {
     const node = event.currentTarget;
     const s = state.current;
 
-    node.scrollLeft = s.startLeft - (event.clientX - s.startX);
+    // Указатель шлёт события чаще, чем экран рисует кадры. Запоминаем
+    // последнюю точку и пишем прокрутку один раз за кадр: лишние записи
+    // заставляли браузер пересчитывать раскладку по три раза на кадр.
+    s.pointerX = event.clientX;
+    if (!s.frame) {
+      const follow = () => {
+        s.frame = 0;
+        if (!s.held) return;
+        s.pos = s.startLeft - (s.pointerX - s.startX);
+        node.scrollLeft = s.pos;
+      };
+      s.frame = requestAnimationFrame(follow);
+    }
 
     // Скорость берём по последнему отрезку, а не за весь жест: важно,
     // с какой руки ленту отпустили, а не как её вели вначале.
@@ -137,6 +161,7 @@ export function DragScroll({ children, className = "", ...rest }: Props) {
     const node = event.currentTarget;
     const s = state.current;
 
+    s.held = false;
     setDragging(false);
     try {
       if (node.hasPointerCapture(event.pointerId)) {
@@ -146,31 +171,36 @@ export function DragScroll({ children, className = "", ...rest }: Props) {
       /* пусто */
     }
 
+    // Прилипание после жеста мышью не возвращаем: снова включённое,
+    // оно тут же дёргает ленту к ближайшей карточке — ровно тот рывок
+    // в конце наката, из-за которого прокрутка читалась неплавной.
+    // Пальцем и колесом прилипание работает как раньше: до первого
+    // перетаскивания мышью свойство не снималось.
     const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (calm || Math.abs(s.velocity) < STOP) {
-      restoreSnap(node);
+      s.velocity = 0;
       return;
     }
 
     const max = node.scrollWidth - node.clientWidth;
+    s.pos = node.scrollLeft;
     let last = performance.now();
     const coast = (now = performance.now()) => {
       const dt = Math.min((now - last) / 1000, MAX_STEP);
       last = now;
       s.velocity *= Math.pow(FRICTION, dt);
-      const next = node.scrollLeft + s.velocity * dt;
+      s.pos += s.velocity * dt;
 
       // Упёрлись в край — гасим сразу, без отскока.
-      if (next <= 0 || next >= max) {
-        node.scrollLeft = next <= 0 ? 0 : max;
-        restoreSnap(node);
+      if (s.pos <= 0 || s.pos >= max) {
+        s.pos = s.pos <= 0 ? 0 : max;
+        node.scrollLeft = s.pos;
         s.frame = 0;
         return;
       }
 
-      node.scrollLeft = next;
+      node.scrollLeft = s.pos;
       if (Math.abs(s.velocity) < STOP) {
-        restoreSnap(node);
         s.frame = 0;
         return;
       }
