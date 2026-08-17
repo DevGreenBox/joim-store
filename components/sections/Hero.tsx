@@ -72,7 +72,7 @@ export function Hero() {
           чтобы вырезанные приборы не тонули в деталях. */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-20">
         <Image
-          src="/images/hero/bay.webp"
+          src="/images/hero/engine-bay.webp"
           alt=""
           fill
           sizes="100vw"
@@ -206,7 +206,10 @@ export function Hero() {
                     href={`/product/${product.slug}`}
                     className="group/name block min-h-11"
                   >
-                    <span className="readout block text-[11px] leading-snug text-faint transition-colors duration-300 group-hover/name:text-accent">
+                    {/* Не самый тихий серый, а основной: на подкапотной
+                        подложке `text-faint` давал 3,84:1 при норме 4,5,
+                        а это единственные ссылки на товары в первом экране. */}
+                    <span className="readout block text-[11px] leading-snug text-muted transition-colors duration-300 group-hover/name:text-accent">
                       {product.name.replace(/^JOIM\s*/, "")}
                     </span>
                     <span className="num mt-1.5 block text-[13px] text-ink">

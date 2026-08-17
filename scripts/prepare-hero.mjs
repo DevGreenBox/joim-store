@@ -243,10 +243,11 @@ const BACKDROPS = [
     width: 2400,
   },
   {
-    // Съёмка подкапотного пространства. Пришла с расширением .ARW,
-    // но внутри webp — sharp читает по содержимому, не по имени.
-    src: "assets/scenes/hero-bay-source.webp",
-    out: "public/images/hero/bay.webp",
+    // Съёмка подкапотного пространства без предметов на моторе:
+    // приборы на первом экране стоят вырезками поверх, и второй
+    // комплект в самом кадре читался бы дублем.
+    src: "assets/scenes/hero-bay-source.png",
+    out: "public/images/hero/engine-bay.webp",
     width: 2400,
   },
 ];
