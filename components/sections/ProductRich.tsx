@@ -48,14 +48,22 @@ function Banner({ block }: { block: Extract<RichBlock, { type: "banner" }> }) {
           ) : null}
         </div>
 
-        <div className="relative min-h-[260px] lg:min-h-[380px]">
+        <div
+          className={`relative ${
+            block.scene
+              ? "min-h-[300px] lg:min-h-[440px]"
+              : "min-h-[260px] lg:min-h-[380px]"
+          }`}
+        >
           <Image
             src={block.image}
             alt=""
             aria-hidden="true"
             fill
             sizes="(max-width: 1023px) 100vw, 50vw"
-            className="object-contain p-8 lg:p-12"
+            className={
+              block.scene ? "object-cover" : "object-contain p-8 lg:p-12"
+            }
           />
         </div>
       </Reveal>
@@ -96,14 +104,14 @@ function Media({ block }: { block: Extract<RichBlock, { type: "media" }> }) {
           />
         ) : block.image ? (
           <div className="relative aspect-[16/9]">
-            <FrameBackdrop />
+            {block.scene ? null : <FrameBackdrop />}
             <Image
               src={block.image}
               alt=""
               aria-hidden="true"
               fill
               sizes="(max-width: 1023px) 100vw, 1400px"
-              className="object-contain p-[6%]"
+              className={block.scene ? "object-cover" : "object-contain p-[6%]"}
             />
           </div>
         ) : null}

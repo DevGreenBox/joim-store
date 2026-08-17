@@ -70,6 +70,16 @@ const WANTED = [
   // Съёмка ES-29 у Базилева — 7 кадров в салоне. Фон не белый, вырезать
   // нечего: оба прибора и кейс лежат на сиденье, кадр вертикальный.
   { shoot: "10.09.25", dir: "Базилев", cut: false, file: "BAZ02349.jpg", out: "es29-seat" },
+  { shoot: "10.09.25", dir: "Базилев", cut: false, file: "BAZ02343.jpg", out: "es29-pair" },
+  { shoot: "10.09.25", dir: "Базилев", cut: false, file: "BAZ02346.jpg", out: "es29-detail" },
+  { shoot: "10.09.25", dir: "Базилев", cut: false, file: "BAZ02348.jpg", out: "es29-wheel" },
+
+  // Производство: цех, пресс-форма и стенд, на котором каждый прибор
+  // проверяют под нагрузкой. Единственные кадры, которыми утверждение
+  // «делаем сами» подтверждается, а не повторяется словами.
+  { shoot: "16.12.24", dir: "Производство/production", cut: false, file: "Production.jpg", out: "joim-factory" },
+  { shoot: "16.12.24", dir: "Производство/mold production video and pics", cut: false, file: "1.jpg", out: "joim-mold" },
+  { shoot: "16.12.24", dir: "Производство/after production testing photos", cut: false, file: "testing .jpg", out: "joim-testing" },
 
   // Репортаж ES-19 — папка `18.12.24 (JOIM ES-19, ES-9)/Es-19`, 125 кадров.
   { shoot: "18.12.24", dir: "Es-19", cut: false, file: "DSC09013.jpg", out: "es19-battery" },
@@ -161,8 +171,13 @@ for (const want of WANTED) {
 
   if (!cache.has(key)) {
     const shoot = shoots.find((i) => i.name.startsWith(want.shoot));
-    const inside = await list(shoot.path);
-    cache.set(key, await list(inside.find((i) => i.name === dir).path));
+    // Путь может быть вложенным: съёмка производства разложена
+    // по подпапкам («Производство/production»).
+    let items = await list(shoot.path);
+    for (const step of dir.split("/")) {
+      items = await list(items.find((i) => i.name === step).path);
+    }
+    cache.set(key, items);
   }
 
   const item = cache.get(key).find((i) => i.name === want.file);

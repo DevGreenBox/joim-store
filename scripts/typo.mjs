@@ -22,6 +22,8 @@ import path from "node:path";
 const ROOT = path.resolve(import.meta.dirname, "..");
 const SRC = path.join(ROOT, "content");
 const NBSP = " ";
+/** Неразрывный дефис — для имён моделей вида ES-19. */
+const NBHY = "‑";
 
 /** Предлоги в три буквы. Всё, что в одну-две, ловится длиной. */
 const LONG = ["для", "без", "над", "под", "при", "про", "изо", "обо", "ото"];
@@ -35,8 +37,11 @@ const AFTER = ["же", "ли", "ль", "бы", "б"];
  */
 const SKIP_KEYS = new Set([
   "src", "href", "slug", "id", "art", "icon", "image", "video", "poster",
-  "alt", "sku", "category", "brand", "key", "name", "file", "cta",
+  "alt", "sku", "category", "brand", "key", "file", "cta",
 ]);
+
+// `name` намеренно не в списке: это отображаемый текст — имена моделей,
+// категорий и авторов отзывов. Технические имена лежат в `slug` и `sku`.
 
 const LOOKS_TECHNICAL = /^(\/|https?:|[a-z0-9._-]+$)/i;
 
@@ -66,6 +71,10 @@ function bind(text) {
 
   // Тире не начинает строку — держим его на строке предыдущего слова.
   out = out.replace(/(\S) +—/g, `$1${NBSP}—`);
+
+  // Имена моделей не рвутся по дефису: на 390 px «ES-19» разъезжалось
+  // на «ES-» и «19». Дефис заменяется неразрывным (U+2011).
+  out = out.replace(/\b([A-Z]{2,4})-(\d{1,3})\b/g, `$1${NBHY}$2`);
 
   return out;
 }
