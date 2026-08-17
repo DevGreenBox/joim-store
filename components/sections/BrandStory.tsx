@@ -11,8 +11,8 @@ import { site } from "@/lib/site";
  * История компании: год основания крупно, довод рядом, выход на страницу
  * о бренде.
  *
- * Кадр репортажный — человек у открытого капота из съёмки заказчика:
- * страница о компании начинается не с офиса, а с того, где устройством
+ * Кадр репортажный — прибор стоит на аккумуляторе под открытым капотом:
+ * история компании начинается не с офиса, а с того, где устройством
  * пользуются.
  */
 export function BrandStory() {
@@ -51,11 +51,11 @@ export function BrandStory() {
             className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-line"
           >
             <Image
-              src="/images/hero/advantages.webp"
-              alt="Человек у открытого капота с пусковым устройством JOIM"
+              src="/images/products/es19-hood.webp"
+              alt="Пусковое устройство JOIM Easy Start ES-19 стоит на аккумуляторе под открытым капотом"
               fill
               sizes="(max-width: 1023px) 100vw, 44vw"
-              className="object-cover object-[38%_44%]"
+              className="object-cover"
             />
           </Reveal>
         </div>

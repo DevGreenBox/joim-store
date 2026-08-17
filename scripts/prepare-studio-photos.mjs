@@ -67,9 +67,14 @@ const WANTED = [
   { shoot: "10.02.26", file: "4Y8A2182.JPG", out: "joim-pvc1-with-crevice" },
   { shoot: "10.02.26", file: "4Y8A4208.JPG", out: "joim-pvc1-with-turbo" },
 
+  // Съёмка ES-29 у Базилева — 7 кадров в салоне. Фон не белый, вырезать
+  // нечего: оба прибора и кейс лежат на сиденье, кадр вертикальный.
+  { shoot: "10.09.25", dir: "Базилев", cut: false, file: "BAZ02349.jpg", out: "es29-seat" },
+
   // Репортаж ES-19 — папка `18.12.24 (JOIM ES-19, ES-9)/Es-19`, 125 кадров.
   { shoot: "18.12.24", dir: "Es-19", cut: false, file: "DSC09013.jpg", out: "es19-battery" },
   { shoot: "18.12.24", dir: "Es-19", cut: false, file: "DSC09027.jpg", out: "es19-bay" },
+  { shoot: "18.12.24", dir: "Es-19", cut: false, file: "DSC09029.jpg", out: "es19-hood" },
   { shoot: "18.12.24", dir: "Es-19", cut: false, file: "DSC09031.jpg", out: "es19-closeup" },
   { shoot: "18.12.24", dir: "Es-19", cut: false, file: "DSC09271.jpg", out: "es19-trunk" },
   { shoot: "18.12.24", dir: "Es-19", cut: false, file: "DSC09314.jpg", out: "es19-powerbank" },

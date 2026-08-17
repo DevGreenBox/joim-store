@@ -11,7 +11,8 @@ import home from "@/content/pages/home.json";
  * и компании. Две кнопки, а не одна: сценарии расходятся с первого шага,
  * и общая страница «подарки» заставила бы выбирать дважды.
  *
- * Кадр — кейс на липучке: подарок узнаётся по упаковке, а не по прибору.
+ * Кадр — оба прибора и кейс на сиденье: подарок показан там, где им
+ * пользуются, а не на белой подложке.
  */
 export function GiftBand() {
   const { gift } = home.sections;
@@ -45,13 +46,16 @@ export function GiftBand() {
             </div>
           </div>
 
-          <div className="relative min-h-[260px] lg:min-h-0">
+          {/* Кадр во всю ячейку, без полей: это не пакшот на подложке,
+              а сцена — оба прибора и кейс лежат на сиденье. Обрезка
+              по центру: кадр вертикальный, содержимое в середине. */}
+          <div className="relative min-h-[280px] lg:min-h-0">
             <Image
-              src="/images/products/joim-es29-kit.webp"
-              alt="Кейс JOIM Easy Start с устройством, клеммами и проводами"
+              src="/images/products/es29-seat.webp"
+              alt="Два пусковых устройства JOIM Easy Start и кейс на пассажирском сиденье"
               fill
               sizes="(max-width: 1023px) 100vw, 44vw"
-              className="object-contain p-8 lg:p-10"
+              className="object-cover"
             />
           </div>
         </Reveal>

@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { Container } from "@/components/ui/Container";
+import { DragScroll } from "@/components/ui/DragScroll";
 import { FrameBackdrop } from "@/components/ui/FrameBackdrop";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -9,10 +10,12 @@ import home from "@/content/pages/home.json";
 /**
  * Лента баннеров с ключевыми преимуществами.
  *
- * Листается прокруткой с прилипанием (`snap`), без библиотеки и без JS:
- * на телефоне это привычный жест, на десктопе работает колесо с Shift
- * и перетаскивание тачпадом. Стрелок нет намеренно — они требуют
- * состояния, скрипта и всё равно проигрывают жесту.
+ * Листается жестом: пальцем и колесом — средствами браузера, мышью —
+ * перетаскиванием с инерцией (`DragScroll`). Стрелок нет намеренно:
+ * они требуют состояния, скрипта и всё равно проигрывают жесту.
+ *
+ * Прилипание ослаблено до `proximity`: при `mandatory` лента дёргается
+ * к ближайшей карточке прямо посреди наката и инерция не читается.
  *
  * Баннеров шесть, видно два с половиной: обрезанный третий и есть
  * приглашение листать, а не подпись «листайте».
@@ -34,7 +37,10 @@ export function BenefitSlider() {
       {/* Лента выходит за контейнер вправо: обрезанная карточка на краю
           показывает, что дальше есть ещё. Слева поле контейнера держится
           отступом первой карточки. */}
-      <ul className="mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-pl-5 px-5 pb-4 sm:scroll-pl-8 sm:px-8 lg:mt-14 lg:gap-6 lg:scroll-pl-12 lg:px-12 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <DragScroll
+        aria-label={home.sections.benefits.title}
+        className="mt-10 flex snap-x snap-proximity gap-5 overflow-x-auto scroll-pl-5 px-5 pb-4 sm:scroll-pl-8 sm:px-8 lg:mt-14 lg:gap-6 lg:scroll-pl-12 lg:px-12 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
         {home.benefits.map((item, index) => (
           <Reveal
             as="li"
@@ -71,7 +77,7 @@ export function BenefitSlider() {
             </p>
           </Reveal>
         ))}
-      </ul>
+      </DragScroll>
     </section>
   );
 }

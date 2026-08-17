@@ -154,7 +154,6 @@ export function Hero() {
 
               {line.map((product, index) => {
                 const spot = LAYOUT[index];
-                const hit = product.slug === "joim-easy-start-es19";
                 return (
                   <Link
                     key={product.slug}
@@ -173,7 +172,6 @@ export function Hero() {
                         width={564}
                         height={1200}
                         sizes="(max-width: 1023px) 30vw, 16vw"
-                        {...(hit ? { preload: true } : null)}
                         className="h-full w-auto [filter:drop-shadow(0_26px_34px_rgba(0,0,0,0.6))_drop-shadow(0_4px_8px_rgba(0,0,0,0.5))]"
                       />
                     </span>

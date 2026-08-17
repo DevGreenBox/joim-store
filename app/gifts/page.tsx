@@ -36,31 +36,40 @@ export default function GiftsPage() {
         <Breadcrumbs items={[{ label: "Подарки" }]} />
         <PageMark />
 
-        <div className="relative mt-7 max-w-3xl">
-          <span aria-hidden="true" className="accent-rule mb-6" />
-          <h1 className="font-display text-h1 font-semibold text-balance">
-            {gifts.title}
-          </h1>
-          <p className="mt-6 text-[15px] leading-relaxed text-muted sm:text-base">
-            {gifts.lead}
-          </p>
-        </div>
       </Container>
 
-      {/* Кейс крупно: подарок узнают по упаковке, а не по прибору */}
-      <Container size="wide" className="mt-12 lg:mt-[150px]">
-        <Reveal className="relative isolate overflow-hidden rounded-3xl border border-line bg-surface">
+      {/* Заголовок и кадр одним блоком. Раньше это были две вещи подряд:
+          текст, а под ним декоративная полоса 21:9 с пакшотом. Кадр
+          с сиденья вертикальный, в полосу он не влезает — зато встаёт
+          колонкой рядом с текстом, и первый экран становится одним
+          высказыванием вместо двух. */}
+      <Container size="wide" className="mt-10 lg:mt-14">
+        <Reveal className="relative isolate grid overflow-hidden rounded-3xl border border-line bg-surface lg:grid-cols-[1.05fr_1fr]">
           <div
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 -z-10 brand-lines opacity-40"
           />
-          <div className="relative aspect-[16/10] sm:aspect-[21/9]">
+
+          <div className="flex flex-col justify-center p-8 lg:p-14">
+            <span aria-hidden="true" className="gauge accent-rule mb-6" />
+            <h1 className="font-display text-h1 font-semibold text-balance">
+              {gifts.title}
+            </h1>
+            <p className="mt-6 max-w-md text-[15px] leading-relaxed text-muted sm:text-base">
+              {gifts.lead}
+            </p>
+          </div>
+
+          {/* Высота задана ячейке, а не тексту: кадр вертикальный, и в полосе
+              по высоте текста от него оставалась бы середина. */}
+          <div className="relative min-h-[340px] sm:min-h-[420px] lg:min-h-[480px]">
             <Image
-              src="/images/products/joim-es29-kit.webp"
-              alt="Кейс JOIM Easy Start: устройство, клеммы, провода и адаптер по местам"
+              src="/images/products/es29-seat.webp"
+              alt="Два пусковых устройства JOIM Easy Start и кейс на пассажирском сиденье"
               fill
-              sizes="(max-width: 1023px) 100vw, 1400px"
-              className="object-contain p-8 lg:p-12"
+              sizes="(max-width: 1023px) 100vw, 48vw"
+              preload
+              className="object-cover"
             />
           </div>
         </Reveal>
