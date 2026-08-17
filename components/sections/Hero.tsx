@@ -62,13 +62,29 @@ export function Hero() {
 
   return (
     <section className="relative isolate overflow-hidden lg:pb-[75px]">
-      {/* Фирменная подложка вместо съёмки: графитовый градиент, линии
-          в форме сторон звезды и сам знак. Тот же набор, которым
-          у бренда набраны карточки на маркетплейсах. */}
+      {/* Подложка — шлифованный графит: свет справа сверху, левая половина
+          в тени под заголовком. Ни знака, ни сетки линий здесь больше нет:
+          вместе с приборами и заголовком они давали кашу, а фон первого
+          экрана должен молчать. Знак и линии остались в блоках ниже, где
+          над ними ничего не стоит. */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-20">
-        <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_78%_38%,#22272400_0%,#1b201d_46%,#111313_100%)]" />
-        <StarMark className="absolute -top-[28%] -right-[6%] aspect-square w-[52%] rotate-[-14deg] text-accent/[0.05]" />
-        <div className="absolute inset-0 brand-lines mask-fade-y opacity-45" />
+        <Image
+          src="/images/hero/plate.webp"
+          alt=""
+          fill
+          sizes="100vw"
+          preload
+          className="object-cover object-center"
+        />
+        {/* Ровная завеса поверх металла. В присланном кадре светлая часть
+            доходит до rgb 93, и серый текст на ней даёт 3,1:1 — ниже нормы
+            4,5:1. Под шапкой и подписями линейки это как раз самая светлая
+            зона. Завеса опускает верх до ~60 и оставляет и фактуру,
+            и направление света. */}
+        <div className="absolute inset-0 bg-void/45" />
+
+        {/* Нижняя завеса сводит кадр в цвет страницы: без неё полоса цифр
+            стоит на видимом стыке. */}
         <div className="absolute inset-x-0 bottom-0 h-64 bg-[linear-gradient(to_top,var(--color-void),transparent)]" />
       </div>
 

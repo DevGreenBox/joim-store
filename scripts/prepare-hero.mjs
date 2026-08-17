@@ -228,5 +228,33 @@ async function plate(item) {
   console.log(`${item.out}: ${info.width}×${info.height}, ${Math.round(info.size / 1024)} КБ`);
 }
 
+/**
+ * Готовая подложка первого экрана: шлифованный графит, свет справа сверху,
+ * левая половина уходит в тень под заголовок. Пришла от заказчика уже
+ * законченной, поэтому идёт мимо коррекции и виньетки — только webp.
+ *
+ * Ширина 2400: на 1920 кадру нужен запас, а тянуть ровный металл вверх
+ * дешевле, чем любую фотографию с деталями.
+ */
+const BACKDROPS = [
+  {
+    src: "assets/scenes/hero-plate-source.png",
+    out: "public/images/hero/plate.webp",
+    width: 2400,
+  },
+];
+
+async function backdrop(item) {
+  const info = await sharp(item.src)
+    .resize(item.width, null, { kernel: "lanczos3" })
+    .webp({ quality: 92, effort: 6, smartSubsample: true })
+    .toFile(item.out);
+
+  console.log(
+    `${item.out}: ${info.width}×${info.height}, ${Math.round(info.size / 1024)} КБ`,
+  );
+}
+
 for (const slide of HERO) await hero(slide);
 for (const item of PLATES) await plate(item);
+for (const item of BACKDROPS) await backdrop(item);
