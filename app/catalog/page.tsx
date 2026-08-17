@@ -6,6 +6,7 @@ import {
   catalogHref,
 } from "@/components/sections/CatalogFilters";
 import { FilterPanel } from "@/components/sections/FilterPanel";
+import { CatalogBanner, CatalogUsp } from "@/components/sections/CatalogPromo";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
@@ -92,7 +93,11 @@ export default async function CatalogPage({
         </div>
       </Container>
 
-      <Container size="wide" className="mt-12 lg:mt-[150px]">
+      <Container size="wide" className="mt-12 lg:mt-[75px]">
+        <CatalogUsp />
+      </Container>
+
+      <Container size="wide" className="mt-12 lg:mt-[75px]">
         <div className="grid gap-10 lg:grid-cols-[264px_1fr] lg:gap-14">
           <aside className="lg:sticky lg:top-[calc(var(--header-h)+24px)] lg:self-start">
             <FilterPanel total={products.length}>
@@ -167,6 +172,10 @@ export default async function CatalogPage({
             )}
           </div>
         </div>
+      </Container>
+
+      <Container size="wide" className="mt-16 lg:mt-[150px]">
+        <CatalogBanner />
       </Container>
     </div>
   );

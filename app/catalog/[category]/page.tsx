@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { ProductHighlights } from "@/components/sections/ProductHighlights";
+import { CatalogUsp } from "@/components/sections/CatalogPromo";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
@@ -147,6 +148,12 @@ export default async function CategoryPage({ params }: { params: Params }) {
             </Reveal>
           ))}
         </ul>
+      </Container>
+
+      {/* Доводы под сеткой: наверху человек ещё выбирает модель,
+          внизу ему важно, у кого он её берёт. */}
+      <Container size="wide" className="mt-16 lg:mt-[150px]">
+        <CatalogUsp />
       </Container>
 
       {showPicker ? (

@@ -206,9 +206,12 @@ export default async function ProductPage({ params }: { params: Params }) {
                     fill="var(--color-accent)"
                   />
                 </svg>
-                {product.rating.toFixed(1)}
+                {product.rating.toFixed(1).replace(".", ",")}
               </span>
-              <span className="num">{product.reviews} отзывов</span>
+              <span className="num">
+                {product.reviews}{" "}
+                {plural(product.reviews, "отзыв", "отзыва", "отзывов")}
+              </span>
               <span className="readout text-faint">Артикул {product.sku}</span>
               <span
                 className={`flex items-center gap-2 ${
@@ -373,13 +376,13 @@ export default async function ProductPage({ params }: { params: Params }) {
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div>
               <h2 className="font-display text-[clamp(1.5rem,3.4vw,2.25rem)] leading-tight font-semibold tracking-[-0.02em]">
-                {reviews.average.toFixed(1).replace(".", ",")} из 5 по{" "}
-                {reviews.total.toLocaleString("ru-RU")}{" "}
-                {plural(reviews.total, "оценке", "оценкам", "оценкам")}
+                {product.rating.toFixed(1).replace(".", ",")} из 5 по{" "}
+                {product.reviews}{" "}
+                {plural(product.reviews, "отзыву", "отзывам", "отзывам")}
               </h2>
             </div>
             <ButtonLink
-              href={`/reviews#${product.slug}`}
+              href="/reviews"
               variant="outline"
               size="sm"
               arrow
