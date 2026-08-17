@@ -2,7 +2,11 @@
 
 import { getProducts } from "@/lib/catalog";
 import { packOrder, quote, type ShippingQuote } from "@/lib/cdek";
-import { getDeliveryOption, shippingFor } from "@/lib/delivery";
+import {
+  deliveryOptions,
+  getDeliveryOption,
+  shippingFor,
+} from "@/lib/delivery";
 import { notifyLead, notifyOrder } from "@/lib/notify";
 
 /** Накладная: то, что печатают вместе с посылкой. */
@@ -178,7 +182,9 @@ export async function submitOrder(
     errors.email = "Проверьте адрес почты";
   }
 
-  if (delivery !== "pickup" && address.length < 5) {
+  if (!deliveryOptions.some((option) => option.id === delivery)) {
+    errors.delivery = "Выберите способ получения";
+  } else if (delivery !== "pickup" && address.length < 5) {
     errors.address = "Укажите адрес доставки";
   }
 

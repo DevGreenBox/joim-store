@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { CountUp } from "@/components/ui/CountUp";
 import { FrameBackdrop } from "@/components/ui/FrameBackdrop";
+import { PosterVideo } from "@/components/ui/PosterVideo";
 import { Reveal } from "@/components/ui/Reveal";
 import type { RichBlock } from "@/lib/types";
 
@@ -37,7 +38,7 @@ function Banner({ block }: { block: Extract<RichBlock, { type: "banner" }> }) {
           }`}
         >
           <span aria-hidden="true" className="gauge accent-rule mb-6" />
-          <h2 className="font-display text-[clamp(1.5rem,3.4vw,2.25rem)] leading-[1.1] font-semibold tracking-[-0.02em] text-balance">
+          <h2 className="font-display text-h2 font-semibold text-balance">
             {block.title}
           </h2>
           {block.text ? (
@@ -67,7 +68,7 @@ function Text({ block }: { block: Extract<RichBlock, { type: "text" }> }) {
     <Container size="wide">
       <Reveal className="max-w-2xl">
         <span aria-hidden="true" className="gauge accent-rule mb-6" />
-        <h2 className="font-display text-[clamp(1.5rem,3.4vw,2.25rem)] leading-tight font-semibold tracking-[-0.02em] text-balance">
+        <h2 className="font-display text-h2 font-semibold text-balance">
           {block.title}
         </h2>
         {block.paragraphs.map((paragraph) => (
@@ -88,16 +89,11 @@ function Media({ block }: { block: Extract<RichBlock, { type: "media" }> }) {
     <Container size="wide">
       <Reveal className="relative isolate overflow-hidden rounded-3xl border border-line">
         {block.video ? (
-          <video
-            controls
-            preload="none"
+          <PosterVideo
+            src={block.video.src}
             poster={block.video.poster}
-            playsInline
-            className="block w-full"
-            style={{ aspectRatio: block.video.ratio }}
-          >
-            <source src={block.video.src} type="video/mp4" />
-          </video>
+            ratio={block.video.ratio}
+          />
         ) : block.image ? (
           <div className="relative aspect-[16/9]">
             <FrameBackdrop />
@@ -128,7 +124,7 @@ function Specs({ block }: { block: Extract<RichBlock, { type: "specs" }> }) {
       {block.title ? (
         <Reveal>
           <span aria-hidden="true" className="gauge accent-rule mb-6" />
-          <h2 className="font-display mb-10 text-[clamp(1.5rem,3.4vw,2.25rem)] leading-tight font-semibold tracking-[-0.02em]">
+          <h2 className="font-display mb-10 text-h2 font-semibold">
             {block.title}
           </h2>
         </Reveal>
@@ -141,7 +137,7 @@ function Specs({ block }: { block: Extract<RichBlock, { type: "specs" }> }) {
             delay={index * 70}
             className="bg-surface p-6 lg:p-8"
           >
-            <dt className="num font-display text-[clamp(1.75rem,3.4vw,2.5rem)] leading-none font-semibold tracking-[-0.03em]">
+            <dt className="num font-display text-h2 font-semibold">
               <CountUp value={item.value} />
               {item.unit ? (
                 <span className="readout ml-1.5 text-[13px] font-normal text-faint">
@@ -165,7 +161,7 @@ function Columns({ block }: { block: Extract<RichBlock, { type: "columns" }> }) 
       {block.title ? (
         <Reveal>
           <span aria-hidden="true" className="gauge accent-rule mb-6" />
-          <h2 className="font-display mb-10 text-[clamp(1.5rem,3.4vw,2.25rem)] leading-tight font-semibold tracking-[-0.02em]">
+          <h2 className="font-display mb-10 text-h2 font-semibold">
             {block.title}
           </h2>
         </Reveal>

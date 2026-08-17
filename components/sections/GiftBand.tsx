@@ -28,7 +28,7 @@ export function GiftBand() {
 
           <div className="flex flex-col justify-center p-8 lg:p-14">
             <span aria-hidden="true" className="gauge accent-rule mb-6" />
-            <h2 className="font-display text-[clamp(1.75rem,4.2vw,2.75rem)] leading-[1.08] font-semibold tracking-[-0.03em] text-balance">
+            <h2 className="font-display text-h2 font-semibold text-balance">
               {gift.title}
             </h2>
             <p className="mt-5 max-w-md text-[15px] leading-relaxed text-muted">

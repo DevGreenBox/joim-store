@@ -23,12 +23,15 @@ export function CatalogUsp() {
           y={14}
           className="bg-surface p-5 lg:p-6"
         >
-          <p className="num font-display text-[clamp(1.25rem,2.2vw,1.625rem)] leading-none font-semibold tracking-[-0.03em] text-accent">
+          <p className="num font-display text-h3 font-semibold text-accent">
             {item.value}
           </p>
-          <h2 className="font-display mt-4 text-[15px] leading-snug font-semibold tracking-[-0.01em]">
+          {/* Подпись плитки, а не заголовок раздела: с тегом h2 четыре
+              рекламных обещания оказывались в оглавлении страницы выше
+              самих товаров. */}
+          <p className="font-display mt-4 text-[15px] leading-snug font-semibold tracking-[-0.01em]">
             {item.title}
-          </h2>
+          </p>
           <p className="mt-2 text-[13px] leading-relaxed text-muted">
             {item.text}
           </p>
@@ -50,7 +53,7 @@ export function CatalogBanner() {
       <div className="flex flex-wrap items-center justify-between gap-x-10 gap-y-6">
         <div className="max-w-xl">
           <span aria-hidden="true" className="gauge accent-rule mb-5" />
-          <h2 className="font-display text-[clamp(1.25rem,2.6vw,1.75rem)] leading-snug font-semibold tracking-[-0.02em]">
+          <h2 className="font-display text-h3 font-semibold">
             {catalog.banner.title}
           </h2>
           <p className="mt-4 text-[14px] leading-relaxed text-muted">

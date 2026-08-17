@@ -49,7 +49,7 @@ export default function ReviewsPage() {
 
         <div className="relative mt-7 max-w-3xl">
           <span aria-hidden="true" className="accent-rule mb-6" />
-          <h1 className="font-display text-[clamp(2rem,5vw,3.5rem)] leading-[1.03] font-semibold tracking-[-0.035em] text-balance">
+          <h1 className="font-display text-h1 font-semibold text-balance">
             Что говорят о наших устройствах
           </h1>
           <p className="mt-6 text-[15px] leading-relaxed text-muted sm:text-base">
@@ -64,7 +64,7 @@ export default function ReviewsPage() {
           <StarMark className="pointer-events-none absolute -right-[6%] -bottom-[40%] -z-10 aspect-square w-[26%] rotate-[-14deg] text-accent/[0.07]" />
 
           <div>
-            <p className="num font-display text-[clamp(2.5rem,6vw,4rem)] leading-none font-semibold tracking-[-0.04em]">
+            <p className="num font-display text-fig-lg font-semibold">
               {summary.average.toFixed(1).replace(".", ",")}
             </p>
             <span className="mt-4 flex gap-1" aria-hidden="true">
@@ -81,7 +81,7 @@ export default function ReviewsPage() {
 
           <dl className="flex flex-wrap gap-x-12 gap-y-6">
             <div>
-              <dt className="num font-display text-[clamp(1.5rem,3vw,2rem)] leading-none font-semibold tracking-[-0.03em]">
+              <dt className="num font-display text-fig font-semibold">
                 {feed.length}
               </dt>
               <dd className="mt-3 text-[13px] text-muted">
@@ -89,7 +89,7 @@ export default function ReviewsPage() {
               </dd>
             </div>
             <div>
-              <dt className="num font-display text-[clamp(1.5rem,3vw,2rem)] leading-none font-semibold tracking-[-0.03em]">
+              <dt className="num font-display text-fig font-semibold">
                 {products.length}
               </dt>
               <dd className="mt-3 text-[13px] text-muted">
@@ -98,7 +98,7 @@ export default function ReviewsPage() {
               </dd>
             </div>
             <div>
-              <dt className="num font-display text-[clamp(1.5rem,3vw,2rem)] leading-none font-semibold tracking-[-0.03em]">
+              <dt className="num font-display text-fig font-semibold">
                 12
               </dt>
               <dd className="mt-3 text-[13px] text-muted">

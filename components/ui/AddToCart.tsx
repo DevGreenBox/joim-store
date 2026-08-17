@@ -60,36 +60,20 @@ export function AddToCart({
     );
   }
 
+  /**
+   * Подписанная кнопка, а не кружок с плюсом. Раньше единственным способом
+   * купить с витрины был безымянный «+» 40 px, а всё подтверждение — морфинг
+   * иконки внутри него. Ни того, ни другого человек на телефоне не читает.
+   */
   return (
-    <button
-      type="button"
+    <Button
+      variant="outline"
+      size="sm"
       onClick={handleAdd}
-      aria-label={added ? "Товар добавлен в корзину" : "Добавить в корзину"}
-      className={`relative z-10 grid size-10 shrink-0 place-items-center rounded-full border border-line-strong text-ink transition-[background-color,border-color,transform] duration-300 ease-out-soft hover:border-ink/60 hover:bg-white/[0.06] active:scale-90 ${className}`}
+      aria-live="polite"
+      className={`relative z-10 shrink-0 ${added ? "border-accent/45 text-accent" : ""} ${className}`}
     >
-      <svg viewBox="0 0 20 20" aria-hidden="true" className="size-[18px]">
-        <g
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="transition-opacity duration-200"
-          style={{ opacity: added ? 0 : 1 }}
-        >
-          <path d="M10 4.5v11M4.5 10h11" />
-        </g>
-        <path
-          d="m4.5 10.5 3.5 3.5 7.5-8"
-          fill="none"
-          stroke="var(--color-accent)"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="transition-opacity duration-200"
-          style={{ opacity: added ? 1 : 0 }}
-        />
-      </svg>
-    </button>
+      {added ? "Добавлено" : "В корзину"}
+    </Button>
   );
 }

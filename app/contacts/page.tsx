@@ -50,7 +50,7 @@ export default function ContactsPage() {
         <div className="mt-7 grid gap-14 lg:grid-cols-[1fr_1.1fr] lg:gap-20">
           <div>
             <span aria-hidden="true" className="accent-rule mb-6" />
-            <h1 className="font-display text-[clamp(2rem,5vw,3.5rem)] leading-[1.03] font-semibold tracking-[-0.035em] text-balance">
+            <h1 className="font-display text-h1 font-semibold text-balance">
               Приезжайте или звоните
             </h1>
             <p className="mt-6 max-w-md text-[15px] leading-relaxed text-muted">

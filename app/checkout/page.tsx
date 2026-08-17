@@ -19,7 +19,7 @@ export default function CheckoutPage() {
           items={[{ label: "Корзина", href: "/cart" }, { label: "Оформление" }]}
         />
         <span aria-hidden="true" className="accent-rule mt-7 mb-6" />
-        <h1 className="font-display text-[clamp(2rem,5vw,3.25rem)] leading-[1.05] font-semibold tracking-[-0.03em]">
+        <h1 className="font-display text-h1 font-semibold">
           Оформление заказа
         </h1>
         <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-muted">

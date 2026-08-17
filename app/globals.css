@@ -56,6 +56,53 @@
   --font-sans: var(--font-text), ui-sans-serif, system-ui, "Noto Color Emoji", sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, "Noto Color Emoji", monospace;
 
+  /* Шкала заголовков. Пять ступеней на весь сайт — до этого один ранг
+     набирался четырьмя разными формулами clamp, и на главной подряд
+     шли h2 в 44 / 44 / 36 / 48 px.
+
+     Интерлиньяж и трекинг привязаны к кеглю: чем крупнее буквы, тем
+     плотнее набор. Раньше это выставлялось руками в каждом компоненте,
+     и два заголовка одного кегля получали разный трекинг. Задаётся
+     здесь один раз — `text-h2` приносит все три свойства сразу. */
+  --text-display: clamp(2.25rem, 5.2vw, 4.25rem);
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.04em;
+
+  --text-h1: clamp(2rem, 4.4vw, 3rem);
+  --text-h1--line-height: 1.05;
+  --text-h1--letter-spacing: -0.035em;
+
+  --text-h2: clamp(1.75rem, 4vw, 2.75rem);
+  --text-h2--line-height: 1.1;
+  --text-h2--letter-spacing: -0.03em;
+
+  --text-h3: clamp(1.375rem, 2.6vw, 1.875rem);
+  --text-h3--line-height: 1.2;
+  --text-h3--letter-spacing: -0.02em;
+
+  --text-h4: clamp(1.0625rem, 1.6vw, 1.25rem);
+  --text-h4--line-height: 1.35;
+  --text-h4--letter-spacing: -0.01em;
+
+  /* Показания — вторая лестница, для цифр. У них своя работа: они стоят
+     в плашках и полосах статистики, набираются моношрифтом и всегда
+     без интерлиньяжа. Четыре ступени вместо восьми разных clamp. */
+  --text-fig-sm: clamp(1.25rem, 1.9vw, 1.625rem);
+  --text-fig-sm--line-height: 1;
+  --text-fig-sm--letter-spacing: -0.02em;
+
+  --text-fig: clamp(1.5rem, 3vw, 2rem);
+  --text-fig--line-height: 1;
+  --text-fig--letter-spacing: -0.02em;
+
+  --text-fig-lg: clamp(2.5rem, 6vw, 4rem);
+  --text-fig-lg--line-height: 1;
+  --text-fig-lg--letter-spacing: -0.03em;
+
+  --text-fig-xl: clamp(3.5rem, 9vw, 6rem);
+  --text-fig-xl--line-height: 0.95;
+  --text-fig-xl--letter-spacing: -0.04em;
+
   /* Кривые движения — единый «почерк» анимаций */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-soft: cubic-bezier(0.22, 0.61, 0.36, 1);

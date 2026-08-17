@@ -170,7 +170,7 @@ export default async function ProductPage({ params }: { params: Params }) {
                 иначе изображение переставало сопровождать характеристики
                 на середине их чтения. */}
             <div className="mt-3 rounded-2xl border border-line bg-surface p-6 lg:p-7">
-              <h2 className="eyebrow mb-5">В комплекте</h2>
+              <p className="eyebrow mb-5">В комплекте</p>
               <ul className="divide-y divide-line">
                 {product.included.map((item, index) => (
                   <li
@@ -195,7 +195,7 @@ export default async function ProductPage({ params }: { params: Params }) {
               {product.brand}
             </p>
 
-            <h1 className="font-display mt-4 text-[clamp(1.75rem,4.2vw,2.75rem)] leading-[1.08] font-semibold tracking-[-0.03em] text-balance">
+            <h1 className="font-display mt-4 text-h2 font-semibold text-balance">
               {product.name}
             </h1>
 
@@ -231,18 +231,18 @@ export default async function ProductPage({ params }: { params: Params }) {
               </span>
             </div>
 
-            <p className="mt-8 text-[15px] leading-relaxed text-muted">
+            {/* Мера ограничена: на 1440 строка описания уходила
+                за 95 знаков — на треть длиннее того, что читается
+                без потери строки. */}
+            <p className="mt-8 max-w-[54ch] text-[15px] leading-relaxed text-muted">
               {product.description}
             </p>
 
-            {/* Приборная панель до цены: покупатель, который пришёл
-                за одним числом, находит его, не читая характеристики. */}
-            <div className="mt-8">
-              <ProductHighlights items={product.highlights} />
-            </div>
-
-            <div className="mt-10 flex items-end gap-4">
-              <p className="num font-display text-[clamp(1.75rem,4vw,2.5rem)] leading-none font-semibold tracking-[-0.03em]">
+            {/* Цена и кнопка до приборной панели. Панель из четырёх плиток
+                стояла выше и сдвигала главное действие страницы на 940 px —
+                за нижний край экрана 1440×900. */}
+            <div className="mt-9 flex items-end gap-4">
+              <p className="num font-display text-h2 font-semibold">
                 {formatPrice(product.price)}
               </p>
               {product.oldPrice ? (
@@ -254,6 +254,10 @@ export default async function ProductPage({ params }: { params: Params }) {
 
             <div id="buy" className="mt-7">
               <ProductBuy slug={product.slug} inStock={product.inStock} />
+            </div>
+
+            <div className="mt-10">
+              <ProductHighlights items={product.highlights} />
             </div>
 
             <ul className="mt-9 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2">
@@ -319,7 +323,7 @@ export default async function ProductPage({ params }: { params: Params }) {
         <Container size="wide" className="mt-16 lg:mt-[150px]">
           <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
             <div>
-              <h2 className="font-display text-[clamp(1.5rem,3.4vw,2.25rem)] leading-tight font-semibold tracking-[-0.02em]">
+              <h2 className="font-display text-h2 font-semibold">
                 {product.spin.title}
               </h2>
               <p className="mt-6 max-w-md text-[15px] leading-relaxed text-muted">
@@ -381,7 +385,7 @@ export default async function ProductPage({ params }: { params: Params }) {
         <Container size="wide" className="mt-16 lg:mt-[150px]">
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div>
-              <h2 className="font-display text-[clamp(1.5rem,3.4vw,2.25rem)] leading-tight font-semibold tracking-[-0.02em]">
+              <h2 className="font-display text-h2 font-semibold">
                 {product.rating.toFixed(1).replace(".", ",")} из 5 по{" "}
                 {product.reviews}{" "}
                 {plural(product.reviews, "отзыву", "отзывам", "отзывам")}
@@ -436,7 +440,7 @@ export default async function ProductPage({ params }: { params: Params }) {
       ) : others.length > 0 ? (
         <Container size="wide" className="mt-16 lg:mt-[150px]">
           <div className="flex flex-wrap items-end justify-between gap-6">
-            <h2 className="font-display text-[clamp(1.5rem,3.4vw,2.25rem)] leading-tight font-semibold tracking-[-0.02em]">
+            <h2 className="font-display text-h2 font-semibold">
               Смотрите также
             </h2>
             <ButtonLink href="/catalog" variant="outline" size="sm" arrow>

@@ -85,7 +85,7 @@ export function Advantages() {
                 />
               ) : null}
 
-              <p className="readout text-[clamp(1.75rem,3vw,2.25rem)] leading-none font-medium text-faint transition-colors duration-500 group-hover:text-accent group-active:text-accent">
+              <p className="readout text-h2 font-medium text-faint transition-colors duration-500 group-hover:text-accent group-active:text-accent">
                 {String(index + 1).padStart(2, "0")}
               </p>
 

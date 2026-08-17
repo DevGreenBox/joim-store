@@ -30,13 +30,6 @@ const { hero } = home;
  * не только обещает, но и открывает путь в конкретную карточку.
  */
 
-/** «40+» → «40» и «+»: хвост CountUp не считает, он дописывается рядом. */
-function split(value: string): { count: string; tail: string } {
-  const match = value.match(/^([\d\s.,]+)(.*)$/);
-  if (!match) return { count: "", tail: value };
-  return { count: match[1].trim(), tail: match[2] };
-}
-
 /**
  * Раскладка линейки — долями от рамки баннера, а не пикселями:
  * композиция должна пережить любую ширину колонки.
@@ -92,7 +85,7 @@ export function Hero() {
               {hero.eyebrow}
             </p>
 
-            <h1 className="font-display mt-8 text-[clamp(2.25rem,5.2vw,4.25rem)] leading-[1.02] font-semibold tracking-[-0.04em]">
+            <h1 className="font-display mt-8 text-display font-semibold">
               <span className="block animate-rise" style={{ animationDelay: "140ms" }}>
                 {titleTop}
               </span>
@@ -223,7 +216,7 @@ export function Hero() {
               className="animate-fade"
               style={{ animationDelay: `${640 + index * 80}ms` }}
             >
-              <dt className="num font-display text-[clamp(1.25rem,1.9vw,1.625rem)] leading-none font-semibold tracking-[-0.02em]">
+              <dt className="num font-display text-fig-sm font-semibold">
                 {stat.count === false ? stat.value : <CountUp value={stat.value} />}
                 <span className="text-[13px] font-medium text-faint">
                   {stat.suffix}

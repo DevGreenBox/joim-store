@@ -75,7 +75,7 @@ export function ModelCompare({
 
   return (
     <Container size="wide">
-      <h2 className="font-display text-[clamp(1.5rem,3.4vw,2.25rem)] leading-tight font-semibold tracking-[-0.02em]">
+      <h2 className="font-display text-h2 font-semibold">
         {title}
       </h2>
 

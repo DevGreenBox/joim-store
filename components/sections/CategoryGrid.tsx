@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -35,14 +34,12 @@ export function CategoryGrid() {
   return (
     <section className="section-light py-16 lg:py-[75px]">
       <Container size="wide">
+        {/* Без кнопки «Весь каталог»: ровно такая же стоит в заголовке
+            блока товаров ниже, а карточки категорий и так ведут внутрь.
+            Пять ссылок с одним смыслом на одной странице — шум. */}
         <SectionHeading
           title={home.sections.categories.title}
           text={home.sections.categories.text || undefined}
-          action={
-            <ButtonLink href="/catalog" variant="outline" arrow>
-              Весь каталог
-            </ButtonLink>
-          }
         />
 
         <div className="mt-10 grid gap-5 lg:mt-14 lg:grid-cols-2 lg:gap-6">
@@ -60,7 +57,7 @@ export function CategoryGrid() {
 
                 <div className="flex flex-col p-6 lg:p-9">
                   <p className="eyebrow">{category.tagline}</p>
-                  <h3 className="font-display mt-4 text-[clamp(1.375rem,2.4vw,1.875rem)] leading-[1.12] font-semibold tracking-[-0.02em] text-balance">
+                  <h3 className="font-display mt-4 text-h3 font-semibold text-balance">
                     {category.name}
                   </h3>
                   <p className="mt-4 max-w-xs text-[13px] leading-relaxed text-muted">

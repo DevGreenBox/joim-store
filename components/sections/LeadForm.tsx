@@ -116,7 +116,7 @@ export function LeadForm() {
           ) : (
             <div className="grid gap-10 lg:grid-cols-[1fr_1.15fr] lg:gap-16">
               <div className="lg:pt-2">
-                <h2 className="font-display text-[clamp(1.75rem,4.2vw,3rem)] leading-[1.05] font-semibold tracking-[-0.03em] text-balance">
+                <h2 className="font-display text-h2 font-semibold text-balance">
                   {lead.title}
                 </h2>
                 <p className="mt-6 max-w-md text-[15px] leading-relaxed text-muted">
@@ -134,7 +134,11 @@ export function LeadForm() {
                 </p>
               </div>
 
-              <form action={formAction} className="grid gap-4">
+              {/* noValidate: браузер иначе перехватывает сабмит своим
+                  пузырём на языке интерфейса ОС, и наши русские ошибки
+                  ниже недостижимы. `required` оставлен — он озвучивается
+                  скринридером, проверку делает сервер. */}
+              <form action={formAction} noValidate className="grid gap-4">
                 <input type="hidden" name="page" value={pathname} />
 
                 <div className="grid gap-4 sm:grid-cols-2">

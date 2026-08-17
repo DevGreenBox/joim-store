@@ -24,7 +24,7 @@ export function SectionHeading({
         {/* Риска прочерчивается вместе с появлением заголовка: `gauge`
             уже умеет это от общего наблюдателя, второго не заводим. */}
         <span aria-hidden="true" className="gauge accent-rule mb-6" />
-        <h2 className="font-display text-[clamp(1.75rem,4vw,2.75rem)] leading-[1.1] font-semibold tracking-[-0.02em] text-balance">
+        <h2 className="font-display text-h2 font-semibold text-balance">
           {title}
         </h2>
         {text ? (

@@ -1,9 +1,9 @@
 "use client";
 
 import { Container } from "@/components/ui/Container";
+import { PosterVideo } from "@/components/ui/PosterVideo";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { GOALS, track } from "@/lib/analytics";
 
 /**
  * Промо-ролик модели.
@@ -45,19 +45,11 @@ export function ProductVideo({ title, text, video }: Props) {
           vertical ? "mx-auto max-w-[460px]" : ""
         }`}
       >
-        <video
-          controls
-          preload="none"
-          onPlay={() => track(GOALS.videoPlay, { src: video.src })}
+        <PosterVideo
+          src={video.src}
           poster={video.poster}
-          playsInline
-          className="block w-full"
-          style={{ aspectRatio: video.ratio }}
-        >
-          <source src={video.src} type="video/mp4" />
-          Ваш браузер не воспроизводит видео — скачайте файл{" "}
-          <a href={video.src}>по ссылке</a>.
-        </video>
+          ratio={video.ratio}
+        />
       </Reveal>
     </Container>
   );

@@ -1,11 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
-import {
-  CatalogFilters,
-  catalogHref,
-} from "@/components/sections/CatalogFilters";
-import { FilterPanel } from "@/components/sections/FilterPanel";
+import { CatalogFilters } from "@/components/sections/CatalogFilters";
 import { CatalogBanner, CatalogUsp } from "@/components/sections/CatalogPromo";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { ButtonLink } from "@/components/ui/Button";
@@ -68,7 +63,6 @@ export default async function CatalogPage({
   const query = toQuery(params);
   const products = queryProducts(query);
   const category = query.category ? getCategory(query.category) : undefined;
-  const activeSort = query.sort ?? "popular";
 
   return (
     <div className="pt-10 pb-16 lg:pt-16 lg:pb-[75px]">
@@ -84,7 +78,7 @@ export default async function CatalogPage({
 
         <div className="relative mt-7 max-w-3xl">
           <span aria-hidden="true" className="accent-rule mb-6" />
-          <h1 className="font-display text-[clamp(2rem,5vw,3.25rem)] leading-[1.05] font-semibold tracking-[-0.03em] text-balance">
+          <h1 className="font-display text-h1 font-semibold text-balance">
             {category ? category.name : catalogContent.all.title}
           </h1>
           <p className="mt-5 text-[15px] leading-relaxed text-muted">
@@ -94,84 +88,61 @@ export default async function CatalogPage({
       </Container>
 
       <Container size="wide" className="mt-12 lg:mt-[75px]">
-        <CatalogUsp />
+        <CatalogFilters query={query} />
+
+        <div className="mt-8 flex flex-wrap items-baseline justify-between gap-4 border-b border-line pb-5">
+          <h2 className="font-display text-h3 font-semibold">
+            {category ? category.name : "Все модели"}
+          </h2>
+          <p className="num text-[13px] text-muted">
+            {products.length}{" "}
+            {plural(products.length, "товар", "товара", "товаров")}
+            {query.q ? (
+              <span className="text-faint"> по запросу «{query.q}»</span>
+            ) : null}
+          </p>
+        </div>
+
+        {products.length > 0 ? (
+          <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {products.map((product, index) => (
+              <Reveal
+                as="li"
+                key={product.slug}
+                delay={(index % 3) * 80}
+                y={18}
+                className="h-full"
+              >
+                <ProductCard
+                  product={product}
+                  eager={index < 3}
+                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 45vw, 90vw"
+                />
+              </Reveal>
+            ))}
+          </ul>
+        ) : (
+          <div className="mt-12 rounded-2xl border border-line bg-surface p-6 text-center lg:p-16">
+            <p className="font-display text-h3 font-semibold">
+              Ничего не нашлось
+            </p>
+            <p className="mx-auto mt-3 max-w-md text-[14px] leading-relaxed text-muted">
+              {query.q
+                ? `По запросу «${query.q}» совпадений нет. В линейке три устройства — откройте весь каталог.`
+                : "Попробуйте снять отбор — в линейке всего три устройства, они наверняка рядом."}
+            </p>
+            <ButtonLink href="/catalog" variant="outline" className="mt-8">
+              Весь каталог
+            </ButtonLink>
+          </div>
+        )}
       </Container>
 
-      <Container size="wide" className="mt-12 lg:mt-[75px]">
-        <div className="grid gap-10 lg:grid-cols-[264px_1fr] lg:gap-14">
-          <aside className="lg:sticky lg:top-[calc(var(--header-h)+24px)] lg:self-start">
-            <FilterPanel total={products.length}>
-              <CatalogFilters query={query} />
-            </FilterPanel>
-          </aside>
-
-          <div>
-            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-line pb-5">
-              <p className="num text-[13px] text-muted">
-                {products.length}{" "}
-                {plural(products.length, "товар", "товара", "товаров")}
-                {query.q ? (
-                  <span className="text-faint"> по запросу «{query.q}»</span>
-                ) : null}
-              </p>
-
-              <ul className="flex flex-wrap items-center gap-1">
-                {SORT_OPTIONS.map((option) => (
-                  <li key={option.id}>
-                    <Link
-                      href={catalogHref(query, {
-                        sort: option.id === "popular" ? undefined : option.id,
-                      })}
-                      aria-current={
-                        activeSort === option.id ? "true" : undefined
-                      }
-                      className={`inline-flex min-h-10 items-center rounded-full px-3.5 py-1.5 text-[13px] transition-colors duration-300 lg:min-h-0 ${
-                        activeSort === option.id
-                          ? "bg-white/[0.07] text-ink"
-                          : "text-faint hover:text-ink"
-                      }`}
-                    >
-                      {option.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {products.length > 0 ? (
-              <ul className="mt-8 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-                {products.map((product, index) => (
-                  <Reveal
-                    as="li"
-                    key={product.slug}
-                    delay={(index % 3) * 80}
-                    y={18}
-                    className="h-full"
-                  >
-                    <ProductCard
-                      product={product}
-                      eager={index < 3}
-                      sizes="(min-width: 1280px) 340px, (min-width: 640px) 45vw, 90vw"
-                    />
-                  </Reveal>
-                ))}
-              </ul>
-            ) : (
-              <div className="mt-16 rounded-2xl border border-line bg-surface p-6 text-center lg:p-16">
-                <h2 className="font-display text-xl font-semibold tracking-[-0.01em]">
-                  Ничего не нашлось
-                </h2>
-                <p className="mx-auto mt-3 max-w-md text-[14px] leading-relaxed text-muted">
-                  Попробуйте убрать часть фильтров — в линейке всего три
-                  устройства, они наверняка рядом.
-                </p>
-                <ButtonLink href="/catalog" variant="outline" className="mt-8">
-                  Сбросить фильтры
-                </ButtonLink>
-              </div>
-            )}
-          </div>
-        </div>
+      {/* Полоса доверия — после товаров. Наверху она отодвигала первую
+          карточку на 1 100 px от начала страницы: человек шёл в каталог
+          за прибором, а получал четыре обещания. */}
+      <Container size="wide" className="mt-16 lg:mt-[150px]">
+        <CatalogUsp />
       </Container>
 
       <Container size="wide" className="mt-16 lg:mt-[150px]">

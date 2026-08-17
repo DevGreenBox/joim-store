@@ -42,7 +42,7 @@ export function Footer() {
           </div>
 
           <nav aria-label="Каталог">
-            <h2 className="eyebrow mb-5">Каталог</h2>
+            <p className="eyebrow mb-5">Каталог</p>
             <ul className="lg:space-y-3">
               {categories.map((category) => (
                 <li key={category.slug}>
@@ -58,7 +58,7 @@ export function Footer() {
           </nav>
 
           <nav aria-label="Разделы сайта">
-            <h2 className="eyebrow mb-5">Компания</h2>
+            <p className="eyebrow mb-5">Компания</p>
             <ul className="lg:space-y-3">
               {allPages.map((item) => (
                 <li key={item.href}>
@@ -74,7 +74,7 @@ export function Footer() {
           </nav>
 
           <div>
-            <h2 className="eyebrow mb-5">Контакты</h2>
+            <p className="eyebrow mb-5">Контакты</p>
             <a
               href={`tel:${site.phoneHref}`}
               className="num font-display inline-flex min-h-11 items-center text-xl font-semibold tracking-[-0.01em] transition-colors duration-300 hover:text-accent lg:min-h-0"

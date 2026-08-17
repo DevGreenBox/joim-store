@@ -107,7 +107,7 @@ export default async function CategoryPage({ params }: { params: Params }) {
 
         <div className="relative mt-7 max-w-3xl">
           <span aria-hidden="true" className="accent-rule mb-6" />
-          <h1 className="font-display text-[clamp(2rem,5vw,3.25rem)] leading-[1.05] font-semibold tracking-[-0.03em] text-balance">
+          <h1 className="font-display text-h1 font-semibold text-balance">
             {category.name}
           </h1>
           <p className="mt-6 text-[15px] leading-relaxed text-muted">
@@ -122,7 +122,7 @@ export default async function CategoryPage({ params }: { params: Params }) {
 
       <Container size="wide" className="mt-16 lg:mt-[150px]">
         <div className="flex flex-wrap items-end justify-between gap-6 border-b border-line pb-5">
-          <h2 className="font-display text-[clamp(1.5rem,3.4vw,2.25rem)] leading-tight font-semibold tracking-[-0.02em]">
+          <h2 className="font-display text-h2 font-semibold">
             {content.gridTitle}
           </h2>
           <p className="num text-[13px] text-muted">
@@ -160,7 +160,7 @@ export default async function CategoryPage({ params }: { params: Params }) {
         <Container size="wide" className="mt-16 lg:mt-[150px]">
           <Reveal className="flex flex-col gap-8 rounded-2xl border border-line bg-surface p-6 md:flex-row md:items-center md:justify-between lg:p-12">
             <div className="max-w-xl">
-              <h2 className="font-display text-[clamp(1.375rem,2.8vw,1.875rem)] leading-tight font-semibold tracking-[-0.02em] text-balance">
+              <h2 className="font-display text-h3 font-semibold text-balance">
                 {content.picker.title}
               </h2>
               <p className="mt-4 text-[14px] leading-relaxed text-muted">

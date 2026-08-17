@@ -44,6 +44,7 @@ export function ReviewsBand() {
               href={home.sections.reviews.cta.href}
               variant="outline"
               arrow
+              className="hidden lg:inline-flex"
             >
               {home.sections.reviews.cta.label}
             </ButtonLink>
@@ -55,7 +56,7 @@ export function ReviewsBand() {
           <Reveal className="relative isolate overflow-hidden rounded-2xl border border-line bg-surface p-8 lg:p-9">
             <StarMark className="pointer-events-none absolute -right-[14%] -bottom-[22%] -z-10 aspect-square w-[62%] rotate-[-14deg] text-accent/[0.07]" />
 
-            <p className="num font-display text-[clamp(3rem,7vw,4.5rem)] leading-none font-semibold tracking-[-0.04em]">
+            <p className="num font-display text-fig-lg font-semibold">
               5,0
             </p>
             <span className="mt-5 flex gap-1" aria-hidden="true">

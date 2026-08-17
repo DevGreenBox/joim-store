@@ -27,12 +27,12 @@ export function BrandStory() {
             <span aria-hidden="true" className="gauge accent-rule mb-6" />
 
             {founded ? (
-              <p className="num font-display text-[clamp(3.5rem,9vw,6rem)] leading-none font-semibold tracking-[-0.04em]">
+              <p className="num font-display text-fig-xl font-semibold">
                 <CountUp value={founded.value} />
               </p>
             ) : null}
 
-            <h2 className="font-display mt-6 text-[clamp(1.5rem,3.4vw,2.25rem)] leading-[1.1] font-semibold tracking-[-0.02em] text-balance">
+            <h2 className="font-display mt-6 text-h2 font-semibold text-balance">
               {story.title}
             </h2>
             <p className="mt-5 max-w-md text-[15px] leading-relaxed text-muted">

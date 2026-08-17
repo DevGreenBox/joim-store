@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
+import { PosterVideo } from "@/components/ui/PosterVideo";
+
 import { formatReviewDate, type FeedReview } from "@/lib/reviews";
 import { plural } from "@/lib/format";
 
@@ -102,16 +104,11 @@ export function ReviewWall({
             ) : null}
 
             {review.video ? (
-              <video
-                controls
-                preload="none"
+              <PosterVideo
+                src={review.video.src}
                 poster={review.video.poster}
-                playsInline
-                className="block w-full"
-                style={{ aspectRatio: review.video.ratio }}
-              >
-                <source src={review.video.src} type="video/mp4" />
-              </video>
+                ratio={review.video.ratio}
+              />
             ) : null}
 
             <div className="p-6 lg:p-7">
@@ -151,7 +148,7 @@ export function ReviewWall({
                 </span>
                 <Link
                   href={`/product/${review.slug}`}
-                  className="readout text-[11px] text-faint transition-colors duration-300 hover:text-accent"
+                  className="readout inline-flex min-h-11 items-center text-[11px] text-faint transition-colors duration-300 hover:text-accent"
                 >
                   {review.product}
                 </Link>

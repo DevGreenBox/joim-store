@@ -50,7 +50,7 @@ export function ProductHighlights({
               aria-hidden="true"
               className="gauge mb-5 block h-px w-full bg-accent/60"
             />
-            <dt className="num font-display text-[clamp(1.5rem,3.2vw,2.25rem)] leading-none font-semibold tracking-[-0.035em]">
+            <dt className="num font-display text-fig font-semibold">
               {count ? <CountUp value={count} /> : null}
               {tail}
               {item.unit ? (

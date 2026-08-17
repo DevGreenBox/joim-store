@@ -19,7 +19,7 @@ export default function CartPage() {
       <Container size="wide">
         <Breadcrumbs items={[{ label: "Корзина" }]} />
         <span aria-hidden="true" className="accent-rule mt-7 mb-6" />
-        <h1 className="font-display text-[clamp(2rem,5vw,3.25rem)] leading-[1.05] font-semibold tracking-[-0.03em]">
+        <h1 className="font-display text-h1 font-semibold">
           Корзина
         </h1>
 

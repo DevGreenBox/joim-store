@@ -29,7 +29,7 @@ export function ProductProtection({
       <div className="grid gap-px overflow-hidden rounded-2xl border border-line bg-line lg:grid-cols-2">
         {protections.length > 0 ? (
           <Reveal className="bg-surface p-6 lg:p-10">
-            <h2 className="font-display text-[clamp(1.375rem,2.6vw,1.75rem)] leading-tight font-semibold tracking-[-0.02em]">
+            <h2 className="font-display text-h3 font-semibold">
               {title}
             </h2>
             {text ? (
@@ -56,7 +56,7 @@ export function ProductProtection({
 
         {compatibility.length > 0 ? (
           <Reveal delay={90} className="bg-surface p-6 lg:p-10">
-            <h2 className="font-display text-[clamp(1.375rem,2.6vw,1.75rem)] leading-tight font-semibold tracking-[-0.02em]">
+            <h2 className="font-display text-h3 font-semibold">
               {compatibilityTitle}
             </h2>
 

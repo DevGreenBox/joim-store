@@ -3,10 +3,12 @@
 import Link from "next/link";
 
 import { ButtonLink } from "@/components/ui/Button";
+import { ProductCard } from "@/components/ui/ProductCard";
 import { ProductImage } from "@/components/ui/ProductImage";
 import { useCart } from "@/lib/cart";
 import { formatPrice, plural } from "@/lib/format";
-import { FREE_SHIPPING_FROM, getDeliveryOption } from "@/lib/delivery";
+import { FREE_SHIPPING_FROM } from "@/lib/delivery";
+import { site } from "@/lib/site";
 import type { Product } from "@/lib/types";
 
 export function CartView({ products }: { products: Product[] }) {
@@ -26,9 +28,17 @@ export function CartView({ products }: { products: Product[] }) {
     0,
   );
   const count = items.reduce((sum, item) => sum + item.qty, 0);
-  const shipping =
-    subtotal >= FREE_SHIPPING_FROM ? 0 : getDeliveryOption("courier").price;
+  /**
+   * Корзина не называет итог с доставкой: способ получения выбирают
+   * на оформлении, и до выбора любая цифра расходится с чекаутом.
+   * Бесплатный порог пройден — итог точный, и тогда он «К оплате».
+   */
+  const freeShipping = subtotal >= FREE_SHIPPING_FROM;
   const toFreeShipping = Math.max(0, FREE_SHIPPING_FROM - subtotal);
+  /** Чем добрать до бесплатной доставки: самое дешёвое из того, чего нет. */
+  const upsell = products
+    .filter((product) => !lines.some((line) => line.slug === product.slug))
+    .sort((a, b) => a.price - b.price)[0];
 
   if (!ready) {
     return (
@@ -39,23 +49,32 @@ export function CartView({ products }: { products: Product[] }) {
     );
   }
 
+  // В магазине три модели — пустая корзина показывает все три,
+  // а не отправляет за ними в каталог.
   if (items.length === 0) {
     return (
-      <div className="mt-12 rounded-3xl border border-line bg-surface p-6 text-center lg:p-20">
-        <h2 className="font-display text-xl font-semibold tracking-[-0.01em]">
-          В корзине пока пусто
-        </h2>
-        <p className="mx-auto mt-3 max-w-md text-[14px] leading-relaxed text-muted">
-          Подберём модель под ваш мотор: позвоните или напишите.
-        </p>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <ButtonLink href="/catalog" arrow>
-            В каталог
-          </ButtonLink>
-          <ButtonLink href="/warranty" variant="outline">
-            Гарантия и возврат
-          </ButtonLink>
+      <div className="mt-12">
+        <div className="rounded-2xl border border-line bg-surface p-6 lg:p-10">
+          <h2 className="font-display text-xl font-semibold tracking-[-0.01em]">
+            В корзине пока пусто
+          </h2>
+          <p className="mt-3 max-w-md text-[14px] leading-relaxed text-muted">
+            Вся линейка — три модели. Подберём под ваш мотор, если
+            не уверены: {site.phone}.
+          </p>
         </div>
+
+        <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {products.map((product, index) => (
+            <li key={product.slug}>
+              <ProductCard
+                product={product}
+                eager={index < 3}
+                sizes="(min-width: 1024px) 380px, (min-width: 640px) 45vw, 90vw"
+              />
+            </li>
+          ))}
+        </ul>
       </div>
     );
   }
@@ -156,11 +175,11 @@ export function CartView({ products }: { products: Product[] }) {
             </div>
             <div className="flex items-baseline justify-between gap-4">
               <dt className="text-muted">Доставка</dt>
-              <dd className="num">
-                {shipping === 0 ? (
+              <dd className={freeShipping ? "num" : "text-[13px] text-faint"}>
+                {freeShipping ? (
                   <span className="text-accent">бесплатно</span>
                 ) : (
-                  formatPrice(shipping)
+                  "на оформлении"
                 )}
               </dd>
             </div>
@@ -182,13 +201,33 @@ export function CartView({ products }: { products: Product[] }) {
                   }}
                 />
               </div>
+
+              {upsell ? (
+                <Link
+                  href={`/product/${upsell.slug}`}
+                  className="mt-4 flex min-h-11 items-center justify-between gap-3 border-t border-line pt-3 text-[12px] transition-colors duration-300 hover:text-accent"
+                >
+                  <span className="text-muted">
+                    {/* «Добрать» — только если этот товар действительно
+                        закрывает разрыв. Иначе это просто соседняя модель. */}
+                    {upsell.price >= toFreeShipping
+                      ? `Добрать до бесплатной — ${upsell.name}`
+                      : `Берут вместе — ${upsell.name}`}
+                  </span>
+                  <span className="num whitespace-nowrap text-ink">
+                    {formatPrice(upsell.price)}
+                  </span>
+                </Link>
+              ) : null}
             </div>
           ) : null}
 
           <div className="mt-6 flex items-baseline justify-between gap-4 border-t border-line pt-5">
-            <p className="text-[13px] text-muted">К оплате</p>
+            <p className="text-[13px] text-muted">
+              {freeShipping ? "К оплате" : "Товары"}
+            </p>
             <p className="num font-display text-2xl font-semibold tracking-[-0.02em]">
-              {formatPrice(subtotal + shipping)}
+              {formatPrice(subtotal)}
             </p>
           </div>
 

@@ -19,7 +19,9 @@ const variants: Record<Variant, string> = {
 };
 
 const sizes: Record<Size, string> = {
-  sm: "h-10 px-4 text-[13px] lg:h-9",
+  // 44 px до `lg:` — ниже этого палец промахивается; на десктопе указатель
+  // точнее, и кнопка садится до 40.
+  sm: "h-11 px-4 text-[13px] lg:h-10",
   md: "h-11 px-6 text-sm",
   lg: "h-13 px-8 text-[15px]",
 };

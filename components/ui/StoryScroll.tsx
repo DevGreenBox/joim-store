@@ -188,7 +188,7 @@ export function StoryScroll({
                 <p className="readout mt-6 text-[11px] text-faint">
                   {String(index + 1).padStart(2, "0")}
                 </p>
-                <h3 className="font-display mt-2.5 text-[clamp(1.25rem,2.2vw,1.625rem)] leading-tight font-semibold tracking-[-0.02em]">
+                <h3 className="font-display mt-2.5 text-h3 font-semibold">
                   {step.title}
                 </h3>
                 <p className="mt-3 max-w-md text-[14px] leading-relaxed text-muted">

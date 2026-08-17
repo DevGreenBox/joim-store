@@ -42,7 +42,7 @@ export function SavingsBand({
     <Container size="wide">
       <div className="rounded-2xl border border-line bg-surface p-6 lg:p-12">
         <Reveal className="max-w-xl">
-          <h2 className="font-display text-[clamp(1.5rem,3.4vw,2.25rem)] leading-tight font-semibold tracking-[-0.02em] text-balance">
+          <h2 className="font-display text-h2 font-semibold text-balance">
             {title}
           </h2>
         </Reveal>
@@ -82,7 +82,7 @@ export function SavingsBand({
               </span>
 
               <dd
-                className={`num text-right text-[clamp(1rem,2.2vw,1.375rem)] leading-none font-semibold tracking-[-0.02em] ${
+                className={`num text-right text-fig-sm font-semibold ${
                   row.own ? "text-accent" : "text-ink"
                 }`}
               >

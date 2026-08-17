@@ -69,7 +69,12 @@ export function CheckoutForm({ products }: { products: Product[] }) {
     submitOrder,
     { status: "idle" },
   );
-  const [delivery, setDelivery] = useState<string>("pickup");
+  /**
+   * Способ получения не выбран заранее. Предвыбранный самовывоз в Москве
+   * молча менял и сумму, и город: покупатель из Новосибирска видел итог
+   * на 490 ₽ ниже того, что обещала корзина.
+   */
+  const [delivery, setDelivery] = useState<string>("");
   const [city, setCity] = useState("");
   /**
    * Живой расчёт СДЭК вместе с тем набором, для которого он получен.
@@ -96,11 +101,13 @@ export function CheckoutForm({ products }: { products: Product[] }) {
     0,
   );
   const count = items.reduce((sum, item) => sum + item.qty, 0);
-  const deliveryOption =
-    deliveryOptions.find((option) => option.id === delivery) ??
-    deliveryOptions[0];
+  const deliveryOption = deliveryOptions.find(
+    (option) => option.id === delivery,
+  );
   const flatShipping =
-    subtotal >= FREE_SHIPPING_FROM || subtotal === 0 ? 0 : deliveryOption.price;
+    !deliveryOption || subtotal >= FREE_SHIPPING_FROM || subtotal === 0
+      ? 0
+      : deliveryOption.price;
 
   const itemsField = items
     .map((item) => `${item.product.sku}×${item.qty}`)
@@ -217,6 +224,7 @@ export function CheckoutForm({ products }: { products: Product[] }) {
   return (
     <form
       action={formAction}
+      noValidate
       className="mt-12 grid gap-10 lg:grid-cols-[1fr_380px] lg:gap-14"
     >
       <input type="hidden" name="itemsCount" value={count} />
@@ -313,7 +321,11 @@ export function CheckoutForm({ products }: { products: Product[] }) {
             ))}
           </div>
 
-          {delivery !== "pickup" ? (
+          {errors.delivery ? (
+            <p className="mt-3 text-[12px] text-danger">{errors.delivery}</p>
+          ) : null}
+
+          {delivery && delivery !== "pickup" ? (
             <div className="mt-5 grid gap-5 sm:grid-cols-2">
               {/* Город отдельным полем: по нему СДЭК считает тариф.
                   Из общей строки адреса его пришлось бы угадывать. */}
@@ -386,7 +398,7 @@ export function CheckoutForm({ products }: { products: Product[] }) {
             </div>
             <div className="flex items-baseline justify-between gap-4">
               <dt className="text-muted">
-                {deliveryOption.title}
+                {deliveryOption?.title ?? "Доставка"}
                 {fresh && fresh.maxDays > 0 ? (
                   <span className="block text-[12px] text-faint">
                     {fresh.minDays === fresh.maxDays
@@ -397,7 +409,9 @@ export function CheckoutForm({ products }: { products: Product[] }) {
                 ) : null}
               </dt>
               <dd className="num">
-                {pending ? (
+                {!deliveryOption ? (
+                  <span className="text-faint">выберите способ</span>
+                ) : pending ? (
                   <span className="text-faint">считаем…</span>
                 ) : shipping === 0 ? (
                   <span className="text-accent">бесплатно</span>
@@ -409,7 +423,9 @@ export function CheckoutForm({ products }: { products: Product[] }) {
           </dl>
 
           <div className="mt-6 flex items-baseline justify-between gap-4 border-t border-line pt-5">
-            <p className="text-[13px] text-muted">К оплате</p>
+            <p className="text-[13px] text-muted">
+              {deliveryOption ? "К оплате" : "Товары"}
+            </p>
             <p className="num font-display text-2xl font-semibold tracking-[-0.02em]">
               {formatPrice(subtotal + shipping)}
             </p>

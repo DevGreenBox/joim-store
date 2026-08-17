@@ -165,7 +165,7 @@ export function ModelPickerForm({
           />
         </div>
 
-        <h3 className="font-display mt-7 text-[clamp(1.375rem,2.6vw,1.875rem)] leading-tight font-semibold tracking-[-0.02em]">
+        <h3 className="font-display mt-7 text-h3 font-semibold">
           {product.name}
         </h3>
 
@@ -185,7 +185,7 @@ export function ModelPickerForm({
         </ul>
 
         <div className="mt-auto pt-8">
-          <p className="num font-display text-[clamp(1.5rem,3vw,2rem)] leading-none font-semibold tracking-[-0.03em]">
+          <p className="num font-display text-fig font-semibold">
             {formatPrice(product.price)}
           </p>
           <div className="mt-5 flex flex-wrap items-center gap-3">

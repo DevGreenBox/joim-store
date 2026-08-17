@@ -2,10 +2,10 @@
 
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
+import { PosterVideo } from "@/components/ui/PosterVideo";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import home from "@/content/pages/home.json";
-import { GOALS, track } from "@/lib/analytics";
 import type { Product } from "@/lib/types";
 
 /**
@@ -48,19 +48,15 @@ export function TrustBand({ products }: { products: Product[] }) {
               delay={index * 80}
               className="overflow-hidden rounded-2xl border border-line bg-surface-2"
             >
-              <video
-                controls
-                preload="none"
+              {/* Одно соотношение на все три: у роликов оно разное
+                  (ES-19 горизонтальный, два соседних вертикальные),
+                  а строка грида тянет карточки по высоте — под средней
+                  зияло 300 px пустоты. Кадр вписывается по постеру. */}
+              <PosterVideo
+                src={product.video!.src}
                 poster={product.video!.poster}
-                playsInline
-                onPlay={() => track(GOALS.videoPlay, { src: product.video!.src })}
-                className="block w-full"
-                style={{ aspectRatio: product.video!.ratio }}
-              >
-                <source src={product.video!.src} type="video/mp4" />
-                Ваш браузер не воспроизводит видео — скачайте файл{" "}
-                <a href={product.video!.src}>по ссылке</a>.
-              </video>
+                className="aspect-[4/5] object-cover"
+              />
 
               <div className="p-6">
                 <p className="readout text-[11px] tracking-[0.12em] text-accent uppercase">

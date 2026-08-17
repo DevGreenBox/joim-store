@@ -53,7 +53,7 @@ export function BenefitSlider() {
                 className="object-contain p-[9%]"
               />
 
-              <p className="num font-display absolute top-5 left-6 text-[clamp(1.5rem,2.6vw,2rem)] leading-none font-semibold tracking-[-0.03em]">
+              <p className="num font-display absolute top-5 left-6 text-fig font-semibold">
                 {item.value}
                 {item.unit ? (
                   <span className="readout ml-1 text-[12px] font-normal text-faint">

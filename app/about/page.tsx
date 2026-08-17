@@ -25,7 +25,7 @@ export default function AboutPage() {
 
         <div className="relative mt-7 max-w-3xl">
           <span aria-hidden="true" className="accent-rule mb-6" />
-          <h1 className="font-display text-[clamp(2rem,5vw,3.5rem)] leading-[1.03] font-semibold tracking-[-0.035em] text-balance">
+          <h1 className="font-display text-h1 font-semibold text-balance">
             {about.title}
           </h1>
           <p className="mt-6 text-[15px] leading-relaxed text-muted sm:text-base">
@@ -38,7 +38,7 @@ export default function AboutPage() {
         <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line lg:grid-cols-4">
           {site.stats.map((stat, index) => (
             <Reveal key={stat.label} delay={index * 70} className="bg-surface p-6 lg:p-8">
-              <dt className="num font-display text-[clamp(1.75rem,3.4vw,2.5rem)] leading-none font-semibold tracking-[-0.03em]">
+              <dt className="num font-display text-h2 font-semibold">
                 {stat.value}
                 <span className="text-lg font-medium text-faint">
                   {stat.suffix}

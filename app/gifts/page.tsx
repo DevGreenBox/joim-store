@@ -38,7 +38,7 @@ export default function GiftsPage() {
 
         <div className="relative mt-7 max-w-3xl">
           <span aria-hidden="true" className="accent-rule mb-6" />
-          <h1 className="font-display text-[clamp(2rem,5vw,3.5rem)] leading-[1.03] font-semibold tracking-[-0.035em] text-balance">
+          <h1 className="font-display text-h1 font-semibold text-balance">
             {gifts.title}
           </h1>
           <p className="mt-6 text-[15px] leading-relaxed text-muted sm:text-base">
@@ -106,7 +106,7 @@ export default function GiftsPage() {
       <Container size="wide" className="mt-16 lg:mt-[150px]">
         <Reveal>
           <span aria-hidden="true" className="gauge accent-rule mb-6" />
-          <h2 className="font-display text-[clamp(1.5rem,3.4vw,2.25rem)] leading-tight font-semibold tracking-[-0.02em]">
+          <h2 className="font-display text-h2 font-semibold">
             {gifts.pick.title}
           </h2>
           <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-muted">
