@@ -12,7 +12,7 @@ export function Logo({ className = "" }: { className?: string }) {
     <Link
       href="/"
       aria-label="JOIM STORE — на главную"
-      className={`group/logo inline-flex items-center gap-2.5 ${className}`}
+      className={`group/logo inline-flex min-h-11 items-center gap-2.5 lg:min-h-0 ${className}`}
     >
       <StarMark className="size-7 shrink-0 text-accent transition-transform duration-500 ease-out-expo group-hover/logo:rotate-90" />
       <span className="font-display text-[15px] leading-none font-bold tracking-[0.2em] text-ink">

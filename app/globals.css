@@ -499,8 +499,18 @@ select option {
   *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
+  }
+
+  /* Переходы не выключаем целиком: цвет, прозрачность и рамка — это
+     обратная связь на наведение и фокус, а не движение. Убираем из
+     перехода только перемещение и масштаб — от них и укачивает. */
+  *,
+  *::before,
+  *::after {
+    transition-property: color, background-color, border-color, outline-color,
+      text-decoration-color, fill, stroke, opacity, box-shadow !important;
+    transition-duration: 120ms !important;
   }
 
   [data-js] [data-reveal] {

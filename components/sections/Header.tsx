@@ -17,7 +17,7 @@ function CartLink({ onNavigate }: { onNavigate?: () => void }) {
       href="/cart"
       onClick={onNavigate}
       aria-label={`Корзина${ready && count ? `, товаров: ${count}` : ""}`}
-      className="group/cart relative grid size-10 place-items-center rounded-full border border-line text-ink transition-[border-color,background-color] duration-300 ease-out-soft hover:border-line-strong hover:bg-white/[0.05]"
+      className="group/cart relative grid size-11 place-items-center rounded-full border border-line xl:size-10 text-ink transition-[border-color,background-color] duration-300 ease-out-soft hover:border-line-strong hover:bg-white/[0.05]"
     >
       <svg viewBox="0 0 20 20" aria-hidden="true" className="size-[18px]">
         <path
@@ -76,7 +76,34 @@ export function Header() {
     const toggle = toggleRef.current;
 
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape") {
+        setOpen(false);
+        return;
+      }
+      if (event.key !== "Tab") return;
+      // Пока панель открыта, страница под ней заблокирована от прокрутки,
+      // но фокус по Tab уходил в неё — с клавиатуры пользователь оказывался
+      // в невидимом содержимом. Кольцо замыкаем на панели и кнопке.
+      const stops = [
+        toggleRef.current,
+        ...(panelRef.current?.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input, [tabindex]:not([tabindex="-1"])',
+        ) ?? []),
+      ].filter((node): node is HTMLElement => !!node);
+      if (stops.length < 2) return;
+      const first = stops[0];
+      const last = stops[stops.length - 1];
+      const active = document.activeElement;
+      if (event.shiftKey && active === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && active === last) {
+        event.preventDefault();
+        first.focus();
+      } else if (active && !stops.includes(active as HTMLElement)) {
+        event.preventDefault();
+        first.focus();
+      }
     };
     window.addEventListener("keydown", onKey);
 
@@ -157,7 +184,7 @@ export function Header() {
               aria-expanded={open}
               aria-controls="mobile-menu"
               aria-label={open ? "Закрыть меню" : "Открыть меню"}
-              className="grid size-10 place-items-center rounded-full border border-line text-ink transition-colors duration-300 hover:border-line-strong xl:hidden"
+              className="grid size-11 place-items-center rounded-full border border-line text-ink transition-colors duration-300 hover:border-line-strong xl:hidden"
             >
               <span className="relative block h-3 w-[18px]">
                 <span
@@ -181,6 +208,9 @@ export function Header() {
       <div
         ref={panelRef}
         id="mobile-menu"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Меню"
         hidden={!open}
         className="fixed inset-x-0 top-(--header-h) bottom-0 z-40 overflow-y-auto border-t border-line bg-void/95 backdrop-blur-xl xl:hidden"
       >

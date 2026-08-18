@@ -44,6 +44,9 @@ export async function generateMetadata({
       title: `${category.name} · ${site.name}`,
       description: category.description,
       url: `/catalog/${category.slug}`,
+      // См. карточку товара: объявленный `openGraph` отменяет наследование
+      // общего кадра, и без этой строки ссылка уходит без превью.
+      images: [{ url: category.cover.src, alt: category.cover.alt }],
     },
   };
 }

@@ -65,6 +65,12 @@ export async function generateMetadata({
       title: `${product.name} · ${site.name}`,
       description: product.short,
       url: `/product/${product.slug}`,
+      // Своя картинка обязательна: как только страница объявляет
+      // `openGraph`, общий кадр из `app/opengraph-image.tsx` перестаёт
+      // наследоваться, и ссылка на товар уходит в мессенджер без превью.
+      images: product.images.length
+        ? [{ url: product.images[0].src, alt: product.name }]
+        : undefined,
     },
   };
 }
