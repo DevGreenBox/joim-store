@@ -335,7 +335,9 @@
       "title": "Покрутите в руках",
       "text": "Настоящая геометрия устройства, а не облёт по кадрам: крутится вокруг любой оси, куда поведёте рукой.",
       "side": "/models/es19-side.webp",
-      "end": "/models/es19-end.webp"
+      "end": "/models/es19-end.webp",
+      "top": "/models/es19-top.webp",
+      "bottom": "/models/es19-bottom.webp"
     },
     "images": [
       {

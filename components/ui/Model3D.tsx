@@ -92,6 +92,8 @@ uniform sampler2D uFront;
 uniform sampler2D uBack;
 uniform sampler2D uSide;
 uniform sampler2D uEnd;
+uniform sampler2D uTop;
+uniform sampler2D uBottom;
 uniform vec3 uHalf;
 uniform mat3 uNormal;
 out vec4 outColor;
@@ -132,22 +134,40 @@ void main() {
   if ((uNormal * nLocal).z < 0.0) nLocal = -nLocal;
 
   vec2 uv = vec2(vLocal.x / uHalf.x, -vLocal.y / uHalf.y) * 0.5 + 0.5;
+  // Торцы разворачиваются в плоскости «ширина × толщина».
+  vec2 uvY = vec2(-vLocal.x / uHalf.x, vLocal.z / uHalf.z) * 0.5 + 0.5;
 
   // Каждой грани — своя текстура. Лицевая и задняя берут заводские виды,
-  // боковые и торцы — профиль края, снятый с того же вида. Натягивать
-  // лицевой вид на узкие грани нельзя: он размазывается полосами,
-  // а в углублении кнопки проступает её призрак.
+  // торцы — нарисованные площадки с разъёмами и фонарём, узкие боковые
+  // грани — профиль края. Натягивать лицевой вид на узкие грани нельзя:
+  // он размазывается полосами, а в углублении кнопки проступает её призрак.
   vec4 skin;
-  // Лицевой вид получают только внешние грани: те, что смотрят вперёд
+  float emit = 0.0;
+  // Заводской вид получают только внешние грани: те, что смотрят вперёд
   // (лицевая слегка выпуклая, поэтому порог мягкий) И лежат у самой
   // поверхности корпуса. Проверка глубины важнее наклона: дно углубления
   // параллельно лицевой грани, и без неё оно вытягивало рисунок кнопки
   // вниз призраком.
-  bool outer = abs(nLocal.z) >= 0.85 && abs(vLocal.z) >= uHalf.z * 0.70;
-  if (outer) {
-    skin = nLocal.z < 0.0
-      ? texture(uFront, vec2(1.0 - uv.x, uv.y))
-      : texture(uBack, uv);
+  bool faceZ = abs(nLocal.z) >= 0.85 && abs(vLocal.z) >= uHalf.z * 0.70;
+  // Торцевые площадки плоские: гравировка на них в полмиллиметра,
+  // поэтому хватает узкой полосы у самого края.
+  bool faceY = abs(nLocal.y) >= 0.85 && abs(vLocal.y) >= uHalf.y * 0.93;
+  if (faceZ) {
+    // Кнопка, индикаторы и окно экрана вырезаны в стенке +Z: заводской
+    // «лицевой» вид ложится именно на неё, иначе кнопка на модели горбится
+    // там, где по рисунку наклейка со штрихкодом.
+    skin = nLocal.z > 0.0
+      ? texture(uFront, uv)
+      : texture(uBack, vec2(1.0 - uv.x, uv.y));
+  } else if (faceY) {
+    if (vLocal.y > 0.0) {
+      skin = texture(uTop, uvY);
+    } else {
+      skin = texture(uBottom, uvY);
+      // Линза фонаря светится сама: только на нижнем торце и только там,
+      // где текстура белая, иначе засветились бы надпись и индикаторы.
+      emit = smoothstep(0.72, 0.92, min(min(skin.r, skin.g), skin.b));
+    }
   } else if (abs(nLocal.x) >= abs(nLocal.y)) {
     skin = texture(uSide, vec2(nLocal.x >= 0.0 ? 0.75 : 0.25, uv.y));
   } else {
@@ -169,6 +189,8 @@ void main() {
   float rim = pow(1.0 - max(dot(n, v), 0.0), 4.5);
   lit += vec3(0.60, 0.77, 0.33) * rim * 0.22;
 
+  lit = mix(lit, vec3(0.94, 1.00, 0.88), emit);
+
   outColor = vec4(pow(lit, vec3(1.0 / 2.2)), 1.0);
 }`;
 
@@ -185,6 +207,8 @@ export function Model3D({
   back,
   side,
   end,
+  top,
+  bottom,
   poster,
   label,
 }: {
@@ -196,6 +220,9 @@ export function Model3D({
   /** Профили края для боковых граней и торцов — `prepare-model-skins.mjs`. */
   side: string;
   end: string;
+  /** Нарисованные торцы: разъёмы сверху, фонарь снизу. */
+  top: string;
+  bottom: string;
   poster: string;
   label: string;
 }) {
@@ -298,6 +325,8 @@ export function Model3D({
         loadSkin(back, 1, "uBack"),
         loadSkin(side, 2, "uSide"),
         loadSkin(end, 3, "uEnd"),
+        loadSkin(top, 4, "uTop"),
+        loadSkin(bottom, 5, "uBottom"),
       ]);
       if (!alive) return;
       const head = new DataView(buffer, 0, 20);
@@ -399,7 +428,7 @@ export function Model3D({
       alive = false;
       cancelAnimationFrame(frame);
     };
-  }, [load, src, front, back, side, end]);
+  }, [load, src, front, back, side, end, top, bottom]);
 
   function onDown(event: React.PointerEvent<HTMLDivElement>) {
     if (!ready) return;

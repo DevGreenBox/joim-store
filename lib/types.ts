@@ -171,6 +171,9 @@ export type Product = {
     /** Профили края для боковых граней и торцов. */
     side: string;
     end: string;
+    /** Площадки торцов: разъёмы сверху, фонарь снизу. */
+    top: string;
+    bottom: string;
     /** Заводской рендер: стоит, пока сетка грузится, и вместо неё без WebGL2. */
     poster: string;
     title: string;
