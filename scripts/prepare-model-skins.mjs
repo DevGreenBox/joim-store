@@ -125,28 +125,37 @@ const GREEN = "#8ccc22";
 const BODY = "#17191a";
 
 const svgTop = `<svg xmlns="http://www.w3.org/2000/svg" width="${EW}" height="${EH}">
+  <defs>
+    <!-- Глубина гнезда: у губы почти чёрное, ко дну чуть светлее.
+         Заливка плоская, объём даёт только этот перепад. -->
+    <linearGradient id="deep" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000000"/>
+      <stop offset="0.55" stop-color="#090b0c"/>
+      <stop offset="1" stop-color="#1a1e20"/>
+    </linearGradient>
+  </defs>
   <rect width="${EW}" height="${EH}" fill="${GREEN}"/>
   <rect x="83" y="41" width="474" height="210" rx="14" fill="${BODY}"/>
   <rect x="91" y="49" width="458" height="194" rx="10" fill="#1b1e20"/>
 
   <!-- BOOST: два гнезда пуска, круглое и с ключом -->
   <circle cx="190" cy="147" r="34" fill="#3a3cc0"/>
-  <circle cx="190" cy="147" r="25" fill="#0a0b0c"/>
+  <circle cx="190" cy="147" r="25" fill="url(#deep)"/>
   <circle cx="190" cy="147" r="14" fill="#c08b2e"/>
   <circle cx="190" cy="147" r="5" fill="#0a0b0c"/>
   <path d="M234 147a34 34 0 0 1 34-34h25a9 9 0 0 1 9 9v50a9 9 0 0 1-9 9h-25a34 34 0 0 1-34-34z" fill="#3a3cc0"/>
-  <circle cx="268" cy="147" r="25" fill="#0a0b0c"/>
+  <circle cx="268" cy="147" r="25" fill="url(#deep)"/>
   <circle cx="268" cy="147" r="14" fill="#c08b2e"/>
   <circle cx="268" cy="147" r="5" fill="#0a0b0c"/>
 
   <!-- OUTPUT: два USB-A друг над другом -->
-  <rect x="340" y="112" width="68" height="26" rx="3" fill="#040506"/>
+  <rect x="340" y="112" width="68" height="26" rx="3" fill="url(#deep)"/>
   <rect x="345" y="122" width="58" height="10" rx="2" fill="#41464a"/>
-  <rect x="340" y="156" width="68" height="26" rx="3" fill="#040506"/>
+  <rect x="340" y="156" width="68" height="26" rx="3" fill="url(#deep)"/>
   <rect x="345" y="166" width="58" height="10" rx="2" fill="#41464a"/>
 
   <!-- INPUT: USB-C -->
-  <rect x="440" y="139" width="48" height="16" rx="8" fill="#040506"/>
+  <rect x="440" y="139" width="48" height="16" rx="8" fill="url(#deep)"/>
   <rect x="446" y="143" width="36" height="8" rx="4" fill="#41464a"/>
 </svg>`;
 
