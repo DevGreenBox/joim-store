@@ -52,6 +52,37 @@ export default function AboutPage() {
         </dl>
       </Container>
 
+      {/* Миссия и принципы — прямое требование структуры заказчика
+          (п. 4.4: «преимущества компании, ценности, миссия»). Светлая
+          плашка здесь работает дважды: даёт заявлению вес сменой грунта
+          и добавляет странице то самое чередование цветов по блокам,
+          о котором заказчик написал отдельно.
+
+          История бренда переехала сюда из списка ниже: под заголовком
+          «Принципы» рассказ о происхождении был не на месте, а рядом
+          с миссией он и есть её обоснование. */}
+      <section className="section-light mt-16 py-16 lg:mt-[150px] lg:py-[75px]">
+        <Container size="wide">
+          <div className="grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-20">
+            <div>
+              <span aria-hidden="true" className="accent-rule mb-6" />
+              <p className="eyebrow mb-5">{about.mission.eyebrow}</p>
+              <h2 className="font-display text-h2 leading-[1.08] font-semibold text-balance">
+                {about.mission.title}
+              </h2>
+            </div>
+            <div className="lg:pt-2">
+              <p className="text-[17px] leading-relaxed lg:text-[19px]">
+                {about.mission.text}
+              </p>
+              <p className="mt-6 text-[14px] leading-relaxed text-muted lg:text-[15px]">
+                {about.mission.origin}
+              </p>
+            </div>
+          </div>
+        </Container>
+      </section>
+
       {/* Пунктов четыре, а колонок было три: три вставали в ряд,
           четвёртый оставался один и справа от него зияли две пустые
           колонки. Колоночная сетка тут вообще не годится — тексты
@@ -63,6 +94,7 @@ export default function AboutPage() {
           половины сама, а линейки держат последовательность. Нумерация
           читается как порядок, чем она и является. */}
       <Container size="wide" className="mt-16 lg:mt-[150px]">
+        <h2 className="eyebrow mb-6">{about.valuesTitle}</h2>
         <ol className="border-t border-line">
           {about.blocks.map((block, index) => (
             <Reveal
@@ -75,9 +107,9 @@ export default function AboutPage() {
               <span className="num text-[12px] font-medium tracking-[0.08em] text-accent lg:pt-2">
                 {String(index + 1).padStart(2, "0")}
               </span>
-              <h2 className="font-display text-xl leading-snug font-semibold tracking-[-0.02em]">
+              <h3 className="font-display text-xl leading-snug font-semibold tracking-[-0.02em]">
                 {block.title}
-              </h2>
+              </h3>
               <p className="max-w-[36rem] text-[14px] leading-relaxed text-muted lg:text-[15px]">
                 {block.text}
               </p>
