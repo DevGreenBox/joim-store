@@ -59,14 +59,6 @@ export function GiftBand() {
               sizes="(max-width: 1023px) 100vw, 44vw"
               className="object-cover"
             />
-
-            {/* Стык кадра с текстовой половиной был твёрдой линией. Здесь
-                кадр уходит в цвет плашки растяжкой: на десктопе слева,
-                на телефоне сверху — там колонки складываются друг под друга. */}
-            <span
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,var(--color-surface)_0%,rgba(29,33,31,0.55)_10%,transparent_26%)] lg:bg-[linear-gradient(to_right,var(--color-surface)_0%,rgba(29,33,31,0.55)_9%,transparent_24%)]"
-            />
           </div>
         </Reveal>
       </Container>

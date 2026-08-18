@@ -86,7 +86,7 @@ export default function DeliveryPage() {
           <h2 className="font-display text-xl font-semibold tracking-[-0.02em]">
             {delivery.returns.title}
           </h2>
-          <p className="mt-4 max-w-3xl text-[15px] leading-relaxed text-muted">
+          <p className="mt-4 text-[15px] leading-relaxed text-muted">
             {delivery.returns.text}
           </p>
         </Reveal>

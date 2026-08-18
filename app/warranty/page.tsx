@@ -92,7 +92,7 @@ export default function WarrantyPage() {
           <h2 className="font-display text-xl font-semibold tracking-[-0.02em]">
             {warranty.returns.title}
           </h2>
-          <p className="mt-4 max-w-3xl text-[15px] leading-relaxed text-muted">
+          <p className="mt-4 text-[15px] leading-relaxed text-muted">
             {warranty.returns.text}
           </p>
           {support ? (
