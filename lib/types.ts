@@ -168,6 +168,9 @@ export type Product = {
     /** Заводские виды под 90°, ложатся текстурой на грани корпуса. */
     front: string;
     back: string;
+    /** Профили края для боковых граней и торцов. */
+    side: string;
+    end: string;
     /** Заводской рендер: стоит, пока сетка грузится, и вместо неё без WebGL2. */
     poster: string;
     title: string;

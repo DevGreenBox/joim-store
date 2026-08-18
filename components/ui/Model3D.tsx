@@ -90,6 +90,8 @@ in vec3 vView;
 in vec3 vLocal;
 uniform sampler2D uFront;
 uniform sampler2D uBack;
+uniform sampler2D uSide;
+uniform sampler2D uEnd;
 uniform vec3 uHalf;
 uniform mat3 uNormal;
 out vec4 outColor;
@@ -131,27 +133,26 @@ void main() {
 
   vec2 uv = vec2(vLocal.x / uHalf.x, -vLocal.y / uHalf.y) * 0.5 + 0.5;
 
-  // Боковые грани и торцы узкие: натянутый на них лицевой вид размазывается
-  // в полосы. Они берут цвет ровно с того края текстуры, к которому
-  // повёрнуты, — там кант и продолжается без швов.
-  // Порог высокий: у корпуса скруглены длинные рёбра, и при мягком пороге
-  // изогнутая часть канта ещё тянула на себя лицевой вид и шла полосами.
-  // Настоящие лицевая и задняя грани плоские, у них |nz| почти единица.
-  if (abs(nLocal.z) < 0.80) {
-    // Берём не саму кромку, а полоску чуть внутри: по краю рендера идёт
-    // сглаженный силуэт, и цвет оттуда сыпался шумом по канту.
-    if (abs(nLocal.x) >= abs(nLocal.y)) {
-      uv.x = nLocal.x >= 0.0 ? 0.965 : 0.035;
-    } else {
-      uv.y = nLocal.y >= 0.0 ? 0.022 : 0.978;
-    }
+  // Каждой грани — своя текстура. Лицевая и задняя берут заводские виды,
+  // боковые и торцы — профиль края, снятый с того же вида. Натягивать
+  // лицевой вид на узкие грани нельзя: он размазывается полосами,
+  // а в углублении кнопки проступает её призрак.
+  vec4 skin;
+  // Лицевой вид получают только внешние грани: те, что смотрят вперёд
+  // (лицевая слегка выпуклая, поэтому порог мягкий) И лежат у самой
+  // поверхности корпуса. Проверка глубины важнее наклона: дно углубления
+  // параллельно лицевой грани, и без неё оно вытягивало рисунок кнопки
+  // вниз призраком.
+  bool outer = abs(nLocal.z) >= 0.85 && abs(vLocal.z) >= uHalf.z * 0.70;
+  if (outer) {
+    skin = nLocal.z < 0.0
+      ? texture(uFront, vec2(1.0 - uv.x, uv.y))
+      : texture(uBack, uv);
+  } else if (abs(nLocal.x) >= abs(nLocal.y)) {
+    skin = texture(uSide, vec2(nLocal.x >= 0.0 ? 0.75 : 0.25, uv.y));
+  } else {
+    skin = texture(uEnd, vec2(uv.x, nLocal.y >= 0.0 ? 0.25 : 0.75));
   }
-
-  // Лицевая грань модели смотрит в минус Z, поэтому зеркалить надо её,
-  // а не заднюю: иначе логотип читается наоборот.
-  vec4 skin = nLocal.z < 0.0
-    ? texture(uFront, vec2(1.0 - uv.x, uv.y))
-    : texture(uBack, uv);
 
   // Рендер в sRGB, свет считаем в линейном.
   vec3 albedo = pow(skin.rgb, vec3(2.2)) * 0.16;
@@ -182,6 +183,8 @@ export function Model3D({
   src,
   front,
   back,
+  side,
+  end,
   poster,
   label,
 }: {
@@ -190,6 +193,9 @@ export function Model3D({
   /** Заводские виды под 90°: они ложатся на лицевую и заднюю грани. */
   front: string;
   back: string;
+  /** Профили края для боковых граней и торцов — `prepare-model-skins.mjs`. */
+  side: string;
+  end: string;
   poster: string;
   label: string;
 }) {
@@ -290,6 +296,8 @@ export function Model3D({
         (await fetch(src)).arrayBuffer(),
         loadSkin(front, 0, "uFront"),
         loadSkin(back, 1, "uBack"),
+        loadSkin(side, 2, "uSide"),
+        loadSkin(end, 3, "uEnd"),
       ]);
       if (!alive) return;
       const head = new DataView(buffer, 0, 20);
@@ -391,7 +399,7 @@ export function Model3D({
       alive = false;
       cancelAnimationFrame(frame);
     };
-  }, [load, src, front, back]);
+  }, [load, src, front, back, side, end]);
 
   function onDown(event: React.PointerEvent<HTMLDivElement>) {
     if (!ready) return;

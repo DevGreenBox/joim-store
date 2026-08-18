@@ -335,6 +335,8 @@ export default async function ProductPage({ params }: { params: Params }) {
               src={product.spin.model}
               front={product.spin.front}
               back={product.spin.back}
+              side={product.spin.side}
+              end={product.spin.end}
               poster={product.spin.poster}
               label={product.name}
             />
