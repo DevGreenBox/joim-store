@@ -65,13 +65,16 @@ function qMat(q: Quat): Float32Array {
 }
 
 const VERT = `#version 300 es
-in vec3 position;
+in vec4 aData;
 uniform mat4 uModel;
 uniform mat4 uProj;
 uniform float uScale;
 out vec3 vView;
+flat out int vPart;
 void main() {
-  vec4 p = uModel * vec4(position * uScale, 1.0);
+  vec3 local = aData.xyz * uScale;
+  vPart = int(aData.w);
+  vec4 p = uModel * vec4(local, 1.0);
   p.z -= 2.6;
   vView = p.xyz;
   gl_Position = uProj * p;
@@ -80,8 +83,21 @@ void main() {
 const FRAG = `#version 300 es
 precision highp float;
 in vec3 vView;
+flat in int vPart;
 out vec4 outColor;
 
+/**
+ * Материалы. В STL нет ни цветов, ни текстурных координат: единственное,
+ * что о делении на детали известно из самой геометрии, — связность.
+ * Сетка распадается на три куска: корпус, эмблема-звезда и площадка
+ * кнопки с индикатором. Их и красим.
+ *
+ * Зелёные накладки на гранях корпуса — это покраска по одной оболочке,
+ * геометрией они не выделены. Рисовать их формулой по фотографии
+ * пробовали: маска красит корпус целиком и промахивается мимо изделия.
+ * Чтобы накладки встали на свои места, нужна модель с развёрткой
+ * и текстурой — это к автору 3D.
+ */
 void main() {
   // Нормаль из производных: грань плоская, значит одна нормаль на весь
   // треугольник. Хранить её незачем.
@@ -98,11 +114,20 @@ void main() {
   // Графит корпуса, подсветка фирменным зелёным по контуру. Заливка
   // держится тёмной намеренно: предмет стоит на графите страницы,
   // и светлая модель на нём выглядит гипсовой.
-  vec3 body = vec3(0.022, 0.026, 0.024);
-  vec3 lit = body * (0.12 + 2.40 * kd) + vec3(0.05, 0.06, 0.055) * fd * 0.35;
+  // Корпус — матовый графит, накладки, эмблема и кнопка — фирменный
+  // зелёный. Эмблема и кнопка приходят отдельными деталями из геометрии,
+  // накладки — маской.
+  vec3 graphite = vec3(0.022, 0.026, 0.024);
+  vec3 green = vec3(0.110, 0.220, 0.033);
+  bool accent = vPart > 0;
+  vec3 body = accent ? green : graphite;
+
+  vec3 lit = body * (0.12 + 2.40 * kd) + body * 2.0 * fd * 0.35;
 
   vec3 h = normalize(key + v);
-  lit += vec3(0.90) * pow(max(dot(n, h), 0.0), 70.0) * 0.22;
+  float gloss = accent ? 120.0 : 70.0;
+  float spec = accent ? 0.45 : 0.22;
+  lit += vec3(0.90) * pow(max(dot(n, h), 0.0), gloss) * spec;
 
   float rim = pow(1.0 - max(dot(n, v), 0.0), 4.5);
   lit += vec3(0.60, 0.77, 0.33) * rim * 0.22;
@@ -207,12 +232,12 @@ export function Model3D({
       const vbo = gl.createBuffer();
       gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
       gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
-      const loc = gl.getAttribLocation(program, "position");
+      const loc = gl.getAttribLocation(program, "aData");
       gl.enableVertexAttribArray(loc);
       // Int16 читаем как float без нормализации: масштаб уходит в шейдер
       // отдельным числом. `vertexAttribIPointer` тут нельзя — он отдаёт
       // целое, а шейдер ждёт `vec3`, и драйвер молча ничего не рисует.
-      gl.vertexAttribPointer(loc, 3, gl.SHORT, false, 0, 0);
+      gl.vertexAttribPointer(loc, 4, gl.SHORT, false, 0, 0);
 
       gl.useProgram(program);
       gl.uniform1f(uScale, scale * 0.98);
