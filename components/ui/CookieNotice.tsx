@@ -32,7 +32,7 @@ export function CookieNotice() {
     // Читаем после монтирования: на сервере localStorage нет, и разметка
     // разошлась бы с браузерной. Показ переносим на следующий кадр —
     // синхронный setState прямо в эффекте даёт лишний каскад отрисовок,
-    // тот же приём уже применён в Spin360.
+    // тот же приём уже применён в модели устройства.
     const frame = requestAnimationFrame(() => {
       if (!localStorage.getItem(STORAGE_KEY)) setVisible(true);
     });
