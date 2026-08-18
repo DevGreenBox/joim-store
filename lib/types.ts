@@ -161,11 +161,14 @@ export type Product = {
   /** 360°-облёт, если он есть в библиотеке заказчика. */
   spin?: {
     /**
-     * Папка с кадрами облёта и их число. Имена — `00.webp`, `01.webp`
-     * и так далее по порядку; собирает `scripts/prepare-360.mjs`.
+     * Упакованная сетка устройства: `scripts/prepare-model.mjs` делает её
+     * из STL заказчика. Рисует `components/ui/Model3D.tsx`.
      */
-    frames: string;
-    count: number;
+    model: string;
+    /** Заводские виды под 90°, ложатся текстурой на грани корпуса. */
+    front: string;
+    back: string;
+    /** Заводской рендер: стоит, пока сетка грузится, и вместо неё без WebGL2. */
     poster: string;
     title: string;
     text: string;

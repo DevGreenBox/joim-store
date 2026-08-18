@@ -328,11 +328,12 @@
       "Кабель для зарядки Type-C"
     ],
     "spin": {
-      "frames": "/images/spin/es19",
-      "count": 72,
+      "model": "/models/es19.bin",
+      "front": "/models/es19-front.webp",
+      "back": "/models/es19-back.webp",
       "poster": "/images/products/es19-360-poster.webp",
       "title": "Покрутите в руках",
-      "text": "Заводской облёт вокруг устройства: фонарь, рёбра корпуса, индикатор заряда и разъёмы с торца."
+      "text": "Настоящая геометрия устройства, а не облёт по кадрам: крутится вокруг любой оси, куда поведёте рукой."
     },
     "images": [
       {
