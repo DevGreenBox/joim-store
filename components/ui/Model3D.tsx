@@ -6,6 +6,10 @@ import { useEffect, useRef, useState } from "react";
 /**
  * Трёхмерная модель устройства — своя, а не раскадровка облёта.
  *
+ * Сетка идёт целиком, без прореживания: кластеризация по решётке теряла
+ * почти половину граней и оставляла на корпусе рваные клинья. Полная
+ * сетка — 522 КБ по сети, меньше прежней раскадровки из 72 снимков.
+ *
  * Раньше здесь листались 72 снимка: это 5° на кадр, и сколько ни смешивай
  * соседние кадры, ось остаётся одна и «покрутить» можно только вокруг неё.
  * Тут рисуется настоящая геометрия из STL заказчика (`scripts/prepare-model.mjs`
@@ -65,17 +69,15 @@ function qMat(q: Quat): Float32Array {
 }
 
 const VERT = `#version 300 es
-in vec4 aData;
+in vec3 position;
 uniform mat4 uModel;
 uniform mat4 uProj;
 uniform float uScale;
 out vec3 vView;
 out vec3 vLocal;
-flat out int vPart;
 void main() {
-  vec3 local = aData.xyz * uScale;
+  vec3 local = position * uScale;
   vLocal = local;
-  vPart = int(aData.w);
   vec4 p = uModel * vec4(local, 1.0);
   p.z -= 2.6;
   vView = p.xyz;
@@ -86,10 +88,10 @@ const FRAG = `#version 300 es
 precision highp float;
 in vec3 vView;
 in vec3 vLocal;
-flat in int vPart;
 uniform sampler2D uFront;
 uniform sampler2D uBack;
 uniform vec3 uHalf;
+uniform mat3 uNormal;
 out vec4 outColor;
 
 /**
@@ -121,17 +123,43 @@ void main() {
   // Корпус — матовый графит, накладки, эмблема и кнопка — фирменный
   // зелёный. Эмблема и кнопка приходят отдельными деталями из геометрии,
   // накладки — маской.
-  // Модельная нормаль — из производных модельной позиции: она говорит,
-  // какой гранью корпус повёрнут, независимо от текущего поворота.
+  // Модельная нормаль — из производных модельной позиции. Её знак зависит
+  // от обхода вершин, поэтому разворачиваем к зрителю через ту же матрицу,
+  // что и сам корпус: иначе лицо с изнанкой меняются местами.
   vec3 nLocal = normalize(cross(dFdx(vLocal), dFdy(vLocal)));
+  if ((uNormal * nLocal).z < 0.0) nLocal = -nLocal;
 
   vec2 uv = vec2(vLocal.x / uHalf.x, -vLocal.y / uHalf.y) * 0.5 + 0.5;
-  vec4 skin = nLocal.z >= 0.0
-    ? texture(uFront, uv)
-    : texture(uBack, vec2(1.0 - uv.x, uv.y));
+
+  // Боковые грани и торцы узкие: натянутый на них лицевой вид размазывается
+  // в полосы. Они берут цвет ровно с того края текстуры, к которому
+  // повёрнуты, — там кант и продолжается без швов.
+  // Порог высокий: у корпуса скруглены длинные рёбра, и при мягком пороге
+  // изогнутая часть канта ещё тянула на себя лицевой вид и шла полосами.
+  // Настоящие лицевая и задняя грани плоские, у них |nz| почти единица.
+  bool edge = abs(nLocal.z) < 0.80;
+  if (edge) {
+    // Берём не саму кромку, а полоску чуть внутри: по краю рендера идёт
+    // сглаженный силуэт, и цвет оттуда сыпался шумом по канту.
+    if (abs(nLocal.x) >= abs(nLocal.y)) {
+      uv.x = nLocal.x >= 0.0 ? 0.94 : 0.06;
+    } else {
+      uv.y = nLocal.y >= 0.0 ? 0.022 : 0.978;
+    }
+  }
+
+  // Лицевая грань модели смотрит в минус Z, поэтому зеркалить надо её,
+  // а не заднюю: иначе логотип читается наоборот.
+  // На гранях, взятых с кромки, читаем размытый уровень мипмапа: там
+  // важен цвет канта, а не рисунок, и мелкая рябь рендера туда не идёт.
+  float blur = edge ? 3.5 : 0.0;
+  vec4 skin = nLocal.z < 0.0
+    ? textureLod(uFront, vec2(1.0 - uv.x, uv.y), blur)
+    : textureLod(uBack, uv, blur);
 
   // Рендер в sRGB, свет считаем в линейном.
   vec3 albedo = pow(skin.rgb, vec3(2.2)) * 0.16;
+  // Крашеный пластик накладок глянцевее матового корпуса.
   bool accent = dot(skin.rgb, vec3(0.30, 0.59, 0.11)) > 0.34;
 
   vec3 lit = albedo * (0.12 + 2.40 * kd) + albedo * 2.0 * fd * 0.35;
@@ -234,6 +262,7 @@ export function Model3D({
     const uProj = gl.getUniformLocation(program, "uProj");
     const uScale = gl.getUniformLocation(program, "uScale");
     const uHalf = gl.getUniformLocation(program, "uHalf");
+    const uNormal = gl.getUniformLocation(program, "uNormal");
 
     /** Заводской вид как текстура грани. */
     const loadSkin = (url: string, unit: number, name: string) =>
@@ -282,12 +311,12 @@ export function Model3D({
       const vbo = gl.createBuffer();
       gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
       gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
-      const loc = gl.getAttribLocation(program, "aData");
+      const loc = gl.getAttribLocation(program, "position");
       gl.enableVertexAttribArray(loc);
       // Int16 читаем как float без нормализации: масштаб уходит в шейдер
       // отдельным числом. `vertexAttribIPointer` тут нельзя — он отдаёт
       // целое, а шейдер ждёт `vec3`, и драйвер молча ничего не рисует.
-      gl.vertexAttribPointer(loc, 4, gl.SHORT, false, 0, 0);
+      gl.vertexAttribPointer(loc, 3, gl.SHORT, false, 0, 0);
 
       gl.useProgram(program);
       gl.uniform1f(uScale, scale * 0.98);
@@ -346,7 +375,12 @@ export function Model3D({
         }
 
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        gl.uniformMatrix4fv(uModel, false, qMat(spin.current));
+        const m = qMat(spin.current);
+        gl.uniformMatrix4fv(uModel, false, m);
+        // Верхняя 3×3 того же поворота — для разворота нормали к зрителю.
+        gl.uniformMatrix3fv(uNormal, false, new Float32Array([
+          m[0], m[1], m[2], m[4], m[5], m[6], m[8], m[9], m[10],
+        ]));
         gl.drawArrays(gl.TRIANGLES, 0, vertices);
       };
 

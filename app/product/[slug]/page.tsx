@@ -18,7 +18,7 @@ import { ProductCard } from "@/components/ui/ProductCard";
 import { ProductGallery } from "@/components/ui/ProductGallery";
 import { Reveal } from "@/components/ui/Reveal";
 import { ReviewCard } from "@/components/ui/ReviewCard";
-import { Model3D } from "@/components/ui/Model3D";
+import { Spin360 } from "@/components/ui/Spin360";
 import { StickyBuy } from "@/components/ui/StickyBuy";
 import {
   getCategory,
@@ -331,10 +331,12 @@ export default async function ProductPage({ params }: { params: Params }) {
               </p>
             </div>
 
-            <Model3D
-              src={product.spin.model}
-              front={product.spin.front}
-              back={product.spin.back}
+            <Spin360
+              frames={Array.from(
+                { length: product.spin.count },
+                (_, i) =>
+                  `${product.spin!.frames}/${String(i).padStart(2, "0")}.webp`,
+              )}
               poster={product.spin.poster}
               label={product.name}
             />
