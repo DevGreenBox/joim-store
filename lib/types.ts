@@ -165,6 +165,9 @@ export type Product = {
      * из STL заказчика. Рисует `components/ui/Model3D.tsx`.
      */
     model: string;
+    /** Заводские виды под 90°, ложатся текстурой на грани корпуса. */
+    front: string;
+    back: string;
     /** Заводской рендер: стоит, пока сетка грузится, и вместо неё без WebGL2. */
     poster: string;
     title: string;

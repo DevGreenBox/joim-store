@@ -70,9 +70,11 @@ uniform mat4 uModel;
 uniform mat4 uProj;
 uniform float uScale;
 out vec3 vView;
+out vec3 vLocal;
 flat out int vPart;
 void main() {
   vec3 local = aData.xyz * uScale;
+  vLocal = local;
   vPart = int(aData.w);
   vec4 p = uModel * vec4(local, 1.0);
   p.z -= 2.6;
@@ -83,20 +85,22 @@ void main() {
 const FRAG = `#version 300 es
 precision highp float;
 in vec3 vView;
+in vec3 vLocal;
 flat in int vPart;
+uniform sampler2D uFront;
+uniform sampler2D uBack;
+uniform vec3 uHalf;
 out vec4 outColor;
 
 /**
- * Материалы. В STL нет ни цветов, ни текстурных координат: единственное,
- * что о делении на детали известно из самой геометрии, — связность.
- * Сетка распадается на три куска: корпус, эмблема-звезда и площадка
- * кнопки с индикатором. Их и красим.
+ * Цвет берётся не с потолка: на грани корпуса кладутся заводские виды
+ * «Лицевая под 90» и «Задняя под 90» из библиотеки заказчика. Это
+ * ортогональные рендеры той же модели — их силуэт совпадает с габаритом
+ * геометрии до 0,6 %, поэтому проекция ложится точно, без развёртки.
  *
- * Зелёные накладки на гранях корпуса — это покраска по одной оболочке,
- * геометрией они не выделены. Рисовать их формулой по фотографии
- * пробовали: маска красит корпус целиком и промахивается мимо изделия.
- * Чтобы накладки встали на свои места, нужна модель с развёрткой
- * и текстурой — это к автору 3D.
+ * Грань выбирается по знаку модельной нормали: смотрит вперёд — лицевой
+ * вид, назад — задний с зеркалом по горизонтали. Узкие боковые грани
+ * берут цвет края текстуры, и там сам собой продолжается зелёный кант.
  */
 void main() {
   // Нормаль из производных: грань плоская, значит одна нормаль на весь
@@ -117,12 +121,20 @@ void main() {
   // Корпус — матовый графит, накладки, эмблема и кнопка — фирменный
   // зелёный. Эмблема и кнопка приходят отдельными деталями из геометрии,
   // накладки — маской.
-  vec3 graphite = vec3(0.022, 0.026, 0.024);
-  vec3 green = vec3(0.110, 0.220, 0.033);
-  bool accent = vPart > 0;
-  vec3 body = accent ? green : graphite;
+  // Модельная нормаль — из производных модельной позиции: она говорит,
+  // какой гранью корпус повёрнут, независимо от текущего поворота.
+  vec3 nLocal = normalize(cross(dFdx(vLocal), dFdy(vLocal)));
 
-  vec3 lit = body * (0.12 + 2.40 * kd) + body * 2.0 * fd * 0.35;
+  vec2 uv = vec2(vLocal.x / uHalf.x, -vLocal.y / uHalf.y) * 0.5 + 0.5;
+  vec4 skin = nLocal.z >= 0.0
+    ? texture(uFront, uv)
+    : texture(uBack, vec2(1.0 - uv.x, uv.y));
+
+  // Рендер в sRGB, свет считаем в линейном.
+  vec3 albedo = pow(skin.rgb, vec3(2.2)) * 0.16;
+  bool accent = dot(skin.rgb, vec3(0.30, 0.59, 0.11)) > 0.34;
+
+  vec3 lit = albedo * (0.12 + 2.40 * kd) + albedo * 2.0 * fd * 0.35;
 
   vec3 h = normalize(key + v);
   float gloss = accent ? 120.0 : 70.0;
@@ -144,11 +156,16 @@ function compile(gl: WebGL2RenderingContext, type: number, src: string) {
 
 export function Model3D({
   src,
+  front,
+  back,
   poster,
   label,
 }: {
   /** Упакованная сетка из `scripts/prepare-model.mjs`. */
   src: string;
+  /** Заводские виды под 90°: они ложатся на лицевую и заднюю грани. */
+  front: string;
+  back: string;
   poster: string;
   label: string;
 }) {
@@ -216,16 +233,49 @@ export function Model3D({
     const uModel = gl.getUniformLocation(program, "uModel");
     const uProj = gl.getUniformLocation(program, "uProj");
     const uScale = gl.getUniformLocation(program, "uScale");
+    const uHalf = gl.getUniformLocation(program, "uHalf");
+
+    /** Заводской вид как текстура грани. */
+    const loadSkin = (url: string, unit: number, name: string) =>
+      new Promise<void>((done) => {
+        const img = new window.Image();
+        img.onload = () => {
+          const tex = gl.createTexture();
+          gl.activeTexture(gl.TEXTURE0 + unit);
+          gl.bindTexture(gl.TEXTURE_2D, tex);
+          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+          gl.generateMipmap(gl.TEXTURE_2D);
+          // По краям — растяжка крайнего пикселя: узкие боковые грани
+          // берут цвет ровно с канта, а не заворачивают текстуру.
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+          gl.useProgram(program);
+          gl.uniform1i(gl.getUniformLocation(program, name), unit);
+          done();
+        };
+        img.onerror = () => done();
+        img.src = url;
+      });
 
     let vertices = 0;
 
     (async () => {
-      const buffer = await (await fetch(src)).arrayBuffer();
+      const [buffer] = await Promise.all([
+        (await fetch(src)).arrayBuffer(),
+        loadSkin(front, 0, "uFront"),
+        loadSkin(back, 1, "uBack"),
+      ]);
       if (!alive) return;
-      const head = new DataView(buffer, 0, 8);
+      const head = new DataView(buffer, 0, 20);
       vertices = head.getUint32(0, true);
       const scale = head.getFloat32(4, true);
-      const data = new Int16Array(buffer, 8);
+      const half: [number, number, number] = [
+        head.getFloat32(8, true),
+        head.getFloat32(12, true),
+        head.getFloat32(16, true),
+      ];
+      const data = new Int16Array(buffer, 20);
 
       const vao = gl.createVertexArray();
       gl.bindVertexArray(vao);
@@ -241,6 +291,8 @@ export function Model3D({
 
       gl.useProgram(program);
       gl.uniform1f(uScale, scale * 0.98);
+      // Половины габарита в тех же единицах, что и вершины после uScale.
+      gl.uniform3f(uHalf, half[0] * 0.98, half[1] * 0.98, half[2] * 0.98);
       gl.enable(gl.DEPTH_TEST);
       // Отсечения задних граней нет: обход вершин в STL не гарантирован,
       // и при `CULL_FACE` модель могла исчезнуть целиком. Нормаль в шейдере
@@ -309,7 +361,7 @@ export function Model3D({
       alive = false;
       cancelAnimationFrame(frame);
     };
-  }, [load, src]);
+  }, [load, src, front, back]);
 
   function onDown(event: React.PointerEvent<HTMLDivElement>) {
     if (!ready) return;

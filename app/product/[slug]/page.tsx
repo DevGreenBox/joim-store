@@ -333,6 +333,8 @@ export default async function ProductPage({ params }: { params: Params }) {
 
             <Model3D
               src={product.spin.model}
+              front={product.spin.front}
+              back={product.spin.back}
               poster={product.spin.poster}
               label={product.name}
             />
