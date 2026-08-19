@@ -253,9 +253,15 @@ const BACKDROPS = [
 ];
 
 async function backdrop(item) {
+  // Исходник подкапотной съёмки — 1533 px по ширине, на первом экране
+  // он растягивается до 2400. Ланцош при таком увеличении даёт мягкую
+  // картинку, и под завесой она читается шумом, а не кадром. Нерезкая
+  // маска возвращает кромкам определённость: радиус в один пиксель,
+  // ровные участки почти не трогает (m1), контурам добавляет вдвое (m2).
   const info = await sharp(item.src)
     .resize(item.width, null, { kernel: "lanczos3" })
-    .webp({ quality: 92, effort: 6, smartSubsample: true })
+    .sharpen({ sigma: 1, m1: 0.5, m2: 2 })
+    .webp({ quality: 88, effort: 6, smartSubsample: true })
     .toFile(item.out);
 
   console.log(

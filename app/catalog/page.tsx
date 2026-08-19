@@ -50,7 +50,9 @@ export async function generateMetadata({
     description: category
       ? category.description
       : "Пусковые устройства JOIM Easy Start ES-19 и ES-29 и автомобильный пылесос PVC-1. Собственное производство, гарантия 12 месяцев.",
-    alternates: { canonical: category ? `/catalog/${category.slug}` : "/catalog" },
+    alternates: {
+      canonical: category ? `/catalog/${category.slug}` : "/catalog",
+    },
   };
 }
 
@@ -141,11 +143,13 @@ export default async function CatalogPage({
       {/* Полоса доверия — после товаров. Наверху она отодвигала первую
           карточку на 1 100 px от начала страницы: человек шёл в каталог
           за прибором, а получал четыре обещания. */}
-      <Container size="wide" className="mt-16 lg:mt-[150px]">
-        <CatalogUsp />
-      </Container>
+      <section className="section-light py-16 lg:mt-[75px] lg:py-[75px]">
+        <Container size="wide">
+          <CatalogUsp />
+        </Container>
+      </section>
 
-      <Container size="wide" className="mt-16 lg:mt-[150px]">
+      <Container size="wide" className="lg:mt-[75px]">
         <CatalogBanner />
       </Container>
     </div>

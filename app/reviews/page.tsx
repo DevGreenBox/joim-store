@@ -93,14 +93,12 @@ export default function ReviewsPage() {
                 {products.length}
               </dt>
               <dd className="mt-3 text-[13px] text-muted">
-                {plural(products.length, "модель", "модели", "моделей")}{" "}
-                в линейке
+                {plural(products.length, "модель", "модели", "моделей")} в
+                линейке
               </dd>
             </div>
             <div>
-              <dt className="num font-display text-fig font-semibold">
-                12
-              </dt>
+              <dt className="num font-display text-fig font-semibold">12</dt>
               <dd className="mt-3 text-[13px] text-muted">
                 месяцев гарантии на каждое
               </dd>
@@ -109,36 +107,38 @@ export default function ReviewsPage() {
         </Reveal>
       </Container>
 
-      <Container size="wide" className="mt-12 lg:mt-[75px]">
+      <Container size="wide" className="mt-12 lg:mt-[75px] lg:mb-[75px]">
         <ReviewWall reviews={feed} filters={filters} />
       </Container>
 
       {/* Свой отзыв присылают в мессенджер: заводить форму с загрузкой
           файлов и модерацией ради нескольких писем в месяц — лишнее. */}
-      <Container size="wide" className="mt-14 lg:mt-[150px]">
-        <Reveal className="rounded-2xl border border-line bg-surface p-6 lg:p-10">
-          <h2 className="font-display text-xl font-semibold tracking-[-0.02em]">
-            Пользуетесь нашим устройством?
-          </h2>
-          <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-muted">
-            Пришлите отзыв с фото или видео в мессенджер — опубликуем здесь
-            вместе с вашим именем и без правок.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            {site.socials.map((social) => (
-              <a
-                key={social.href}
-                href={social.href}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex h-11 items-center rounded-full border border-line-strong px-6 text-sm font-medium transition-colors duration-300 hover:border-accent hover:text-accent"
-              >
-                {social.label}
-              </a>
-            ))}
-          </div>
-        </Reveal>
-      </Container>
+      <section className="section-light py-16 lg:mt-[75px] lg:py-[75px]">
+        <Container size="wide">
+          <Reveal className="rounded-2xl border border-line bg-surface p-6 lg:p-10">
+            <h2 className="font-display text-xl font-semibold tracking-[-0.02em]">
+              Пользуетесь нашим устройством?
+            </h2>
+            <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-muted">
+              Пришлите отзыв с фото или видео в мессенджер — опубликуем здесь
+              вместе с вашим именем и без правок.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              {site.socials.map((social) => (
+                <a
+                  key={social.href}
+                  href={social.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex h-11 items-center rounded-full border border-line-strong px-6 text-sm font-medium transition-colors duration-300 hover:border-accent hover:text-accent"
+                >
+                  {social.label}
+                </a>
+              ))}
+            </div>
+          </Reveal>
+        </Container>
+      </section>
 
       <div className="lg:mt-[75px]">
         <LeadForm />

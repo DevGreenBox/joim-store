@@ -37,7 +37,11 @@ export default function AboutPage() {
       <Container size="wide" className="mt-16 lg:mt-[150px]">
         <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line lg:grid-cols-4">
           {site.stats.map((stat, index) => (
-            <Reveal key={stat.label} delay={index * 70} className="bg-surface p-6 lg:p-8">
+            <Reveal
+              key={stat.label}
+              delay={index * 70}
+              className="bg-surface p-6 lg:p-8"
+            >
               <dt className="num font-display text-h2 font-semibold">
                 {stat.value}
                 <span className="text-lg font-medium text-faint">
@@ -61,7 +65,7 @@ export default function AboutPage() {
           История бренда переехала сюда из списка ниже: под заголовком
           «Принципы» рассказ о происхождении был не на месте, а рядом
           с миссией он и есть её обоснование. */}
-      <section className="section-light mt-16 py-16 lg:mt-[150px] lg:py-[75px]">
+      <section className="section-light py-16 lg:mt-[75px] lg:py-[75px]">
         <Container size="wide">
           <div className="grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-20">
             <div>
@@ -93,7 +97,7 @@ export default function AboutPage() {
           Строками этой беды нет: каждая строка выравнивает свои две
           половины сама, а линейки держат последовательность. Нумерация
           читается как порядок, чем она и является. */}
-      <Container size="wide" className="mt-16 lg:mt-[150px]">
+      <Container size="wide" className="lg:mt-[75px]">
         <h2 className="eyebrow mb-6">{about.valuesTitle}</h2>
         <ol className="border-t border-line">
           {about.blocks.map((block, index) => (

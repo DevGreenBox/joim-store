@@ -55,39 +55,40 @@ export default function WarrantyPage() {
         </ul>
       </Container>
 
-      <Container size="wide" className="mt-16 lg:mt-[150px]">
-        <h2 className="eyebrow mb-10">Как проходит обращение</h2>
-        <ol className="relative grid gap-12 md:grid-cols-2 lg:grid-cols-4 lg:gap-8">
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute top-[7px] right-0 left-0 hidden h-px bg-[linear-gradient(to_right,var(--color-line-strong),var(--color-line-strong)_75%,transparent)] lg:block"
-          />
-          {warranty.steps.map((step, index) => (
-            <Reveal
-              as="li"
-              key={step.step}
-              delay={index * 90}
-              className="relative"
-            >
-              <span
-                aria-hidden="true"
-                className="relative z-10 mb-7 block size-[15px] rounded-full border border-accent/50 bg-void before:absolute before:inset-[3px] before:rounded-full before:bg-accent"
-              />
-              <p className="num text-[11px] font-medium tracking-[0.18em] text-faint">
-                {step.step}
-              </p>
-              <h3 className="font-display mt-3 text-lg leading-snug font-semibold tracking-[-0.01em]">
-                {step.title}
-              </h3>
-              <p className="mt-3 text-[14px] leading-relaxed text-muted">
-                {step.text}
-              </p>
-            </Reveal>
-          ))}
-        </ol>
-      </Container>
+      <section className="section-light py-16 lg:mt-[75px] lg:py-[75px]">
+        <Container size="wide">
+          <ol className="relative grid gap-12 md:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute top-[7px] right-0 left-0 hidden h-px bg-[linear-gradient(to_right,var(--color-line-strong),var(--color-line-strong)_75%,transparent)] lg:block"
+            />
+            {warranty.steps.map((step, index) => (
+              <Reveal
+                as="li"
+                key={step.step}
+                delay={index * 90}
+                className="relative"
+              >
+                <span
+                  aria-hidden="true"
+                  className="relative z-10 mb-7 block size-[15px] rounded-full border border-accent/50 bg-void before:absolute before:inset-[3px] before:rounded-full before:bg-accent"
+                />
+                <p className="num text-[11px] font-medium tracking-[0.18em] text-faint">
+                  {step.step}
+                </p>
+                <h3 className="font-display mt-3 text-lg leading-snug font-semibold tracking-[-0.01em]">
+                  {step.title}
+                </h3>
+                <p className="mt-3 text-[14px] leading-relaxed text-muted">
+                  {step.text}
+                </p>
+              </Reveal>
+            ))}
+          </ol>
+        </Container>
+      </section>
 
-      <Container size="wide" className="mt-16 lg:mt-[150px] lg:mb-[75px]">
+      <Container size="wide" className="lg:mt-[75px] lg:mb-[75px]">
         <Reveal className="rounded-2xl border border-line bg-surface p-6 lg:p-10">
           <h2 className="font-display text-xl font-semibold tracking-[-0.02em]">
             {warranty.returns.title}

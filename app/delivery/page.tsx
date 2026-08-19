@@ -59,29 +59,30 @@ export default function DeliveryPage() {
         </ul>
       </Container>
 
-      <Container size="wide" className="mt-16 lg:mt-[150px]">
-        <h2 className="eyebrow mb-6">Оплата</h2>
-        <ul className="divide-y divide-line border-y border-line">
-          {delivery.payment.map((item, index) => (
-            <Reveal
-              as="li"
-              key={item.title}
-              delay={index * 60}
-              y={14}
-              className="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-2 py-6"
-            >
-              <h3 className="font-display min-w-[240px] flex-1 text-base font-semibold tracking-[-0.01em]">
-                {item.title}
-              </h3>
-              <p className="max-w-md flex-1 text-[14px] leading-relaxed text-muted">
-                {item.text}
-              </p>
-            </Reveal>
-          ))}
-        </ul>
-      </Container>
+      <section className="section-light py-16 lg:mt-[75px] lg:py-[75px]">
+        <Container size="wide">
+          <ul className="divide-y divide-line border-y border-line">
+            {delivery.payment.map((item, index) => (
+              <Reveal
+                as="li"
+                key={item.title}
+                delay={index * 60}
+                y={14}
+                className="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-2 py-6"
+              >
+                <h3 className="font-display min-w-[240px] flex-1 text-base font-semibold tracking-[-0.01em]">
+                  {item.title}
+                </h3>
+                <p className="max-w-md flex-1 text-[14px] leading-relaxed text-muted">
+                  {item.text}
+                </p>
+              </Reveal>
+            ))}
+          </ul>
+        </Container>
+      </section>
 
-      <Container size="wide" className="mt-16 lg:mt-[150px] lg:mb-[75px]">
+      <Container size="wide" className="lg:mt-[75px] lg:mb-[75px]">
         <Reveal className="rounded-2xl border border-line bg-surface p-6 lg:p-10">
           <h2 className="font-display text-xl font-semibold tracking-[-0.02em]">
             {delivery.returns.title}

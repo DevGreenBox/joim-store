@@ -67,10 +67,14 @@ export function Hero() {
 
           Кадр не фон, а сюжет: белый капот сверху и полная деталей
           подкапотная. Без завесы на нём не живёт ни заголовок, ни линейка.
-          Завесы две, как в блоке преимуществ: диагональная гасит левую
-          половину под текст почти в ноль, ровная снимает общий уровень,
-          чтобы вырезанные приборы не тонули в деталях. */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-20">
+          Завеса одна и диагональная: слева гасит кадр почти в ноль под
+          заголовок, справа отпускает до 0,44 — там кадр и должен читаться
+          съёмкой, а не шумом. Ровную завесу поверх убрали: вместе
+          с диагональной она сводила фотографию в серую крупу. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-20"
+      >
         <Image
           src="/images/hero/engine-bay.webp"
           alt=""
@@ -79,12 +83,14 @@ export function Hero() {
           preload
           className="object-cover object-[62%_58%]"
         />
-        <div className="absolute inset-0 bg-[linear-gradient(105deg,rgba(17,19,19,0.97)_0%,rgba(17,19,19,0.95)_34%,rgba(17,19,19,0.76)_58%,rgba(17,19,19,0.7)_100%)]" />
-        <div className="absolute inset-0 bg-void/25" />
+        <div className="absolute inset-0 bg-[linear-gradient(105deg,rgba(17,19,19,0.96)_0%,rgba(17,19,19,0.92)_34%,rgba(17,19,19,0.58)_58%,rgba(17,19,19,0.44)_100%)]" />
 
-        {/* Нижняя завеса сводит кадр в цвет страницы: без неё полоса цифр
-            стоит на видимом стыке. */}
-        <div className="absolute inset-x-0 bottom-0 h-64 bg-[linear-gradient(to_top,var(--color-void),transparent)]" />
+        {/* Нижняя завеса сводит кадр в цвет страницы и заодно держит
+            контраст там, где на кадре лежит текст: подписи моделей с ценой
+            и полоса показаний. Диагональная завеса справа отпущена ради
+            резкости, и без этой полосы 11-пиксельные подписи падали
+            до 2,8 : 1 на светлых деталях мотора. */}
+        <div className="absolute inset-x-0 bottom-0 h-80 bg-[linear-gradient(to_top,var(--color-void)_0%,rgba(17,19,19,0.94)_40%,rgba(17,19,19,0.55)_72%,transparent_100%)]" />
       </div>
 
       <Container size="wide" className="relative pt-10 pb-12 lg:pt-14 lg:pb-16">
@@ -101,7 +107,10 @@ export function Hero() {
             </p>
 
             <h1 className="font-display mt-8 text-display font-semibold">
-              <span className="block animate-rise" style={{ animationDelay: "140ms" }}>
+              <span
+                className="block animate-rise"
+                style={{ animationDelay: "140ms" }}
+              >
                 {titleTop}
               </span>
               <span
@@ -175,7 +184,11 @@ export function Hero() {
                     href={`/product/${product.slug}`}
                     aria-label={product.name}
                     className="group/item absolute block"
-                    style={{ left: spot.left, bottom: spot.bottom, height: spot.height }}
+                    style={{
+                      left: spot.left,
+                      bottom: spot.bottom,
+                      height: spot.height,
+                    }}
                   >
                     <span
                       className="block h-full transition-transform duration-700 ease-out-expo group-hover/item:-translate-y-2"
@@ -199,7 +212,11 @@ export function Hero() {
                 нет, а линейку надо назвать. Порядок здесь каталожный —
                 от младшей модели к пылесосу, не тот, в котором приборы
                 расставлены по глубине. */}
-            <ul className="mt-8 grid grid-cols-3 gap-3 border-t border-line pt-5">
+            {/* Подложка под легендой: подпись модели набрана 11 пикселями,
+                и на светлых деталях мотора она падала до 3,45 : 1. Мягкая
+                растяжка держит норму, не запечатывая кадр целиком —
+                темнеет только полоса под текстом. */}
+            <ul className="relative mt-8 grid grid-cols-3 gap-3 border-t border-line pt-5 before:absolute before:inset-x-[-20px] before:-top-6 before:-bottom-3 before:-z-10 before:bg-[linear-gradient(to_top,rgba(17,19,19,0.9),rgba(17,19,19,0.72)_62%,transparent)] before:content-['']">
               {all.map((product) => (
                 <li key={product.slug}>
                   <Link
@@ -233,7 +250,11 @@ export function Hero() {
               style={{ animationDelay: `${640 + index * 80}ms` }}
             >
               <dt className="num font-display text-fig-sm font-semibold">
-                {stat.count === false ? stat.value : <CountUp value={stat.value} />}
+                {stat.count === false ? (
+                  stat.value
+                ) : (
+                  <CountUp value={stat.value} />
+                )}
                 <span className="text-[13px] font-medium text-faint">
                   {stat.suffix}
                 </span>

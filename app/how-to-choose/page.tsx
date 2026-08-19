@@ -57,31 +57,33 @@ export default function HowToChoosePage() {
           со ссылками 13 px — она читалась как служебная навигация, а не как
           то, за чем сюда идут. Каждый ответ вынесен плиткой с первой фразой:
           человек видит, о чём разбор, ещё до чтения. */}
-      <Container size="wide" className="mt-12 lg:mt-[75px]">
-        <h2 className="eyebrow mb-6">Ответы по порядку</h2>
-        <ul className="grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
-          {article.sections.map((section, index) => (
-            <Reveal as="li" key={section.title} delay={(index % 3) * 70}>
-              <Link
-                href={`#p${index + 1}`}
-                className="group flex h-full flex-col bg-surface p-6 transition-colors duration-300 hover:bg-surface-2 lg:p-7"
-              >
-                <span className="readout text-[11px] text-faint">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <span className="font-display mt-3 text-[15px] leading-snug font-semibold tracking-[-0.01em] transition-colors duration-300 group-hover:text-accent">
-                  {section.title}
-                </span>
-                <span className="mt-3 line-clamp-2 text-[13px] leading-relaxed text-muted">
-                  {section.text}
-                </span>
-              </Link>
-            </Reveal>
-          ))}
-        </ul>
-      </Container>
+      <section className="section-light py-16 lg:mt-[75px] lg:py-[75px]">
+        <Container size="wide">
+          <h2 className="eyebrow mb-6">Ответы по порядку</h2>
+          <ul className="grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
+            {article.sections.map((section, index) => (
+              <Reveal as="li" key={section.title} delay={(index % 3) * 70}>
+                <Link
+                  href={`#p${index + 1}`}
+                  className="group flex h-full flex-col bg-surface p-6 transition-colors duration-300 hover:bg-surface-2 lg:p-7"
+                >
+                  <span className="readout text-[11px] text-faint">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span className="font-display mt-3 text-[15px] leading-snug font-semibold tracking-[-0.01em] transition-colors duration-300 group-hover:text-accent">
+                    {section.title}
+                  </span>
+                  <span className="mt-3 line-clamp-2 text-[13px] leading-relaxed text-muted">
+                    {section.text}
+                  </span>
+                </Link>
+              </Reveal>
+            ))}
+          </ul>
+        </Container>
+      </section>
 
-      <Container size="wide" className="mt-16 lg:mt-[150px]">
+      <Container size="wide" className="lg:mt-[75px]">
         <div className="grid gap-12 lg:grid-cols-[1fr_360px] lg:gap-16">
           <div className="max-w-2xl">
             {article.sections.map((section, index) => (
@@ -114,7 +116,10 @@ export default function HowToChoosePage() {
             </h2>
             <ul className="mt-6 space-y-3">
               {article.checklist.map((item) => (
-                <li key={item} className="flex gap-3 text-[14px] leading-relaxed text-muted">
+                <li
+                  key={item}
+                  className="flex gap-3 text-[14px] leading-relaxed text-muted"
+                >
                   <StarMark className="mt-1 size-3 shrink-0 text-accent" />
                   {item}
                 </li>
@@ -124,12 +129,10 @@ export default function HowToChoosePage() {
         </div>
       </Container>
 
-      <Container size="wide" className="mt-16 lg:mt-[150px]">
+      <Container size="wide" className="mt-16 lg:mt-[150px] lg:mb-[75px]">
         <Reveal>
           <span aria-hidden="true" className="gauge accent-rule mb-6" />
-          <h2 className="font-display text-h2 font-semibold">
-            Все три модели
-          </h2>
+          <h2 className="font-display text-h2 font-semibold">Все три модели</h2>
         </Reveal>
 
         <ul className="mt-10 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">

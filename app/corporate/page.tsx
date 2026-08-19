@@ -53,24 +53,25 @@ export default function CorporatePage() {
         </ul>
       </Container>
 
-      <Container size="wide" className="mt-16 lg:mt-[150px]">
-        <h2 className="eyebrow mb-6">Условия</h2>
-        <dl className="divide-y divide-line border-y border-line">
-          {corporate.terms.map((term, index) => (
-            <Reveal
-              key={term.label}
-              delay={index * 60}
-              y={14}
-              className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-1 py-5"
-            >
-              <dt className="text-[14px] text-muted">{term.label}</dt>
-              <dd className="readout text-[15px] text-ink">{term.value}</dd>
-            </Reveal>
-          ))}
-        </dl>
-      </Container>
+      <section className="section-light py-16 lg:mt-[75px] lg:py-[75px]">
+        <Container size="wide">
+          <dl className="divide-y divide-line border-y border-line">
+            {corporate.terms.map((term, index) => (
+              <Reveal
+                key={term.label}
+                delay={index * 60}
+                y={14}
+                className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-1 py-5"
+              >
+                <dt className="text-[14px] text-muted">{term.label}</dt>
+                <dd className="readout text-[15px] text-ink">{term.value}</dd>
+              </Reveal>
+            ))}
+          </dl>
+        </Container>
+      </section>
 
-      <Container size="wide" className="mt-16 lg:mt-[150px]">
+      <Container size="wide" className="lg:mt-[75px]">
         <Reveal className="rounded-2xl border border-line bg-surface p-6 lg:p-10">
           <h2 className="font-display text-xl font-semibold tracking-[-0.02em]">
             {corporate.cta.title}

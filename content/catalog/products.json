@@ -165,7 +165,8 @@
         "flip": true,
         "title": "Что стоит за корпусом",
         "text": "Плата собственной разработки, сборка из отдельных ячеек с балансировкой, фонарь и порты — одним модулем. Не готовый блок с переклеенным шильдиком.",
-        "image": "/images/products/joim-es29-3.webp"
+        "image": "/images/products/joim-es29-3.webp",
+        "light": true
       },
       {
         "type": "columns",
@@ -605,7 +606,8 @@
         "flip": true,
         "title": "Корпус алюминиевый",
         "text": "Не крашеный пластик: цилиндр из алюминия отводит тепло от бесщёточного двигателя и не трескается, если пылесос уронить в багажник.",
-        "image": "/images/products/joim-pvc1-body.webp"
+        "image": "/images/products/joim-pvc1-body.webp",
+        "light": true
       },
       {
         "type": "media",
