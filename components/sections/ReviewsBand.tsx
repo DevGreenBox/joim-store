@@ -4,7 +4,6 @@ import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { ReviewOpen } from "@/components/ui/ReviewOpen";
-import { ReviewThumbs } from "@/components/ui/ReviewThumbs";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { StarMark } from "@/components/ui/StarMark";
 import home from "@/content/pages/home.json";
@@ -12,7 +11,6 @@ import {
   formatReviewDate,
   getAllReviews,
   getReviewsSummary,
-  reviewMedia,
 } from "@/lib/reviews";
 import { plural } from "@/lib/format";
 
@@ -33,15 +31,8 @@ export function ReviewsBand() {
   const all = getAllReviews();
 
   // По одному отзыву на модель, в порядке моделей в каталоге отзывов.
-  // Из каждой линейки берём отзыв с вложениями, если он есть: снимок
-  // покупателя убеждает сильнее любого текста, и на главной ему самое
-  // место. Нет ни одного — берём первый.
   const picks = Object.values(all)
-    .map(
-      (product) =>
-        product.items.find((item) => reviewMedia(item).length > 0) ??
-        product.items[0],
-    )
+    .map((product) => product.items[0])
     .filter(Boolean)
     .slice(0, 3);
 
@@ -114,8 +105,6 @@ export function ReviewsBand() {
                   <p className="mt-5 line-clamp-6 text-[14px] leading-relaxed text-muted">
                     {review.text}
                   </p>
-
-                  <ReviewThumbs review={review} />
 
                   <p className="readout mt-auto pt-6 text-[11px] text-faint">
                     {review.name} · {formatReviewDate(review.date)}
