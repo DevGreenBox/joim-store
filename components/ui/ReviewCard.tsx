@@ -1,4 +1,5 @@
 import { ReviewOpen } from "@/components/ui/ReviewOpen";
+import { ReviewThumbs } from "@/components/ui/ReviewThumbs";
 import { formatReviewDate, type Review } from "@/lib/reviews";
 
 function Stars({ rating }: { rating: number }) {
@@ -47,6 +48,8 @@ export function ReviewCard({ review }: { review: Review }) {
       <blockquote className="flex-1 text-[14px] leading-relaxed text-muted">
         {review.text}
       </blockquote>
+
+      <ReviewThumbs review={review} />
 
       <p className="text-[13px] font-medium text-ink">{review.name}</p>
     </ReviewOpen>
