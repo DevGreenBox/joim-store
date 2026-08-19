@@ -249,6 +249,7 @@ const BACKDROPS = [
     src: "assets/scenes/hero-bay-source.png",
     out: "public/images/hero/engine-bay.webp",
     width: 2400,
+    sharpen: true,
   },
 ];
 
@@ -258,9 +259,12 @@ async function backdrop(item) {
   // картинку, и под завесой она читается шумом, а не кадром. Нерезкая
   // маска возвращает кромкам определённость: радиус в один пиксель,
   // ровные участки почти не трогает (m1), контурам добавляет вдвое (m2).
-  const info = await sharp(item.src)
-    .resize(item.width, null, { kernel: "lanczos3" })
-    .sharpen({ sigma: 1, m1: 0.5, m2: 2 })
+  const pipe = sharp(item.src).resize(item.width, null, { kernel: "lanczos3" });
+  // Нерезкая маска — только съёмке: на гладкой плите она вытаскивает
+  // зерно вместо деталей, а плита нужна ровно тем, что на ней нечего
+  // разглядывать.
+  if (item.sharpen) pipe.sharpen({ sigma: 1, m1: 0.5, m2: 2 });
+  const info = await pipe
     .webp({ quality: 88, effort: 6, smartSubsample: true })
     .toFile(item.out);
 

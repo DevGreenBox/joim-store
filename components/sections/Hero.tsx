@@ -62,35 +62,30 @@ export function Hero() {
 
   return (
     <section className="relative isolate overflow-hidden lg:pb-[75px]">
-      {/* Подложка — съёмка подкапотного пространства. Знака и сетки линий
-          здесь нет: вместе с приборами и заголовком они давали кашу.
+      {/* Подложка — графитовая плита из материалов заказчика. Съёмка
+          подкапотного пространства стояла здесь до 19.08 и была снята
+          по его просьбе: сюжетный кадр под вырезанными приборами
+          и заголовком читался шумом, сколько его ни высветляй.
 
-          Кадр не фон, а сюжет: белый капот сверху и полная деталей
-          подкапотная. Без завесы на нём не живёт ни заголовок, ни линейка.
-          Завеса одна и диагональная: слева гасит кадр почти в ноль под
-          заголовок, справа отпускает до 0,44 — там кадр и должен читаться
-          съёмкой, а не шумом. Ровную завесу поверх убрали: вместе
-          с диагональной она сводила фотографию в серую крупу. */}
+          Плита работает иначе: разглядывать на ней нечего, она только
+          даёт свет и глубину. Поэтому завесы почти нет — лёгкая
+          диагональ снимает блик в правой половине, чтобы приборы
+          не спорили с ним, и нижняя растяжка сводит плиту в цвет
+          страницы, иначе на стыке видна линия. */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-20"
       >
         <Image
-          src="/images/hero/engine-bay.webp"
+          src="/images/hero/plate.webp"
           alt=""
           fill
           sizes="100vw"
           preload
-          className="object-cover object-[62%_58%]"
+          className="object-cover object-[58%_45%]"
         />
-        <div className="absolute inset-0 bg-[linear-gradient(105deg,rgba(17,19,19,0.96)_0%,rgba(17,19,19,0.92)_34%,rgba(17,19,19,0.58)_58%,rgba(17,19,19,0.44)_100%)]" />
-
-        {/* Нижняя завеса сводит кадр в цвет страницы и заодно держит
-            контраст там, где на кадре лежит текст: подписи моделей с ценой
-            и полоса показаний. Диагональная завеса справа отпущена ради
-            резкости, и без этой полосы 11-пиксельные подписи падали
-            до 2,8 : 1 на светлых деталях мотора. */}
-        <div className="absolute inset-x-0 bottom-0 h-80 bg-[linear-gradient(to_top,var(--color-void)_0%,rgba(17,19,19,0.94)_40%,rgba(17,19,19,0.55)_72%,transparent_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(105deg,rgba(17,19,19,0.72)_0%,rgba(17,19,19,0.5)_38%,rgba(17,19,19,0.22)_66%,rgba(17,19,19,0.34)_100%)]" />
+        <div className="absolute inset-x-0 bottom-0 h-72 bg-[linear-gradient(to_top,var(--color-void)_0%,rgba(17,19,19,0.7)_46%,transparent_100%)]" />
       </div>
 
       <Container size="wide" className="relative pt-10 pb-12 lg:pt-14 lg:pb-16">
@@ -212,11 +207,7 @@ export function Hero() {
                 нет, а линейку надо назвать. Порядок здесь каталожный —
                 от младшей модели к пылесосу, не тот, в котором приборы
                 расставлены по глубине. */}
-            {/* Подложка под легендой: подпись модели набрана 11 пикселями,
-                и на светлых деталях мотора она падала до 3,45 : 1. Мягкая
-                растяжка держит норму, не запечатывая кадр целиком —
-                темнеет только полоса под текстом. */}
-            <ul className="relative mt-8 grid grid-cols-3 gap-3 border-t border-line pt-5 before:absolute before:inset-x-[-20px] before:-top-6 before:-bottom-3 before:-z-10 before:bg-[linear-gradient(to_top,rgba(17,19,19,0.9),rgba(17,19,19,0.72)_62%,transparent)] before:content-['']">
+            <ul className="mt-8 grid grid-cols-3 gap-3 border-t border-line pt-5">
               {all.map((product) => (
                 <li key={product.slug}>
                   <Link
