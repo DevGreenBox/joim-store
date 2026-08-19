@@ -6,7 +6,7 @@ import { useState } from "react";
 
 import { ReviewOpen } from "@/components/ui/ReviewOpen";
 
-import { formatReviewDate, type FeedReview } from "@/lib/reviews";
+import { formatReviewDate, reviewMedia, type FeedReview } from "@/lib/reviews";
 import { plural } from "@/lib/format";
 
 /**
@@ -161,8 +161,9 @@ export function ReviewWall({
           карточке разорваться между колонками. */}
       <div className="mt-6 gap-4 [column-fill:balance] sm:columns-2 lg:columns-3 xl:columns-4">
         {shown.map((review) => {
-          const media = Boolean(review.photo || review.video);
-          const brief = !media && review.text.length <= SHORT;
+          const shots = reviewMedia(review);
+          const cover = shots[0];
+          const brief = !cover && review.text.length <= SHORT;
 
           return (
             <ReviewOpen
@@ -179,45 +180,51 @@ export function ReviewWall({
                     : "border-line bg-surface hover:border-line-strong"
                 }`}
               >
-                {review.photo ? (
+                {cover ? (
+                  // В ленте — один кадр и счётчик остальных: открывать
+                  // галерею прямо в кладке некуда, а видео тут не играет,
+                  // иначе на плитке две цели под курсором и человек,
+                  // метивший в отзыв, попадает в проигрыватель.
                   <div className="relative aspect-[4/3]">
                     <Image
-                      src={review.photo.src}
-                      alt={review.photo.alt}
+                      src={cover.type === "photo" ? cover.src : cover.poster}
+                      alt={cover.type === "photo" ? cover.alt : ""}
+                      aria-hidden={cover.type === "video" ? "true" : undefined}
                       fill
                       sizes="(max-width: 639px) 92vw, (max-width: 1023px) 45vw, (max-width: 1279px) 30vw, 23vw"
                       className="object-cover"
                     />
-                  </div>
-                ) : null}
 
-                {review.video ? (
-                  // В ленте — только постер со значком: играет ролик
-                  // в открытой карточке. Иначе на плитке две цели
-                  // под курсором, и человек, метивший в отзыв,
-                  // запускает видео.
-                  <div
-                    className="relative"
-                    style={{ aspectRatio: review.video.ratio }}
-                  >
-                    <Image
-                      src={review.video.poster}
-                      alt=""
-                      aria-hidden="true"
-                      fill
-                      sizes="(max-width: 639px) 92vw, (max-width: 1023px) 45vw, (max-width: 1279px) 30vw, 23vw"
-                      className="object-cover"
-                    />
-                    <span
-                      aria-hidden="true"
-                      className="absolute inset-0 grid place-items-center"
-                    >
-                      <span className="grid size-14 place-items-center rounded-full border border-line-strong bg-void/70 text-ink backdrop-blur-sm">
-                        <svg viewBox="0 0 24 24" className="ml-0.5 size-5">
-                          <path d="M8 5v14l11-7z" fill="currentColor" />
-                        </svg>
+                    {cover.type === "video" ? (
+                      <span
+                        aria-hidden="true"
+                        className="absolute inset-0 grid place-items-center"
+                      >
+                        <span className="grid size-14 place-items-center rounded-full border border-line-strong bg-void/70 text-ink backdrop-blur-sm">
+                          <svg viewBox="0 0 24 24" className="ml-0.5 size-5">
+                            <path d="M8 5v14l11-7z" fill="currentColor" />
+                          </svg>
+                        </span>
                       </span>
-                    </span>
+                    ) : null}
+
+                    {shots.length > 1 ? (
+                      <span className="readout absolute right-3 bottom-3 inline-flex items-center gap-1.5 rounded-full border border-line-strong bg-void/75 px-3 py-1.5 text-[11px] leading-none backdrop-blur-sm">
+                        <svg
+                          viewBox="0 0 16 16"
+                          aria-hidden="true"
+                          className="size-3"
+                        >
+                          <path
+                            d="M2 4h9v9H2zM5 1h9v9"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.4"
+                          />
+                        </svg>
+                        {shots.length}
+                      </span>
+                    ) : null}
                   </div>
                 ) : null}
 

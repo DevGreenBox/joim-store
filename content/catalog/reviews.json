@@ -51,11 +51,33 @@
         "rating": 5,
         "date": "2026-05-11",
         "text": "Плюсы: Запускает. Очень помогла в прошедшую зиму. Пузотерки по 4-5 штук за утро. У меня внедорожник - легко!",
-        "photo": {
-          "src": "/images/products/es19-clamp.webp",
-          "alt": "Клеммы JOIM Easy Start ES-19 на аккумуляторе под капотом",
-          "demo": true
-        }
+        "media": [
+          {
+            "type": "photo",
+            "src": "/images/products/es19-clamp.webp",
+            "alt": "Клеммы JOIM Easy Start ES-19 на аккумуляторе",
+            "demo": true
+          },
+          {
+            "type": "photo",
+            "src": "/images/products/es19-bay.webp",
+            "alt": "JOIM Easy Start ES-19 в подкапотном пространстве",
+            "demo": true
+          },
+          {
+            "type": "video",
+            "src": "/video/es19-promo.mp4",
+            "poster": "/images/products/es19-promo-poster.webp",
+            "ratio": "16/9",
+            "demo": true
+          },
+          {
+            "type": "photo",
+            "src": "/images/products/es19-case.webp",
+            "alt": "Кейс JOIM Easy Start ES-19 с комплектом",
+            "demo": true
+          }
+        ]
       },
       {
         "name": "Юлия",
@@ -214,12 +236,27 @@
         "rating": 5,
         "date": "2026-03-01",
         "text": "Плюсы: Шикарный пылесос! Купила в машину, но опробовала сразу на даче у друзей, покрытие чистит идеально, большой набор с 6 насадками",
-        "video": {
-          "src": "/video/pvc1-promo.mp4",
-          "poster": "/images/products/pvc1-promo-poster.webp",
-          "ratio": "3/4",
-          "demo": true
-        }
+        "media": [
+          {
+            "type": "video",
+            "src": "/video/pvc1-promo.mp4",
+            "poster": "/images/products/pvc1-promo-poster.webp",
+            "ratio": "3/4",
+            "demo": true
+          },
+          {
+            "type": "photo",
+            "src": "/images/products/joim-pvc1-brush.webp",
+            "alt": "Насадка-щётка JOIM PVC-1",
+            "demo": true
+          },
+          {
+            "type": "photo",
+            "src": "/images/products/joim-pvc1-card.webp",
+            "alt": "Автомобильный пылесос JOIM PVC-1",
+            "demo": true
+          }
+        ]
       }
     ]
   }

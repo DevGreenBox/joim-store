@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import { PosterVideo } from "@/components/ui/PosterVideo";
-import { formatReviewDate, type Review } from "@/lib/reviews";
+import { formatReviewDate, reviewMedia, type Review } from "@/lib/reviews";
 
 /**
  * Делает карточку отзыва кликабельной и открывает его целиком
@@ -27,6 +27,13 @@ import { formatReviewDate, type Review } from "@/lib/reviews";
  * «уменьшить движение» смещение из перехода исключается общим правилом,
  * и окно просто проявляется.
  *
+ * Кадров у отзыва может быть несколько — до трёх-четырёх. Тогда
+ * в окне открывается галерея: крупный кадр и полоса миниатюр под ним.
+ * Под ним, а не сбоку: окно шириной 560 px, и боковая полоса съела бы
+ * у кадра пятую часть ширины — ровно то, ради чего его и открывают.
+ * Снизу же миниатюры одинаково ложатся и на телефоне, и на десктопе,
+ * и это тот же порядок, что в галерее товара, — человек его уже видел.
+ *
  * Клик по карточке ловит растянутая кнопка поверх содержимого — тот же
  * приём, что у плиток каталога. Ссылка на модель внутри подписи поднята
  * над ней слоем и остаётся отдельной целью: кнопка внутри кнопки —
@@ -47,7 +54,10 @@ export function ReviewOpen({
   children: ReactNode;
 }) {
   const [open, setOpen] = useState(false);
+  const [shot, setShot] = useState(0);
   const ref = useRef<HTMLDialogElement>(null);
+  const media = reviewMedia(review);
+  const current = media[shot];
 
   useEffect(() => {
     if (open) ref.current?.showModal();
@@ -94,24 +104,74 @@ export function ReviewOpen({
               </svg>
             </button>
 
-            {review.photo ? (
-              <div className="relative aspect-[4/3] w-full">
-                <Image
-                  src={review.photo.src}
-                  alt={review.photo.alt}
-                  fill
-                  sizes="(max-width: 639px) 92vw, 560px"
-                  className="object-cover"
-                />
-              </div>
-            ) : null}
+            {current ? (
+              <div>
+                {current.type === "photo" ? (
+                  <div className="relative aspect-[4/3] w-full bg-void">
+                    <Image
+                      key={current.src}
+                      src={current.src}
+                      alt={current.alt}
+                      fill
+                      sizes="(max-width: 639px) 92vw, 560px"
+                      className="animate-fade object-cover"
+                    />
+                  </div>
+                ) : (
+                  <PosterVideo
+                    key={current.src}
+                    src={current.src}
+                    poster={current.poster}
+                    ratio={current.ratio}
+                  />
+                )}
 
-            {review.video ? (
-              <PosterVideo
-                src={review.video.src}
-                poster={review.video.poster}
-                ratio={review.video.ratio}
-              />
+                {media.length > 1 ? (
+                  <ul className="flex gap-2 border-b border-line p-3">
+                    {media.map((item, index) => {
+                      const on = index === shot;
+                      return (
+                        <li key={item.src}>
+                          <button
+                            type="button"
+                            onClick={() => setShot(index)}
+                            aria-current={on}
+                            aria-label={`Кадр ${index + 1} из ${media.length}`}
+                            className={`relative block size-16 overflow-hidden rounded-lg border transition-colors duration-300 ${
+                              on
+                                ? "border-accent"
+                                : "border-line hover:border-line-strong"
+                            }`}
+                          >
+                            <Image
+                              src={
+                                item.type === "photo" ? item.src : item.poster
+                              }
+                              alt=""
+                              aria-hidden="true"
+                              fill
+                              sizes="64px"
+                              className={`object-cover transition-opacity duration-300 ${
+                                on ? "opacity-100" : "opacity-60"
+                              }`}
+                            />
+                            {item.type === "video" ? (
+                              <span
+                                aria-hidden="true"
+                                className="absolute inset-0 grid place-items-center bg-void/40"
+                              >
+                                <svg viewBox="0 0 24 24" className="size-4">
+                                  <path d="M8 5v14l11-7z" fill="currentColor" />
+                                </svg>
+                              </span>
+                            ) : null}
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                ) : null}
+              </div>
             ) : null}
 
             <div className="p-6 lg:p-8">

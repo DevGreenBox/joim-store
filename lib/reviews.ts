@@ -1,5 +1,16 @@
 import reviewsJson from "@/content/catalog/reviews.json";
 
+export type ReviewMedia =
+  | { type: "photo"; src: string; alt: string; demo?: boolean }
+  | {
+      type: "video";
+      src: string;
+      poster: string;
+      ratio: string;
+      alt?: string;
+      demo?: boolean;
+    };
+
 export type Review = {
   name: string;
   rating: number;
@@ -9,12 +20,17 @@ export type Review = {
    * Фото и видео от покупателя. Появятся файлы — лягут сюда, стена
    * покажет их сама: разметка на это рассчитана.
    *
+   * Одиночные `photo` и `video` — короткая запись на один кадр.
+   * Когда кадров несколько, пишется `media`: в открытой карточке они
+   * идут галереей, в ленте видно первый и счётчик остальных.
+   *
    * `demo: true` — заглушка на время показа: наша съёмка на месте
    * будущего кадра покупателя. Такие вставки ищутся одним `grep demo`
    * по `content/catalog/reviews.json` и снимаются перед запуском.
    */
   photo?: { src: string; alt: string; demo?: boolean };
   video?: { src: string; poster: string; ratio: string; demo?: boolean };
+  media?: ReviewMedia[];
 };
 
 /**
@@ -63,6 +79,19 @@ export function getReviewsSummary() {
     ? items.reduce((sum, item) => sum + item.rating, 0) / total
     : 0;
   return { total, average, published: total };
+}
+
+/**
+ * Все кадры отзыва одним списком: сначала `media`, затем одиночные
+ * `photo` и `video`. Две записи вместо одной — чтобы отзыв с единственным
+ * кадром не приходилось оформлять массивом, а разметке не приходилось
+ * знать, какой из двух вариантов пришёл.
+ */
+export function reviewMedia(review: Review): ReviewMedia[] {
+  const list: ReviewMedia[] = [...(review.media ?? [])];
+  if (review.photo) list.push({ type: "photo", ...review.photo });
+  if (review.video) list.push({ type: "video", ...review.video });
+  return list;
 }
 
 /** Дата вида 2026-07-21 → «21 июля 2026» (без хвостового «г.»). */
