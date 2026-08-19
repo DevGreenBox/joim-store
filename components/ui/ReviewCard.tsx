@@ -1,3 +1,4 @@
+import { ReviewOpen } from "@/components/ui/ReviewOpen";
 import { formatReviewDate, type Review } from "@/lib/reviews";
 
 function Stars({ rating }: { rating: number }) {
@@ -15,7 +16,11 @@ function Stars({ rating }: { rating: number }) {
         >
           <path
             d="m7 1.5 1.7 3.5 3.8.5-2.8 2.7.7 3.8L7 10.2 3.6 12l.7-3.8L1.5 5.5l3.8-.5z"
-            fill={star <= rating ? "var(--color-accent)" : "var(--color-line-strong)"}
+            fill={
+              star <= rating
+                ? "var(--color-accent)"
+                : "var(--color-line-strong)"
+            }
           />
         </svg>
       ))}
@@ -25,7 +30,10 @@ function Stars({ rating }: { rating: number }) {
 
 export function ReviewCard({ review }: { review: Review }) {
   return (
-    <figure className="flex h-full flex-col gap-4 rounded-2xl border border-line bg-surface p-6 lg:p-7">
+    <ReviewOpen
+      review={review}
+      className="flex h-full flex-col gap-4 rounded-2xl border border-line bg-surface p-6 transition-colors duration-500 hover:border-line-strong lg:p-7"
+    >
       <div className="flex items-center justify-between gap-4">
         <Stars rating={review.rating} />
         <time
@@ -40,9 +48,7 @@ export function ReviewCard({ review }: { review: Review }) {
         {review.text}
       </blockquote>
 
-      <figcaption className="text-[13px] font-medium text-ink">
-        {review.name}
-      </figcaption>
-    </figure>
+      <p className="text-[13px] font-medium text-ink">{review.name}</p>
+    </ReviewOpen>
   );
 }

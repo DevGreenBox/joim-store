@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
-import { PosterVideo } from "@/components/ui/PosterVideo";
+import { ReviewOpen } from "@/components/ui/ReviewOpen";
 
 import { formatReviewDate, type FeedReview } from "@/lib/reviews";
 import { plural } from "@/lib/format";
@@ -60,7 +60,9 @@ function Stars({ rating }: { rating: number }) {
           <path
             d="m7 1.5 1.7 3.5 3.8.5-2.8 2.7.7 3.8L7 10.2 3.6 12l.7-3.8L1.5 5.5l3.8-.5z"
             fill={
-              star <= rating ? "var(--color-accent)" : "var(--color-line-strong)"
+              star <= rating
+                ? "var(--color-accent)"
+                : "var(--color-line-strong)"
             }
           />
         </svg>
@@ -77,7 +79,7 @@ function Chip({
   return (
     <Link
       href={`/product/${slug}`}
-      className="group/chip inline-flex min-h-11 items-center gap-2.5 text-[12px] text-faint transition-colors duration-300 hover:text-accent"
+      className="group/chip relative z-10 inline-flex min-h-11 items-center gap-2.5 text-[12px] text-faint transition-colors duration-300 hover:text-accent"
     >
       {cover?.src ? (
         <span className="relative size-8 shrink-0 overflow-hidden rounded-lg border border-line bg-void">
@@ -163,67 +165,96 @@ export function ReviewWall({
           const brief = !media && review.text.length <= SHORT;
 
           return (
-            <figure
+            <ReviewOpen
               key={`${review.slug}-${review.name}-${review.date}`}
-              className={`mb-4 break-inside-avoid overflow-hidden rounded-2xl border transition-colors duration-500 ${
-                brief
-                  ? "border-line-strong bg-surface-2 hover:border-accent/40"
-                  : "border-line bg-surface hover:border-line-strong"
-              }`}
+              review={review}
+              product={review.product}
+              slug={review.slug}
+              className="mb-4 break-inside-avoid"
             >
-              {review.photo ? (
-                <div className="relative aspect-[4/3]">
-                  <Image
-                    src={review.photo.src}
-                    alt={review.photo.alt}
-                    fill
-                    sizes="(max-width: 639px) 92vw, (max-width: 1023px) 45vw, (max-width: 1279px) 30vw, 23vw"
-                    className="object-cover"
-                  />
-                </div>
-              ) : null}
+              <figure
+                className={`overflow-hidden rounded-2xl border transition-colors duration-500 ${
+                  brief
+                    ? "border-line-strong bg-surface-2 hover:border-accent/40"
+                    : "border-line bg-surface hover:border-line-strong"
+                }`}
+              >
+                {review.photo ? (
+                  <div className="relative aspect-[4/3]">
+                    <Image
+                      src={review.photo.src}
+                      alt={review.photo.alt}
+                      fill
+                      sizes="(max-width: 639px) 92vw, (max-width: 1023px) 45vw, (max-width: 1279px) 30vw, 23vw"
+                      className="object-cover"
+                    />
+                  </div>
+                ) : null}
 
-              {review.video ? (
-                <PosterVideo
-                  src={review.video.src}
-                  poster={review.video.poster}
-                  ratio={review.video.ratio}
-                />
-              ) : null}
-
-              <div className={brief ? "p-6" : "p-5 lg:p-6"}>
-                <div className="flex items-center justify-between gap-4">
-                  <Stars rating={review.rating} />
-                  <time
-                    dateTime={review.date}
-                    className="readout text-[11px] whitespace-nowrap text-faint"
+                {review.video ? (
+                  // В ленте — только постер со значком: играет ролик
+                  // в открытой карточке. Иначе на плитке две цели
+                  // под курсором, и человек, метивший в отзыв,
+                  // запускает видео.
+                  <div
+                    className="relative"
+                    style={{ aspectRatio: review.video.ratio }}
                   >
-                    {formatReviewDate(review.date)}
-                  </time>
+                    <Image
+                      src={review.video.poster}
+                      alt=""
+                      aria-hidden="true"
+                      fill
+                      sizes="(max-width: 639px) 92vw, (max-width: 1023px) 45vw, (max-width: 1279px) 30vw, 23vw"
+                      className="object-cover"
+                    />
+                    <span
+                      aria-hidden="true"
+                      className="absolute inset-0 grid place-items-center"
+                    >
+                      <span className="grid size-14 place-items-center rounded-full border border-line-strong bg-void/70 text-ink backdrop-blur-sm">
+                        <svg viewBox="0 0 24 24" className="ml-0.5 size-5">
+                          <path d="M8 5v14l11-7z" fill="currentColor" />
+                        </svg>
+                      </span>
+                    </span>
+                  </div>
+                ) : null}
+
+                <div className={brief ? "p-6" : "p-5 lg:p-6"}>
+                  <div className="flex items-center justify-between gap-4">
+                    <Stars rating={review.rating} />
+                    <time
+                      dateTime={review.date}
+                      className="readout text-[11px] whitespace-nowrap text-faint"
+                    >
+                      {formatReviewDate(review.date)}
+                    </time>
+                  </div>
+
+                  <blockquote
+                    className={
+                      brief
+                        ? "font-display mt-4 text-[19px] leading-snug font-medium tracking-[-0.01em] text-ink"
+                        : "mt-4 text-[14px] leading-relaxed text-muted"
+                    }
+                  >
+                    {review.text}
+                  </blockquote>
+
+                  <figcaption className="mt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-line pt-1">
+                    <span className="text-[13px] font-medium text-ink">
+                      {review.name}
+                    </span>
+                    <Chip
+                      slug={review.slug}
+                      product={review.product}
+                      cover={review.cover}
+                    />
+                  </figcaption>
                 </div>
-
-                <blockquote
-                  className={
-                    brief
-                      ? "font-display mt-4 text-[19px] leading-snug font-medium tracking-[-0.01em] text-ink"
-                      : "mt-4 text-[14px] leading-relaxed text-muted"
-                  }
-                >
-                  {review.text}
-                </blockquote>
-
-                <figcaption className="mt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-line pt-1">
-                  <span className="text-[13px] font-medium text-ink">
-                    {review.name}
-                  </span>
-                  <Chip
-                    slug={review.slug}
-                    product={review.product}
-                    cover={review.cover}
-                  />
-                </figcaption>
-              </div>
-            </figure>
+              </figure>
+            </ReviewOpen>
           );
         })}
       </div>

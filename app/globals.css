@@ -518,3 +518,81 @@ select option {
     transform: none;
   }
 }
+
+/* ------------------------------------------------------------
+   Мини-карточка отзыва поверх страницы.
+
+   Родной `<dialog>` открывается в верхнем слое, и обычный переход
+   его не берёт: элемент появляется сразу с `display: block`. Поэтому
+   `display` и `overlay` переводятся через `allow-discrete`,
+   а `@starting-style` задаёт состояние, из которого окно выезжает.
+
+   Смещение маленькое, 12 px: окно не «прилетает», а проявляется.
+   При включённом «уменьшить движение» общий блок ниже исключает
+   `transform` из перехода, и остаётся чистое проявление.
+   ------------------------------------------------------------ */
+
+.review-modal {
+  margin: auto;
+  width: min(560px, calc(100vw - 2.5rem));
+  max-height: min(86vh, 800px);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-ink);
+  overflow: visible;
+
+  opacity: 0;
+  transform: translateY(12px) scale(0.98);
+  transition:
+    opacity 320ms var(--ease-out-expo),
+    transform 320ms var(--ease-out-expo),
+    overlay 320ms allow-discrete,
+    display 320ms allow-discrete;
+}
+
+.review-modal[open] {
+  opacity: 1;
+  transform: none;
+}
+
+@starting-style {
+  .review-modal[open] {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+}
+
+.review-modal::backdrop {
+  background: rgba(8, 9, 9, 0.72);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  transition:
+    opacity 320ms var(--ease-out-expo),
+    overlay 320ms allow-discrete,
+    display 320ms allow-discrete;
+}
+
+.review-modal[open]::backdrop {
+  opacity: 1;
+}
+
+@starting-style {
+  .review-modal[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+/* Само содержимое: прокручивается, если отзыв длинный, а окно упёрлось
+   в высоту экрана. Скругление на нём, а не на `<dialog>`: фон окна
+   прозрачный, чтобы тень не обрезалась. */
+.review-modal__card {
+  position: relative;
+  max-height: inherit;
+  overflow-y: auto;
+  border: 1px solid var(--color-line-strong);
+  border-radius: 1.25rem;
+  background: var(--color-surface);
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.55);
+  overscroll-behavior: contain;
+}
