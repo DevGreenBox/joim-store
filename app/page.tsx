@@ -6,6 +6,7 @@ import { Faq } from "@/components/sections/Faq";
 import { FeaturedProducts } from "@/components/sections/FeaturedProducts";
 import { GiftBand } from "@/components/sections/GiftBand";
 import { Hero } from "@/components/sections/Hero";
+import { HeroUsp } from "@/components/sections/HeroUsp";
 import { LeadForm } from "@/components/sections/LeadForm";
 import { ReviewsBand } from "@/components/sections/ReviewsBand";
 import { TrustBand } from "@/components/sections/TrustBand";
@@ -16,6 +17,7 @@ import { getProducts } from "@/lib/catalog";
  * и правки, 17.08). Сверху вниз:
  *
  *   1. первый экран с УТП и баннером товаров, кнопка в каталог;
+   1a. три УТП в рамке — отдельным блоком под первым экраном (19.08);
  *   2. отзывы — социальное доказательство до выбора;
  *   3. дополнительные УТП;
  *   4. деление на две категории;
@@ -37,6 +39,7 @@ export default function Page() {
   return (
     <>
       <Hero />
+      <HeroUsp />
       <ReviewsBand />
       <Advantages />
       <CategoryGrid />
