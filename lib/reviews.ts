@@ -8,9 +8,13 @@ export type Review = {
   /**
    * Фото и видео от покупателя. Появятся файлы — лягут сюда, стена
    * покажет их сама: разметка на это рассчитана.
+   *
+   * `demo: true` — заглушка на время показа: наша съёмка на месте
+   * будущего кадра покупателя. Такие вставки ищутся одним `grep demo`
+   * по `content/catalog/reviews.json` и снимаются перед запуском.
    */
-  photo?: { src: string; alt: string };
-  video?: { src: string; poster: string; ratio: string };
+  photo?: { src: string; alt: string; demo?: boolean };
+  video?: { src: string; poster: string; ratio: string; demo?: boolean };
 };
 
 /**
