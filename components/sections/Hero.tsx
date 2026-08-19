@@ -3,13 +3,11 @@ import Link from "next/link";
 
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
-import { CountUp } from "@/components/ui/CountUp";
 import { StarMark } from "@/components/ui/StarMark";
 import home from "@/content/pages/home.json";
 import { getProducts } from "@/lib/catalog";
 import { formatPrice, plural } from "@/lib/format";
 import { getReviewsSummary } from "@/lib/reviews";
-import { site } from "@/lib/site";
 
 const { hero } = home;
 
@@ -240,31 +238,38 @@ export function Hero() {
         </div>
       </Container>
 
-      {/* Полоса цифр по нижнему краю первого экрана */}
+      {/* Полоса по нижнему краю первого экрана. Раньше здесь стояли
+          четыре показания — год, число моделей, балл и гарантия. Все они
+          остались на своих местах: год — в блоке о производстве, балл —
+          рядом с кнопкой, гарантия — в полосе доверия каталога. На первом
+          экране заказчик просил вместо них три проработанных УТП.
+
+          Рамок и подложек у ячеек нет: на фотографии они дали бы третий
+          слой поверх завесы. Разделяют колонки только поле и порядковый
+          номер. */}
       <Container size="wide">
-        <dl className="grid grid-cols-2 gap-x-8 gap-y-6 border-t border-line py-7 lg:grid-cols-4 lg:py-8">
-          {site.stats.map((stat, index) => (
-            <div
-              key={stat.label}
+        {/* Снизу поля нет: свои 75 px до следующего блока отдаёт сама
+            секция, и padding полосы добавлялся к ним третьим слоем —
+            зазор до «Отзывов» получался 182 px вместо 150. */}
+        <ul className="grid gap-8 border-t border-line pt-7 sm:grid-cols-3 sm:gap-10 lg:gap-16 lg:pt-8">
+          {home.heroUsp.map((item, index) => (
+            <li
+              key={item.title}
               className="animate-fade"
               style={{ animationDelay: `${640 + index * 80}ms` }}
             >
-              <dt className="num font-display text-fig-sm font-semibold">
-                {stat.count === false ? (
-                  stat.value
-                ) : (
-                  <CountUp value={stat.value} />
-                )}
-                <span className="text-[13px] font-medium text-faint">
-                  {stat.suffix}
-                </span>
-              </dt>
-              <dd className="readout mt-3 text-[11px] leading-snug tracking-[0.08em] text-faint uppercase">
-                {stat.label}
-              </dd>
-            </div>
+              <span className="num text-[11px] font-medium tracking-[0.18em] text-accent">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <h2 className="font-display mt-3 text-[15px] leading-snug font-semibold tracking-[-0.01em] lg:text-base">
+                {item.title}
+              </h2>
+              <p className="mt-2 max-w-sm text-[13px] leading-relaxed text-muted lg:text-[14px]">
+                {item.text}
+              </p>
+            </li>
           ))}
-        </dl>
+        </ul>
       </Container>
     </section>
   );
