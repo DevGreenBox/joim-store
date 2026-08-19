@@ -13,8 +13,16 @@ export type Review = {
   video?: { src: string; poster: string; ratio: string };
 };
 
-/** Отзыв вместе с моделью, о которой он написан, — для общей ленты. */
-export type FeedReview = Review & { product: string; slug: string };
+/**
+ * Отзыв вместе с моделью, о которой он написан, — для общей ленты.
+ * `cover` — кадр этой модели: на стене он идёт миниатюрой в подписи.
+ * Без него лента из одних текстовых карточек читается серой простынёй.
+ */
+export type FeedReview = Review & {
+  product: string;
+  slug: string;
+  cover?: { src: string; alt: string };
+};
 
 export type ProductReviews = {
   /** Средняя оценка по всем покупателям, а не по опубликованным здесь. */
@@ -73,13 +81,17 @@ export function formatReviewDate(value: string): string {
  * ленту в духе Pinterest, где содержимое идёт сплошным потоком, а модель
  * — подпись на карточке, а не заголовок раздела.
  */
-export function getReviewFeed(names: Record<string, string>): FeedReview[] {
+export function getReviewFeed(
+  names: Record<string, string>,
+  covers: Record<string, { src: string; alt: string }> = {},
+): FeedReview[] {
   return Object.entries(reviews)
     .flatMap(([slug, data]) =>
       data.items.map((item) => ({
         ...item,
         slug,
         product: names[slug] ?? slug,
+        cover: covers[slug],
       })),
     )
     .sort((a, b) => b.date.localeCompare(a.date));

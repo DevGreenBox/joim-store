@@ -35,7 +35,13 @@ export default function ReviewsPage() {
   const names = Object.fromEntries(
     products.map((product) => [product.slug, product.name]),
   );
-  const feed = getReviewFeed(names);
+  const covers = Object.fromEntries(
+    products.map((product) => [
+      product.slug,
+      { src: product.images[0]?.src ?? "", alt: product.name },
+    ]),
+  );
+  const feed = getReviewFeed(names, covers);
   const filters = products.map((product) => ({
     slug: product.slug,
     label: product.name.replace(/^JOIM\s*/, ""),
