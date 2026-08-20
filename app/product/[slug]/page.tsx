@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { Es29Landing } from "@/components/landing/Es29Landing";
 import { ModelCompare } from "@/components/sections/ModelCompare";
 import { ProductFit } from "@/components/sections/ProductFit";
 import { ProductHighlights } from "@/components/sections/ProductHighlights";
@@ -90,6 +91,8 @@ export default async function ProductPage({ params }: { params: Params }) {
   // Одна модель в категории — сравнивать не с чем, зовём в остальной каталог.
   const others = getProducts().filter((item) => item.slug !== product.slug);
   const reviews = getReviews(product.slug);
+  /** ES-29 показывается мини-лендингом, остальные — прежней раскладкой. */
+  const landing = product.slug === "joim-easy-start-es29";
   const { sections, savings } = productContent;
   // Сравнение с эвакуатором уместно там, где альтернатива — эвакуатор.
   // Для пылесоса такой альтернативы нет, и блок не показывается.
@@ -145,177 +148,189 @@ export default async function ProductPage({ params }: { params: Params }) {
           ]}
         />
 
-        <div className="mt-8 grid gap-10 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
-          {/* Изображение */}
-          <div className="lg:sticky lg:top-[calc(var(--header-h)+24px)] lg:self-start">
-            <ProductGallery product={product}>
-              {product.badge ? (
-                <span className="rounded-full border border-accent/30 bg-accent/10 px-3 py-1.5 text-[11px] leading-none font-medium tracking-wide text-accent backdrop-blur-sm">
-                  {product.badge}
-                </span>
-              ) : null}
-              {discount > 0 ? (
-                <span className="num rounded-full border border-line-strong bg-void/60 px-3 py-1.5 text-[11px] leading-none font-medium backdrop-blur-sm">
-                  −{discount}%
-                </span>
-              ) : null}
-            </ProductGallery>
+        {/* У ES-29 карточка пересобрана в мини-лендинг: сцены со словом
+            во всю ширину вместо каталожной раскладки. Разбор системы —
+            docs/design/landing-system.md. Остальные модели идут прежней
+            раскладкой, пока заказчик не решит перевести и их. */}
+        {landing ? null : (
+          <div className="mt-8 grid gap-10 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
+            {/* Изображение */}
+            <div className="lg:sticky lg:top-[calc(var(--header-h)+24px)] lg:self-start">
+              <ProductGallery product={product}>
+                {product.badge ? (
+                  <span className="rounded-full border border-accent/30 bg-accent/10 px-3 py-1.5 text-[11px] leading-none font-medium tracking-wide text-accent backdrop-blur-sm">
+                    {product.badge}
+                  </span>
+                ) : null}
+                {discount > 0 ? (
+                  <span className="num rounded-full border border-line-strong bg-void/60 px-3 py-1.5 text-[11px] leading-none font-medium backdrop-blur-sm">
+                    −{discount}%
+                  </span>
+                ) : null}
+              </ProductGallery>
 
-            <ul className="mt-3 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-3">
-              {product.features.map((feature) => (
-                <li
-                  key={feature}
-                  className="bg-surface p-5 text-[13px] leading-snug text-muted"
-                >
-                  {feature}
-                </li>
-              ))}
-            </ul>
-
-            {/* «Что в коробке» держит левую колонку в росте с правой:
-                иначе изображение переставало сопровождать характеристики
-                на середине их чтения. */}
-            <div className="mt-3 rounded-2xl border border-line bg-surface p-6 lg:p-7">
-              <p className="eyebrow mb-5">В комплекте</p>
-              <ul className="divide-y divide-line">
-                {product.included.map((item, index) => (
+              <ul className="mt-3 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-3">
+                {product.features.map((feature) => (
                   <li
-                    key={item}
-                    className="flex items-baseline gap-4 py-3 first:pt-0 last:pb-0"
+                    key={feature}
+                    className="bg-surface p-5 text-[13px] leading-snug text-muted"
                   >
-                    <span className="readout w-5 shrink-0 text-[11px] text-faint">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <span className="text-[14px] leading-snug text-muted">
-                      {item}
-                    </span>
+                    {feature}
                   </li>
                 ))}
               </ul>
+
+              {/* «Что в коробке» держит левую колонку в росте с правой:
+                иначе изображение переставало сопровождать характеристики
+                на середине их чтения. */}
+              <div className="mt-3 rounded-2xl border border-line bg-surface p-6 lg:p-7">
+                <p className="eyebrow mb-5">В комплекте</p>
+                <ul className="divide-y divide-line">
+                  {product.included.map((item, index) => (
+                    <li
+                      key={item}
+                      className="flex items-baseline gap-4 py-3 first:pt-0 last:pb-0"
+                    >
+                      <span className="readout w-5 shrink-0 text-[11px] text-faint">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <span className="text-[14px] leading-snug text-muted">
+                        {item}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-          </div>
 
-          {/* Информация и покупка */}
-          <div>
-            <p className="readout text-[11px] leading-none tracking-[0.16em] text-faint uppercase">
-              {product.brand}
-            </p>
+            {/* Информация и покупка */}
+            <div>
+              <p className="readout text-[11px] leading-none tracking-[0.16em] text-faint uppercase">
+                {product.brand}
+              </p>
 
-            <h1 className="font-display mt-4 text-h2 font-semibold text-balance">
-              {product.name}
-            </h1>
+              <h1 className="font-display mt-4 text-h2 font-semibold text-balance">
+                {product.name}
+              </h1>
 
-            <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] text-muted">
-              <span className="num flex items-center gap-1.5">
-                <svg viewBox="0 0 14 14" aria-hidden="true" className="size-3.5">
-                  <path
-                    d="m7 1.5 1.7 3.5 3.8.5-2.8 2.7.7 3.8L7 10.2 3.6 12l.7-3.8L1.5 5.5l3.8-.5z"
-                    fill="var(--color-accent)"
-                  />
-                </svg>
-                {product.rating.toFixed(1).replace(".", ",")}
-              </span>
-              <span className="num">
-                {product.reviews}{" "}
-                {plural(product.reviews, "отзыв", "отзыва", "отзывов")}
-              </span>
-              <span className="readout text-faint">Артикул {product.sku}</span>
-              <span
-                className={`flex items-center gap-2 ${
-                  product.inStock ? "text-accent" : "text-faint"
-                }`}
-              >
+              <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] text-muted">
+                <span className="num flex items-center gap-1.5">
+                  <svg
+                    viewBox="0 0 14 14"
+                    aria-hidden="true"
+                    className="size-3.5"
+                  >
+                    <path
+                      d="m7 1.5 1.7 3.5 3.8.5-2.8 2.7.7 3.8L7 10.2 3.6 12l.7-3.8L1.5 5.5l3.8-.5z"
+                      fill="var(--color-accent)"
+                    />
+                  </svg>
+                  {product.rating.toFixed(1).replace(".", ",")}
+                </span>
+                <span className="num">
+                  {product.reviews}{" "}
+                  {plural(product.reviews, "отзыв", "отзыва", "отзывов")}
+                </span>
+                <span className="readout text-faint">
+                  Артикул {product.sku}
+                </span>
                 <span
-                  aria-hidden="true"
-                  className={`inline-block size-1.5 rounded-full ${
-                    product.inStock
-                      ? "animate-sheen bg-accent"
-                      : "bg-current"
+                  className={`flex items-center gap-2 ${
+                    product.inStock ? "text-accent" : "text-faint"
                   }`}
-                />
-                {product.inStock ? "В наличии" : "Под заказ"}
-              </span>
-            </div>
+                >
+                  <span
+                    aria-hidden="true"
+                    className={`inline-block size-1.5 rounded-full ${
+                      product.inStock ? "animate-sheen bg-accent" : "bg-current"
+                    }`}
+                  />
+                  {product.inStock ? "В наличии" : "Под заказ"}
+                </span>
+              </div>
 
-            {/* Мера ограничена: на 1440 строка описания уходила
+              {/* Мера ограничена: на 1440 строка описания уходила
                 за 95 знаков — на треть длиннее того, что читается
                 без потери строки. */}
-            <p className="mt-8 max-w-[54ch] text-[15px] leading-relaxed text-muted">
-              {product.description}
-            </p>
+              <p className="mt-8 max-w-[54ch] text-[15px] leading-relaxed text-muted">
+                {product.description}
+              </p>
 
-            {/* Цена и кнопка до приборной панели. Панель из четырёх плиток
+              {/* Цена и кнопка до приборной панели. Панель из четырёх плиток
                 стояла выше и сдвигала главное действие страницы на 940 px —
                 за нижний край экрана 1440×900. */}
-            <div className="mt-9 flex items-end gap-4">
-              <p className="num font-display text-h2 font-semibold">
-                {formatPrice(product.price)}
-              </p>
-              {product.oldPrice ? (
-                <p className="num pb-1 text-[15px] text-faint line-through">
-                  {formatPrice(product.oldPrice)}
+              <div className="mt-9 flex items-end gap-4">
+                <p className="num font-display text-h2 font-semibold">
+                  {formatPrice(product.price)}
                 </p>
-              ) : null}
-            </div>
+                {product.oldPrice ? (
+                  <p className="num pb-1 text-[15px] text-faint line-through">
+                    {formatPrice(product.oldPrice)}
+                  </p>
+                ) : null}
+              </div>
 
-            <div id="buy" className="mt-7">
-              <ProductBuy slug={product.slug} inStock={product.inStock} />
-            </div>
+              <div id="buy" className="mt-7">
+                <ProductBuy slug={product.slug} inStock={product.inStock} />
+              </div>
 
-            <div className="mt-10">
-              <ProductHighlights items={product.highlights} />
-            </div>
+              <div className="mt-10">
+                <ProductHighlights items={product.highlights} />
+              </div>
 
-            <ul className="mt-9 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2">
-              <li className="bg-surface p-5">
-                <p className="text-[13px] font-medium">Доставка</p>
-                <p className="mt-1.5 text-[13px] leading-relaxed text-muted">
-                  Бесплатно по России при заказе от{" "}
-                  {formatPrice(FREE_SHIPPING_FROM)}. Самовывоз в день заказа.
-                </p>
-              </li>
-              <li className="bg-surface p-5">
-                <p className="text-[13px] font-medium">Гарантия</p>
-                <p className="mt-1.5 text-[13px] leading-relaxed text-muted">
-                  12 месяцев от производителя, брак меняем без экспертизы.{" "}
-                  <Link
-                    href="/warranty"
-                    className="text-accent transition-opacity duration-300 hover:opacity-70"
-                  >
-                    Условия
-                  </Link>
-                </p>
-              </li>
-            </ul>
-
-            {/* Характеристики */}
-            <div className="mt-12">
-              <h2 className="eyebrow mb-6">Характеристики</h2>
-              <dl className="divide-y divide-line border-y border-line">
-                {product.specs.map((spec) => (
-                  <div
-                    key={spec.label}
-                    className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-4"
-                  >
-                    <dt className="text-[13px] text-faint">{spec.label}</dt>
-                    <dd
-                      className={`text-[14px] text-ink ${
-                        isReadout(spec.value) ? "readout" : "text-right"
-                      }`}
+              <ul className="mt-9 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2">
+                <li className="bg-surface p-5">
+                  <p className="text-[13px] font-medium">Доставка</p>
+                  <p className="mt-1.5 text-[13px] leading-relaxed text-muted">
+                    Бесплатно по России при заказе от{" "}
+                    {formatPrice(FREE_SHIPPING_FROM)}. Самовывоз в день заказа.
+                  </p>
+                </li>
+                <li className="bg-surface p-5">
+                  <p className="text-[13px] font-medium">Гарантия</p>
+                  <p className="mt-1.5 text-[13px] leading-relaxed text-muted">
+                    12 месяцев от производителя, брак меняем без экспертизы.{" "}
+                    <Link
+                      href="/warranty"
+                      className="text-accent transition-opacity duration-300 hover:opacity-70"
                     >
-                      {spec.value}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
+                      Условия
+                    </Link>
+                  </p>
+                </li>
+              </ul>
+
+              {/* Характеристики */}
+              <div className="mt-12">
+                <h2 className="eyebrow mb-6">Характеристики</h2>
+                <dl className="divide-y divide-line border-y border-line">
+                  {product.specs.map((spec) => (
+                    <div
+                      key={spec.label}
+                      className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-4"
+                    >
+                      <dt className="text-[13px] text-faint">{spec.label}</dt>
+                      <dd
+                        className={`text-[14px] text-ink ${
+                          isReadout(spec.value) ? "readout" : "text-right"
+                        }`}
+                      >
+                        {spec.value}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </Container>
+
+      {landing ? <Es29Landing product={product} /> : null}
 
       {/* Ролик идёт перед сценариями: он показывает то же самое движением,
           а плитки ниже разбирают увиденное по пунктам. */}
-      {product.video ? (
+      {!landing && product.video ? (
         <div className="mt-16 lg:mt-[150px]">
           <ProductVideo
             title={product.video.title}
@@ -325,7 +340,7 @@ export default async function ProductPage({ params }: { params: Params }) {
         </div>
       ) : null}
 
-      {product.spin ? (
+      {!landing && product.spin ? (
         <Container size="wide" className="mt-16 lg:mt-[150px]">
           <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
             <div>
@@ -352,15 +367,18 @@ export default async function ProductPage({ params }: { params: Params }) {
         </Container>
       ) : null}
 
-      <div className="mt-16 lg:mt-[150px]">
-        <ProductScenarios
-          title={sections.scenarios.title}
-          items={product.scenarios}
-          productName={product.name}
-        />
-      </div>
+      {landing ? null : (
+        <div className="mt-16 lg:mt-[150px]">
+          <ProductScenarios
+            title={sections.scenarios.title}
+            items={product.scenarios}
+            productName={product.name}
+          />
+        </div>
+      )}
 
-      {product.protections?.length || product.compatibility?.length ? (
+      {!landing &&
+      (product.protections?.length || product.compatibility?.length) ? (
         <div className="mt-16 lg:mt-[150px]">
           <ProductProtection
             title={sections.protection.title}
@@ -375,9 +393,9 @@ export default async function ProductPage({ params }: { params: Params }) {
       {/* Рич-контент товара: то, что заказчик набирает под каждую модель
           сам. Стоит после базовых блоков — сначала характеристики
           и сценарии, потом материалы под конкретный товар. */}
-      <ProductRich blocks={product.rich} />
+      {landing ? null : <ProductRich blocks={product.rich} />}
 
-      {showSavings ? (
+      {!landing && showSavings ? (
         <div className="mt-16 lg:mt-[150px]">
           <SavingsBand
             title={savings.title}
@@ -389,7 +407,7 @@ export default async function ProductPage({ params }: { params: Params }) {
         </div>
       ) : null}
 
-      {reviews && reviews.items.length > 0 ? (
+      {!landing && reviews && reviews.items.length > 0 ? (
         <Container size="wide" className="mt-16 lg:mt-[150px]">
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div>
@@ -399,12 +417,7 @@ export default async function ProductPage({ params }: { params: Params }) {
                 {plural(product.reviews, "отзыв", "отзыва", "отзывов")}
               </h2>
             </div>
-            <ButtonLink
-              href="/reviews"
-              variant="outline"
-              size="sm"
-              arrow
-            >
+            <ButtonLink href="/reviews" variant="outline" size="sm" arrow>
               Все отзывы
             </ButtonLink>
           </div>
@@ -428,14 +441,16 @@ export default async function ProductPage({ params }: { params: Params }) {
       {/* Есть с чем сравнивать — сравниваем. Одна плитка «из этой же
           категории» в сетке на три колонки смотрелась сиротой и не отвечала
           на единственный вопрос покупателя: какую из двух брать. */}
-      <div className="mt-16 lg:mt-[150px]">
-        <ProductFit
-          title={sections.fits.title}
-          whoLabel={sections.fits.whoLabel}
-          skipLabel={sections.fits.skipLabel}
-          fits={product.fits}
-        />
-      </div>
+      {landing ? null : (
+        <div className="mt-16 lg:mt-[150px]">
+          <ProductFit
+            title={sections.fits.title}
+            whoLabel={sections.fits.whoLabel}
+            skipLabel={sections.fits.skipLabel}
+            fits={product.fits}
+          />
+        </div>
+      )}
 
       {siblings.length > 1 ? (
         <div className="mt-16 lg:mt-[150px]">
