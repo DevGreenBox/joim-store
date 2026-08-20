@@ -1,6 +1,8 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
 
+import { Reveal } from "@/components/ui/Reveal";
+
 /**
  * Слово-конструкция: огромное слово, из-за которого выходит вырезанный
  * по контуру прибор.
@@ -31,6 +33,8 @@ export function Slab({
   imageSizes = "(max-width: 639px) 58vw, (max-width: 1023px) 46vw, 38vw",
   children,
   eager = false,
+  /** Первый экран приходит без появления: он и так перед глазами. */
+  entrance = true,
 }: {
   word: string;
   src: string;
@@ -44,32 +48,46 @@ export function Slab({
   imageSizes?: string;
   children?: ReactNode;
   eager?: boolean;
+  entrance?: boolean;
 }) {
+  const Frame = entrance ? Reveal : "div";
   return (
-    <div className={`relative isolate ${className}`}>
+    <Frame
+      className={`relative isolate ${className}`}
+      {...(entrance ? { y: 0 } : {})}
+    >
+      {/* Слово и прибор идут разными планами: приход — расходящимся
+          движением, дальше расхождение продолжает сама прокрутка
+          (`.slab-word` / `.slab-figure` в globals.css). */}
       <span
         aria-hidden="true"
-        className={`font-display pointer-events-none block text-center leading-[0.82] font-bold tracking-[-0.05em] select-none ${tone}`}
-        style={{ fontSize: "clamp(5.5rem, 19vw, 15rem)" }}
+        className="slab-word pointer-events-none block select-none"
       >
-        {word}
+        <span
+          className={`slab-word-in font-display block text-center leading-[0.82] font-bold tracking-[-0.05em] ${tone}`}
+          style={{ fontSize: "clamp(5.5rem, 19vw, 15rem)" }}
+        >
+          {word}
+        </span>
       </span>
 
       <div
-        className={`pointer-events-none absolute inset-y-0 ${place} ${figure}`}
+        className={`slab-figure pointer-events-none absolute inset-y-0 ${place} ${figure}`}
       >
-        <Image
-          src={src}
-          alt={alt}
-          width={width}
-          height={height}
-          sizes={imageSizes}
-          {...(eager ? { preload: true } : {})}
-          className="h-full w-full object-contain [filter:drop-shadow(0_40px_60px_rgba(0,0,0,0.65))]"
-        />
+        <div className="slab-figure-in h-full w-full">
+          <Image
+            src={src}
+            alt={alt}
+            width={width}
+            height={height}
+            sizes={imageSizes}
+            {...(eager ? { preload: true } : {})}
+            className="h-full w-full object-contain [filter:drop-shadow(0_40px_60px_rgba(0,0,0,0.65))]"
+          />
+        </div>
       </div>
 
       {children}
-    </div>
+    </Frame>
   );
 }

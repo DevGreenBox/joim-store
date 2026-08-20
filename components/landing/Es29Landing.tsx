@@ -69,7 +69,7 @@ export function Es29Landing({ product }: { product: Product }) {
   return (
     <>
       {/* 1. Пять тысяч ампер — сцена со словом-конструкцией */}
-      <section className="relative overflow-hidden pt-6 pb-16 lg:pt-10 lg:pb-[75px]">
+      <section className="relative overflow-clip pt-6 pb-16 lg:pt-10 lg:pb-[75px]">
         <StarMark
           aria-hidden="true"
           className="pointer-events-none absolute -top-[18%] -right-[12%] -z-10 aspect-square w-[46%] rotate-[-12deg] text-accent/[0.05]"
@@ -94,6 +94,7 @@ export function Es29Landing({ product }: { product: Product }) {
             tone="text-surface-2"
             className="mt-10 lg:mt-14"
             eager
+            entrance={false}
           >
             <span
               aria-hidden="true"
@@ -126,7 +127,7 @@ export function Es29Landing({ product }: { product: Product }) {
       </section>
 
       {/* 2. Мороз — сцена с кадром в руках, слово уходит за него */}
-      <section className="relative overflow-hidden bg-[#0b0d0d] py-16 lg:py-[75px]">
+      <section className="relative overflow-clip bg-[#0b0d0d] py-16 lg:py-[75px]">
         <Container size="wide">
           <div className="grid items-center gap-10 lg:grid-cols-[1fr_0.85fr] lg:gap-16">
             <Slab
@@ -225,7 +226,7 @@ export function Es29Landing({ product }: { product: Product }) {
       </section>
 
       {/* 5. Фонарь — самая тёмная сцена лендинга */}
-      <section className="relative overflow-hidden bg-[#070808] py-16 lg:py-[75px]">
+      <section className="relative overflow-clip bg-[#070808] py-16 lg:py-[75px]">
         <span
           aria-hidden="true"
           className="pointer-events-none absolute inset-x-0 top-1/2 -z-10 h-[420px] -translate-y-1/2 bg-[radial-gradient(50%_60%_at_50%_50%,rgba(153,196,83,0.12),transparent_70%)]"
@@ -427,7 +428,7 @@ export function Es29Landing({ product }: { product: Product }) {
       ) : null}
 
       {/* 12. Финал — цена, кнопка и условия одной строкой */}
-      <section className="relative overflow-hidden py-16 lg:py-[75px]">
+      <section className="relative overflow-clip py-16 lg:py-[75px]">
         <span
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 -z-10 brand-lines opacity-40"

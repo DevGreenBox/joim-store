@@ -596,3 +596,85 @@ select option {
   box-shadow: 0 32px 80px rgba(0, 0, 0, 0.55);
   overscroll-behavior: contain;
 }
+
+/* ------------------------------------------------------------
+   Сцена со словом-конструкцией: слово и прибор идут разными планами.
+
+   Один авторский приём на весь лендинг, а не набор эффектов по блокам.
+   Два слоя, оба без единого обработчика прокрутки:
+
+   1. Приход. Прибор поднимается снизу, слово опускается сверху —
+      расходящееся движение читается как глубина, а не как «выехало».
+      Ведёт его тот же `is-revealed`, что и остальные блоки: общий
+      IntersectionObserver, ноль вычислений во время скролла.
+
+   2. Расхождение планов. Пока сцена идёт через экран, слово смещается
+      медленнее прибора — прокруткой правит сам браузер через
+      `animation-timeline: view()`. Это композиторная анимация без JS:
+      на телефоне она стоит столько же, сколько на десктопе.
+
+   Где `animation-timeline` не поддержан, второй слой просто не
+   включается: сцена остаётся собранной, приход работает. Это и есть
+   корректная работа на любом устройстве — не «сломалось», а «тише».
+   ------------------------------------------------------------ */
+
+[data-js] [data-reveal] .slab-word-in {
+  opacity: 0;
+  transform: translate3d(0, -18px, 0);
+  transition:
+    opacity 0.9s var(--ease-out-expo),
+    transform 0.9s var(--ease-out-expo);
+}
+
+[data-js] [data-reveal] .slab-figure-in {
+  opacity: 0;
+  transform: translate3d(0, 34px, 0) scale(0.985);
+  transition:
+    opacity 0.9s var(--ease-out-expo),
+    transform 0.9s var(--ease-out-expo);
+  transition-delay: 90ms;
+}
+
+[data-js] [data-reveal].is-revealed .slab-word-in,
+[data-js] [data-reveal].is-revealed .slab-figure-in {
+  opacity: 1;
+  transform: none;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .slab-word {
+      animation: slab-word-drift linear both;
+      animation-timeline: view();
+      animation-range: entry 0% exit 100%;
+    }
+
+    .slab-figure {
+      animation: slab-figure-drift linear both;
+      animation-timeline: view();
+      animation-range: entry 0% exit 100%;
+    }
+
+    /* Приход и расхождение живут на разных слоях: внутренний элемент
+       ведёт приход переходом, внешний — прокруткой. Иначе анимация
+       перебивает переход по правилам каскада, и приход дёргается. */
+  }
+}
+
+@keyframes slab-word-drift {
+  from {
+    transform: translate3d(0, 7%, 0);
+  }
+  to {
+    transform: translate3d(0, -7%, 0);
+  }
+}
+
+@keyframes slab-figure-drift {
+  from {
+    transform: translate3d(0, -3%, 0);
+  }
+  to {
+    transform: translate3d(0, 3%, 0);
+  }
+}
