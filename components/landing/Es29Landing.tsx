@@ -84,10 +84,10 @@ export function Es29Landing({ product }: { product: Product }) {
               слова: так видно, что он стоит перед ним, а не внутри. */}
           <Slab
             word={copy.hero.word}
-            src="/images/products/joim-es29-front.webp"
+            src="/images/products/es29-front-90.webp"
             alt={`${product.name} — вид спереди`}
-            width={493}
-            height={1019}
+            width={1100}
+            height={2218}
             figure="w-[52%] sm:w-[38%] lg:w-[30%]"
             imageSizes="(max-width: 639px) 52vw, (max-width: 1023px) 38vw, 30vw"
             place="left-1/2 -translate-x-1/2 -top-[22%] -bottom-[52%]"
@@ -185,8 +185,8 @@ export function Es29Landing({ product }: { product: Product }) {
 
             <Reveal className="relative aspect-[4/3]">
               <Image
-                src="/images/products/joim-es29-1.webp"
-                alt="JOIM Easy Start ES-29 в разрезе: ячейки, плата, клеммы и корпус"
+                src="/images/products/es29-cut.webp"
+                alt="JOIM Easy Start ES-29 в разрезе: ячейки, плата и корпус"
                 fill
                 sizes="(max-width: 1023px) 92vw, 52vw"
                 className="object-contain"
@@ -234,10 +234,10 @@ export function Es29Landing({ product }: { product: Product }) {
         <Container size="wide">
           <Slab
             word={copy.lamp.word}
-            src="/images/products/joim-es29-2.webp"
-            alt="Фонарь JOIM Easy Start ES-29 в работе"
-            width={1200}
-            height={768}
+            src="/images/products/es29-lamp-macro.webp"
+            alt="Фонарь JOIM Easy Start ES-29 крупным планом"
+            width={1800}
+            height={1013}
             figure="w-[74%] sm:w-[58%] lg:w-[46%]"
             imageSizes="(max-width: 639px) 74vw, (max-width: 1023px) 58vw, 46vw"
             place="left-1/2 -translate-x-1/2 top-[6%] -bottom-[18%]"
@@ -274,11 +274,11 @@ export function Es29Landing({ product }: { product: Product }) {
           <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-16">
             <Reveal className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-line bg-surface">
               <Image
-                src="/images/products/joim-es29-ports.webp"
-                alt="Разъёмы JOIM Easy Start ES-29 крупным планом"
+                src="/images/products/es29-ports-macro.webp"
+                alt="Разъёмы JOIM Easy Start ES-29 с подключённым модулем"
                 fill
                 sizes="(max-width: 1023px) 92vw, 55vw"
-                className="object-cover"
+                className="object-contain p-6 lg:p-10"
               />
             </Reveal>
 
